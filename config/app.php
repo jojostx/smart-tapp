@@ -195,6 +195,10 @@ return [
         App\Providers\EventServiceProvider::class,
         App\Providers\RouteServiceProvider::class,
 
+        /*
+         * Custom Service Providers and Service Providers from Third-party package 
+         */
+        App\Providers\TenancyServiceProvider::class,
     ],
 
     /*
