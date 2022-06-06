@@ -4,6 +4,7 @@ declare(strict_types=1);
 
 namespace App\Providers;
 
+use App\Jobs\Tenant\CreateFrameworkDirectoriesForTenant;
 use Illuminate\Support\Facades\Event;
 use Illuminate\Support\Facades\Route;
 use Illuminate\Support\ServiceProvider;
@@ -31,6 +32,7 @@ class TenancyServiceProvider extends ServiceProvider
 
                     // Your own jobs to prepare the tenant.
                     // Provision API keys, create S3 buckets, anything you want!
+                    CreateFrameworkDirectoriesForTenant::class,
 
                 ])->send(function (Events\TenantCreated $event) {
                     return $event->tenant;
