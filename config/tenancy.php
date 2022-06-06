@@ -2,7 +2,7 @@
 
 declare(strict_types=1);
 
-use Stancl\Tenancy\Database\Models\Domain;
+use App\Models\Domain;
 
 return [
     'tenant_model' => \App\Models\Tenant::class,
@@ -16,7 +16,7 @@ return [
      * Only relevant if you're using the domain or subdomain identification middleware.
      */
     'central_domains' => [
-        'smart-tapp.test',
+        env('TENANCY_CENTRAL_DOMAIN', 'smart-tapp.test'),
     ],
 
     /**
