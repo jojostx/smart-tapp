@@ -12,9 +12,9 @@
 </head>
 
 <body class="antialiased">
-  <div class="relative justify-center min-h-screen dark:bg-gray-900 sm:items-center sm:pt-0 h-screen w-screen bg-gray-100 flex items-center">
-    <div class="container flex flex-col md:flex-row items-center justify-center px-5 text-gray-700">
-      <div class="max-w-lg">
+  <div class="relative flex items-center justify-center w-screen h-screen min-h-screen bg-gray-100 dark:bg-gray-900 sm:items-center sm:pt-0">
+    <div class="container flex flex-col items-center justify-center px-5 text-gray-700 md:flex-row">
+      <div class="flex justify-center max-w-md sm:max-w-lg">
         <svg viewBox="0 0 800 600" xmlns="http://www.w3.org/2000/svg">
           <defs>
             <clipPath id="a">
@@ -105,15 +105,15 @@
           </g>
         </svg>
       </div>
-      <div class="max-w-md">
-        <div class="text-7xl text-gray-300 font-bold">@yield('code')</div>
+      <div class="flex flex-col items-center max-w-md sm:block">
+        <div class="mb-2 font-bold text-gray-300 text-7xl sm:mb-3">@yield('code')</div>
 
-        <div class="text-lg text-gray-400">
+        <div class="space-y-2 text-lg text-center text-gray-400 sm:text-left">
           @yield('message')
         </div>
 
-        <div>
-          <a href="{{ config('app.url') }}" class="px-4 inline py-2 text-sm font-medium leading-5 shadow text-white transition-colors duration-150 border border-transparent rounded-lg focus:outline-none focus:shadow-outline-blue bg-blue-600 active:bg-blue-600 hover:bg-blue-700">
+        <div class="mt-4 sm:mt-6">
+          <a href="{{ config('app.url') }}" class="inline px-4 py-2 text-sm font-medium leading-5 text-white transition-colors duration-150 bg-blue-600 border border-transparent rounded-lg shadow focus:outline-none focus:shadow-outline-blue active:bg-blue-600 hover:bg-blue-700">
             Back to homepage
           </a>
         </div>
