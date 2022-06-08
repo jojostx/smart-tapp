@@ -47,21 +47,36 @@ class RouteServiceProvider extends ServiceProvider
     protected function mapWebRoutes()
     {
         foreach ($this->centralDomains() as $domain) {
-            Route::middleware(['web'])
-                ->domain($domain)
-                ->namespace($this->namespace)
-                ->group(base_path('routes/web.php'));
+            if ($domain === env('TENANCY_CENTRAL_ADMIN_DOMAIN')) {
+                Route::middleware(['web'])
+                    ->domain($domain)
+                    ->namespace($this->namespace)
+                    ->group(base_path('routes/admin/web.php'));
+            } else {
+                Route::middleware(['web'])
+                    ->domain($domain)
+                    ->namespace($this->namespace)
+                    ->group(base_path('routes/web.php'));
+            }
         }
     }
 
     protected function mapApiRoutes()
     {
         foreach ($this->centralDomains() as $domain) {
-            Route::prefix('api')
-                ->domain($domain)
-                ->middleware('api')
-                ->namespace($this->namespace)
-                ->group(base_path('routes/api.php'));
+            if ($domain === env('TENANCY_CENTRAL_ADMIN_DOMAIN')) {
+                Route::prefix('api')
+                    ->domain($domain)
+                    ->middleware('api')
+                    ->namespace($this->namespace)
+                    ->group(base_path('routes/admin/api.php'));
+            } else {
+                Route::prefix('api')
+                    ->domain($domain)
+                    ->middleware('api')
+                    ->namespace($this->namespace)
+                    ->group(base_path('routes/api.php'));
+            }
         }
     }
 
