@@ -17,7 +17,7 @@ class RouteServiceProvider extends ServiceProvider
      *
      * @var string
      */
-    public const HOME = '/home';
+    public const HOME = '/dashboard';
 
     /**
      * Define your route model bindings, pattern filters, and other route configuration.
@@ -49,6 +49,7 @@ class RouteServiceProvider extends ServiceProvider
         foreach ($this->centralDomains() as $domain) {
             if ($domain === env('TENANCY_CENTRAL_ADMIN_DOMAIN')) {
                 Route::middleware(['web'])
+                    ->as('admin.')
                     ->domain($domain)
                     ->namespace($this->namespace)
                     ->group(base_path('routes/admin/web.php'));
@@ -66,6 +67,7 @@ class RouteServiceProvider extends ServiceProvider
         foreach ($this->centralDomains() as $domain) {
             if ($domain === env('TENANCY_CENTRAL_ADMIN_DOMAIN')) {
                 Route::prefix('api')
+                    ->as('admin.api.')
                     ->domain($domain)
                     ->middleware('api')
                     ->namespace($this->namespace)

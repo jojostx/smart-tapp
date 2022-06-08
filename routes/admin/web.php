@@ -12,15 +12,10 @@ use Illuminate\Support\Facades\Route;
 | contains the "web" middleware group. Now create something great!
 |
 */
-
 Route::get('/', function () {
     dd('admin');
     
     return view('welcome');
-});
+})->name('home');
 
-Route::get('/login', function () {
-    dd('login');
 
-    return view('welcome');
-});

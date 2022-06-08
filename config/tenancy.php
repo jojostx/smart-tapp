@@ -21,6 +21,13 @@ return [
     ],
 
     /**
+     * The list of domains hosting your central app.
+     *
+     * Only relevant if you're using the domain or subdomain identification middleware.
+     */
+    'subdomain_maxlength' => env('TENANCY_SUBDOMAIN_MAXLENGTH'),
+
+    /**
      * Tenancy bootstrappers are executed when tenancy is initialized.
      * Their responsibility is making Laravel features tenant-aware.
      *

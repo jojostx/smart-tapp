@@ -4,7 +4,7 @@
         "Read more about it at https://getcomposer.org/doc/01-basic-usage.md#installing-dependencies",
         "This file is @generated automatically"
     ],
-    "content-hash": "8041cc436313548406a4361a643c95c5",
+    "content-hash": "f2a1d9231b9514d64fdc0af62e0764f3",
     "packages": [
         {
             "name": "akaunting/laravel-money",
@@ -6067,6 +6067,63 @@
                 }
             ],
             "time": "2022-03-03T08:28:38+00:00"
+        },
+        {
+            "name": "fabpl/zephyr",
+            "version": "1.0",
+            "source": {
+                "type": "git",
+                "url": "https://github.com/fabpl/zephyr.git",
+                "reference": "c8053350b9ce49e8cc89ca53811204839b3ca321"
+            },
+            "dist": {
+                "type": "zip",
+                "url": "https://api.github.com/repos/fabpl/zephyr/zipball/c8053350b9ce49e8cc89ca53811204839b3ca321",
+                "reference": "c8053350b9ce49e8cc89ca53811204839b3ca321",
+                "shasum": ""
+            },
+            "require": {
+                "illuminate/filesystem": "^8.42|^9.0",
+                "illuminate/support": "^8.42|^9.0",
+                "illuminate/validation": "^8.42|^9.0",
+                "php": "^7.3|^8.0"
+            },
+            "type": "library",
+            "extra": {
+                "branch-alias": {
+                    "dev-master": "1.x-dev"
+                },
+                "laravel": {
+                    "providers": [
+                        "Fabpl\\Zephyr\\ZephyrServiceProvider"
+                    ]
+                }
+            },
+            "autoload": {
+                "psr-4": {
+                    "Fabpl\\Zephyr\\": "src/"
+                }
+            },
+            "notification-url": "https://packagist.org/downloads/",
+            "license": [
+                "MIT"
+            ],
+            "authors": [
+                {
+                    "name": "Fabrice Planchette",
+                    "email": "planchettefabrice@hotmail.com"
+                }
+            ],
+            "description": "Minimal Laravel authentication and profile management scaffolding with Blade, Tailwind, Alpine and Livewire.",
+            "keywords": [
+                "auth",
+                "laravel"
+            ],
+            "support": {
+                "issues": "https://github.com/fabpl/zephyr/issues",
+                "source": "https://github.com/fabpl/zephyr"
+            },
+            "time": "2022-03-03T14:53:52+00:00"
         },
         {
             "name": "fakerphp/faker",
