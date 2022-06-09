@@ -25,7 +25,7 @@ class RegisteredTenantController extends Controller
     {
         $result = $this->validate($request, [
             'organization' => 'required|string|max:255',
-            'domain' => ['required', 'string', 'max:144', 'unique:domains', new Subdomain],
+            'domain' => ['required', 'string', 'max:'.config('tenancy.subdomain_maxlength') , 'unique:domains', new Subdomain],
             'name' => ['required', 'string', 'max:255'],
             'email' => ['required', 'string', 'email', 'max:255'],
             'password' => ['required', 'confirmed', Password::defaults()],
