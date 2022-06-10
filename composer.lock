@@ -4,7 +4,7 @@
         "Read more about it at https://getcomposer.org/doc/01-basic-usage.md#installing-dependencies",
         "This file is @generated automatically"
     ],
-    "content-hash": "f2a1d9231b9514d64fdc0af62e0764f3",
+    "content-hash": "bf8f35ba2615469e771852c3542a022e",
     "packages": [
         {
             "name": "akaunting/laravel-money",
@@ -1491,6 +1491,77 @@
             "time": "2022-03-20T21:55:58+00:00"
         },
         {
+            "name": "laravel-frontend-presets/tall",
+            "version": "v4.2.0",
+            "source": {
+                "type": "git",
+                "url": "https://github.com/laravel-frontend-presets/tall.git",
+                "reference": "bc5e97d65801f0eb4c7a750b1b03b001254f2ca9"
+            },
+            "dist": {
+                "type": "zip",
+                "url": "https://api.github.com/repos/laravel-frontend-presets/tall/zipball/bc5e97d65801f0eb4c7a750b1b03b001254f2ca9",
+                "reference": "bc5e97d65801f0eb4c7a750b1b03b001254f2ca9",
+                "shasum": ""
+            },
+            "require": {
+                "illuminate/support": "^9.0",
+                "laravel/ui": "^3.4",
+                "php": "^8.0"
+            },
+            "require-dev": {
+                "phpunit/phpunit": "^9.5.10"
+            },
+            "type": "library",
+            "extra": {
+                "laravel": {
+                    "providers": [
+                        "LaravelFrontendPresets\\Tall\\TallServiceProvider"
+                    ]
+                }
+            },
+            "autoload": {
+                "psr-4": {
+                    "LaravelFrontendPresets\\Tall\\": "src/"
+                }
+            },
+            "notification-url": "https://packagist.org/downloads/",
+            "license": [
+                "MIT"
+            ],
+            "authors": [
+                {
+                    "name": "Dan Harrin",
+                    "email": "Dan@DanHarrin.com"
+                },
+                {
+                    "name": "Liam Hammett",
+                    "email": "liam@liamhammett.com"
+                },
+                {
+                    "name": "Ryan Chandler",
+                    "email": "support@ryangjchandler.co.uk"
+                }
+            ],
+            "description": "TALL preset for Laravel.",
+            "keywords": [
+                "alpine",
+                "alpinejs",
+                "laravel",
+                "livewire",
+                "preset",
+                "tailwind",
+                "tailwindcss",
+                "tailwindui",
+                "tall"
+            ],
+            "support": {
+                "issues": "https://github.com/laravel-frontend-presets/tall/issues",
+                "source": "https://github.com/laravel-frontend-presets/tall"
+            },
+            "time": "2022-03-13T09:08:53+00:00"
+        },
+        {
             "name": "laravel/framework",
             "version": "v9.16.0",
             "source": {
@@ -1860,6 +1931,67 @@
                 "source": "https://github.com/laravel/tinker/tree/v2.7.2"
             },
             "time": "2022-03-23T12:38:24+00:00"
+        },
+        {
+            "name": "laravel/ui",
+            "version": "v3.4.6",
+            "source": {
+                "type": "git",
+                "url": "https://github.com/laravel/ui.git",
+                "reference": "65ec5c03f7fee2c8ecae785795b829a15be48c2c"
+            },
+            "dist": {
+                "type": "zip",
+                "url": "https://api.github.com/repos/laravel/ui/zipball/65ec5c03f7fee2c8ecae785795b829a15be48c2c",
+                "reference": "65ec5c03f7fee2c8ecae785795b829a15be48c2c",
+                "shasum": ""
+            },
+            "require": {
+                "illuminate/console": "^8.42|^9.0",
+                "illuminate/filesystem": "^8.42|^9.0",
+                "illuminate/support": "^8.82|^9.0",
+                "illuminate/validation": "^8.42|^9.0",
+                "php": "^7.3|^8.0"
+            },
+            "require-dev": {
+                "orchestra/testbench": "^6.23|^7.0"
+            },
+            "type": "library",
+            "extra": {
+                "branch-alias": {
+                    "dev-master": "3.x-dev"
+                },
+                "laravel": {
+                    "providers": [
+                        "Laravel\\Ui\\UiServiceProvider"
+                    ]
+                }
+            },
+            "autoload": {
+                "psr-4": {
+                    "Laravel\\Ui\\": "src/",
+                    "Illuminate\\Foundation\\Auth\\": "auth-backend/"
+                }
+            },
+            "notification-url": "https://packagist.org/downloads/",
+            "license": [
+                "MIT"
+            ],
+            "authors": [
+                {
+                    "name": "Taylor Otwell",
+                    "email": "taylor@laravel.com"
+                }
+            ],
+            "description": "Laravel UI utilities and presets.",
+            "keywords": [
+                "laravel",
+                "ui"
+            ],
+            "support": {
+                "source": "https://github.com/laravel/ui/tree/v3.4.6"
+            },
+            "time": "2022-05-20T13:38:08+00:00"
         },
         {
             "name": "league/commonmark",
@@ -2267,6 +2399,52 @@
                 }
             ],
             "time": "2022-04-07T21:38:12+00:00"
+        },
+        {
+            "name": "mattkingshott/axiom",
+            "version": "v3.2.1",
+            "source": {
+                "type": "git",
+                "url": "https://github.com/mattkingshott/axiom.git",
+                "reference": "c96c97fcd0913a9b64f47f0ed63adc21543dabd2"
+            },
+            "dist": {
+                "type": "zip",
+                "url": "https://api.github.com/repos/mattkingshott/axiom/zipball/c96c97fcd0913a9b64f47f0ed63adc21543dabd2",
+                "reference": "c96c97fcd0913a9b64f47f0ed63adc21543dabd2",
+                "shasum": ""
+            },
+            "require": {
+                "php": "^7.4|^8.0"
+            },
+            "require-dev": {
+                "orchestra/testbench": "^6.0",
+                "phpunit/phpunit": "^9.0"
+            },
+            "type": "library",
+            "autoload": {
+                "psr-4": {
+                    "Axiom\\": "src"
+                }
+            },
+            "notification-url": "https://packagist.org/downloads/",
+            "license": [
+                "MIT"
+            ],
+            "description": "A package that provides a library of reusable Laravel validation rules.",
+            "homepage": "https://github.com/mattkingshott/axiom",
+            "keywords": [
+                "axiom",
+                "laravel",
+                "php",
+                "rules",
+                "validation"
+            ],
+            "support": {
+                "issues": "https://github.com/mattkingshott/axiom/issues",
+                "source": "https://github.com/mattkingshott/axiom/tree/v3.2.1"
+            },
+            "time": "2021-03-25T12:05:06+00:00"
         },
         {
             "name": "monolog/monolog",

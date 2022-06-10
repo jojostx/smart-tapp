@@ -1,7 +1,7 @@
-@props(['disabled' => false])
+@props(['disabled' => false, 'name' => ''])
 
 <div class="relative"  x-data="{ show: true }">
-  <input {{ $disabled ? 'disabled' : '' }} {!! $attributes->merge(['class' => 'pr-10 bg-gray-50 border text-gray-900 text-sm rounded-lg block w-full p-2.5 border-gray-300 placeholder:text-gray-400 focus:border-indigo-300 focus:ring focus:ring-indigo-200 focus:ring-opacity-50']) !!} x-bind:type="show ? 'password' : 'text'"/>
+  <input {{ $disabled ? 'disabled' : '' }} {{ $attributes->class(['pr-10 bg-gray-50 border text-gray-900 text-sm rounded-lg block w-full p-2.5 border-gray-300 placeholder:text-gray-400 focus:border-indigo-300 focus:ring focus:ring-indigo-200 focus:ring-opacity-50', 'border-red-300 text-red-900 placeholder-red-300 focus:border-red-300 focus:ring-red' =>  $errors->has($name)])->merge(['name' => $name]) }} x-bind:type="show ? 'password' : 'text'"/>
   
   <button class="absolute inset-y-0 right-0 flex items-center pr-3" type="button" @click.prevent="show = !show">
     <svg class="w-5 h-5 text-gray-500 dark:text-gray-400" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor">
