@@ -55,6 +55,12 @@ class Kernel extends HttpKernel
      * @var array<string, class-string|string>
      */
     protected $routeMiddleware = [
+        'landlord.auth' => \App\Http\Middleware\RedirectIfNotLandlord::class,
+        'landlord.guest' => \App\Http\Middleware\RedirectIfLandlord::class,
+        // 'landlord.verified' => \App\Http\Middleware\EnsureLandlordEmailIsVerified::class,
+        // 'landlord.password.confirm' => \App\Http\Middleware\RequireLandlordPassword::class,
+        
+        // defaults
         'auth' => \App\Http\Middleware\Authenticate::class,
         'auth.basic' => \Illuminate\Auth\Middleware\AuthenticateWithBasicAuth::class,
         'auth.session' => \Illuminate\Session\Middleware\AuthenticateSession::class,

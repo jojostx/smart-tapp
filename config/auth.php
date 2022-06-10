@@ -36,6 +36,11 @@ return [
     */
 
     'guards' => [
+        'landlord' => [
+            'driver' => 'session',
+            'provider' => 'landlords',
+        ],
+
         'web' => [
             'driver' => 'session',
             'provider' => 'users',
@@ -60,6 +65,11 @@ return [
     */
 
     'providers' => [
+        'landlords' => [
+            'driver' => 'eloquent',
+            'model' => App\Models\Landlord::class,
+        ],
+
         'users' => [
             'driver' => 'eloquent',
             'model' => App\Models\User::class,
@@ -87,6 +97,13 @@ return [
     */
 
     'passwords' => [
+        'landlords' => [
+            'provider' => 'landlords',
+            'table' => 'landlord_password_resets',
+            'expire' => 60,
+            'throttle' => 60,
+        ],
+
         'users' => [
             'provider' => 'users',
             'table' => 'password_resets',

@@ -11,7 +11,7 @@ class LogoutController extends Controller
 {
     public function __invoke(): RedirectResponse
     {
-        Auth::logout();
+        Auth::guard('landlord')->logout();
 
         return redirect(route('home'));
     }

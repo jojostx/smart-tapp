@@ -619,6 +619,9 @@ input:invalid, textarea:invalid, select:invalid {
 .m-auto {
   margin: auto;
 }
+.m-0 {
+  margin: 0px;
+}
 .mx-auto {
   margin-left: auto;
   margin-right: auto;
@@ -692,6 +695,12 @@ input:invalid, textarea:invalid, select:invalid {
 }
 .-mr-2 {
   margin-right: -0.5rem;
+}
+.mb-3 {
+  margin-bottom: 0.75rem;
+}
+.mb-0 {
+  margin-bottom: 0px;
 }
 .mt-6 {
   margin-top: 1.5rem;
@@ -1132,6 +1141,9 @@ input:invalid, textarea:invalid, select:invalid {
 .p-6 {
   padding: 1.5rem;
 }
+.p-0 {
+  padding: 0px;
+}
 .p-4 {
   padding: 1rem;
 }
@@ -1235,6 +1247,9 @@ input:invalid, textarea:invalid, select:invalid {
 }
 .text-right {
   text-align: right;
+}
+.align-baseline {
+  vertical-align: baseline;
 }
 .font-sans {
   font-family: Inter var, ui-sans-serif, system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial, "Noto Sans", sans-serif, "Apple Color Emoji", "Segoe UI Emoji", "Segoe UI Symbol", "Noto Color Emoji";

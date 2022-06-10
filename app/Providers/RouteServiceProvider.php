@@ -5,6 +5,7 @@ namespace App\Providers;
 use Illuminate\Cache\RateLimiting\Limit;
 use Illuminate\Foundation\Support\Providers\RouteServiceProvider as ServiceProvider;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Log;
 use Illuminate\Support\Facades\RateLimiter;
 use Illuminate\Support\Facades\Route;
 
@@ -47,12 +48,12 @@ class RouteServiceProvider extends ServiceProvider
     protected function mapWebRoutes()
     {
         foreach ($this->centralDomains() as $domain) {
-            if ($domain === env('TENANCY_CENTRAL_ADMIN_DOMAIN')) {
-                Route::middleware(['web'])
-                    ->as('admin.')
+            if ($domain == env('TENANCY_CENTRAL_ADMIN_DOMAIN')) {
+                Route::middleware('web')
+                    ->as('landlord.')
                     ->domain($domain)
                     ->namespace($this->namespace)
-                    ->group(base_path('routes/admin/web.php'));
+                    ->group(base_path('routes/landlord.php'));
             } else {
                 Route::middleware(['web'])
                     ->domain($domain)
@@ -65,20 +66,11 @@ class RouteServiceProvider extends ServiceProvider
     protected function mapApiRoutes()
     {
         foreach ($this->centralDomains() as $domain) {
-            if ($domain === env('TENANCY_CENTRAL_ADMIN_DOMAIN')) {
-                Route::prefix('api')
-                    ->as('admin.api.')
-                    ->domain($domain)
-                    ->middleware('api')
-                    ->namespace($this->namespace)
-                    ->group(base_path('routes/admin/api.php'));
-            } else {
-                Route::prefix('api')
-                    ->domain($domain)
-                    ->middleware('api')
-                    ->namespace($this->namespace)
-                    ->group(base_path('routes/api.php'));
-            }
+            Route::prefix('api')
+                ->domain($domain)
+                ->middleware('api')
+                ->namespace($this->namespace)
+                ->group(base_path('routes/api.php'));
         }
     }
 
