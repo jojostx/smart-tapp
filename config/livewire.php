@@ -1,6 +1,6 @@
 <?php
 
-use Stancl\Tenancy\Middleware\InitializeTenancyByDomain;
+use Stancl\Tenancy\Middleware\InitializeTenancyBySubdomain;
 
 return [
 
@@ -88,7 +88,7 @@ return [
 
         // custom middleware & middleware from third party packages
         'universal',
-        InitializeTenancyByDomain::class, // or whatever tenancy middleware you use
+        InitializeTenancyBySubdomain::class, // or whatever tenancy middleware you use
     ],
 
     /*

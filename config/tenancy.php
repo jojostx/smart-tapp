@@ -16,8 +16,16 @@ return [
      * Only relevant if you're using the domain or subdomain identification middleware.
      */
     'central_domains' => [
-        env('TENANCY_CENTRAL_DOMAIN', 'smart-tapp.test'),
+        env('TENANCY_CENTRAL_DOMAIN'),
+        env('TENANCY_CENTRAL_ADMIN_DOMAIN'),
     ],
+
+    /**
+     * The list of domains hosting your central app.
+     *
+     * Only relevant if you're using the domain or subdomain identification middleware.
+     */
+    'subdomain_maxlength' => env('TENANCY_SUBDOMAIN_MAXLENGTH'),
 
     /**
      * Tenancy bootstrappers are executed when tenancy is initialized.
@@ -97,7 +105,7 @@ return [
         /**
          * Each disk listed in the 'disks' array will be suffixed by the suffix_base, followed by the tenant_id.
          */
-        'suffix_base' => 'tenant:',
+        'suffix_base' => 'tenant_',
         'disks' => [
             'local',
             'public',

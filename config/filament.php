@@ -13,7 +13,8 @@ use Illuminate\Routing\Middleware\SubstituteBindings;
 use Illuminate\Session\Middleware\AuthenticateSession;
 use Illuminate\Session\Middleware\StartSession;
 use Illuminate\View\Middleware\ShareErrorsFromSession;
-use Stancl\Tenancy\Middleware\InitializeTenancyByDomain;
+use Stancl\Tenancy\Middleware\InitializeTenancyBySubdomain;
+use Stancl\Tenancy\Middleware\PreventAccessFromCentralDomains;
 
 return [
 
@@ -27,7 +28,7 @@ return [
     |
     */
 
-    'path' => env('FILAMENT_PATH', 'admin'),
+    'path' => env('FILAMENT_PATH', '/admin'),
 
 
     /*
@@ -292,7 +293,8 @@ return [
 
             // custom middleware & middleware from third party packages
             'universal',
-            InitializeTenancyByDomain::class
+            PreventAccessFromCentralDomains::class,
+            InitializeTenancyBySubdomain::class
         ],
     ],
 
