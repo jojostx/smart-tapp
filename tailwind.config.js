@@ -3,8 +3,16 @@ const defaultTheme = require('tailwindcss/defaultTheme');
 module.exports = {
     theme: {
         extend: {
+            backgroundImage: {
+                'circles': "url('/images/circles.svg')",
+            },
             fontFamily: {
                 sans: ['Inter var', ...defaultTheme.fontFamily.sans],
+            },
+            animation: {
+                'spin-slow': 'spin 3s linear infinite',
+                'ping-slow': 'ping 3s linear infinite',
+                'pulse-slow': 'pulse 3s linear infinite',
             },
         },
     },
@@ -27,5 +35,6 @@ module.exports = {
     plugins: [
         require('@tailwindcss/forms'),
         require('@tailwindcss/typography'),
+        require('@tailwindcss/aspect-ratio'),
     ],
 };

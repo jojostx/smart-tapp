@@ -1,5 +1,5 @@
 <div class="relative py-12">
-    <img src="images/bg2.webp" class="fixed inset-0 rotate-0 blur-xl" alt="background">
+    <img src="images/bg/bg2.webp" class="fixed inset-0 rotate-0 blur-xl" alt="background">
 
     <div class="container relative px-6 m-auto text-gray-500 md:px-12 xl:px-40">
         <div class="m-auto space-y-8 md:w-8/12 lg:w-6/12 xl:w-6/12">
