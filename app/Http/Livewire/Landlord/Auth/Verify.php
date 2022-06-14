@@ -10,11 +10,11 @@ class Verify extends Component
 {
     public function resend()
     {
-        if (Auth::user()->hasVerifiedEmail()) {
+        if (Auth::guard('landlord')->user()->hasVerifiedEmail()) {
             redirect(route('home'));
         }
 
-        Auth::user()->sendEmailVerificationNotification();
+        Auth::guard('landlord')->user()->sendEmailVerificationNotification();
 
         $this->emit('resent');
 

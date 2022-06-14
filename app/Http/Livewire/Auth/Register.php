@@ -2,11 +2,10 @@
 
 namespace App\Http\Livewire\Auth;
 
+use App\Events\UnverifiedTenantRegistered;
 use App\Models\Tenant;
 use App\Rules\Subdomain;
-use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Hash;
-use Illuminate\Auth\Events\Registered;
 use Illuminate\Validation\Rules\Password;
 use Livewire\Component;
 
@@ -47,7 +46,7 @@ class Register extends Component
         return [
             'organization' => ['required', 'string', 'max:255'],
             'domain' => ['bail', 'required', 'string', 'min:2', 'max:' . config('tenancy.subdomain_maxlength'), new Subdomain],
-            'fqsd' => ['bail', 'required', 'string', 'min:2', 'unique:domains,domain'],
+            'fqsd' => ['bail', 'required', 'string', 'min:2', 'unique:domains,domain', 'unique:tenants,domain'],
             'name' => ['required', 'string', 'max:255'],
             'email' => ['required', 'string', 'email', 'max:255'],
             'password' => ['required', 'min:8', 'same:passwordConfirmation', Password::defaults()],
@@ -75,16 +74,21 @@ class Register extends Component
     {
         $result = $this->validate();
 
-        $tenant = Tenant::create($result);
-        $tenant->createDomain(['domain' => $result['domain']]);
+        // \dd($result);
 
-        \dd($result, $tenant);
+        // create temporary unverified tenant
+        $Tenant = Tenant::create([
+            'name' => $result['name'],
+            'email' => $result['email'],
+            'password' => Hash::make($result['password']),
+            'organization' => $result['organization'],
+            'domain' => $result['fqsd'],
+        ]);
+        
+        \dd($result, $Tenant);
 
-        // event(new Registered($tenant));
-
-        // Auth::login($tenant, true);
-
-        return redirect()->intended(route('home'));
+        // redirect to email verification page
+        return redirect()->intended(route('verification.notice', ['id' => $Tenant->getKey()]));
     }
 
     public function render()

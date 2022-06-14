@@ -1,5 +1,6 @@
 <?php
 
+use App\Http\Controllers\EmailVerificationController;
 use App\Http\Controllers\Landlord\Auth\LogoutController;
 use App\Http\Livewire\Landlord\Auth\Login;
 use App\Http\Livewire\Landlord\Auth\Passwords\Confirm;
@@ -24,13 +25,18 @@ Route::middleware('landlord.guest')->group(function () {
         ->name('password.reset');
 });
 
-Route::middleware('landlord.auth')->group(function () {
-    Route::get('dashboard', Dashboard::class)
-        ->name('dashboard');
 
+Route::middleware('landlord.auth')->group(function () {
     Route::get('email/verify', Verify::class)
         ->middleware('throttle:6,1')
         ->name('verification.notice');
+
+    Route::get('email/verify/{id}/{hash}', EmailVerificationController::class)
+        ->middleware(['signed', 'throttle:6,1'])
+        ->name('verification.verify');
+
+    Route::get('dashboard', Dashboard::class)
+        ->name('dashboard');
 
     Route::get('password/confirm', Confirm::class)
         ->name('password.confirm');

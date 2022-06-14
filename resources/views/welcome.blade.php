@@ -426,7 +426,7 @@
             <h2 class="text-4xl font-bold tracking-tight sm:text-5xl">
                 Most innovative businesses choose us
             </h2>
-            <p class="max-w-lg mx-auto mt-4 text-lg text-gring-offset-warm-gray-500">
+            <p class="max-w-lg mx-auto mt-4 text-lg text-gray-600">
                 Lorem ipsum dolor sit amet consectetur adipisicing elit. Aspernatur
                 praesentium natus sapiente commodi. Aliquid sunt tempore iste
             </p>
@@ -531,7 +531,7 @@
             <div>
                 <a href="{{ route('home') }}" class="flex items-center">
                     <x-logo class="w-auto mr-3 text-indigo-600 h-9" alt="{{ config('app.name') }} Logo" />
-                    <span class="self-center text-xl font-semibold text-white whitespace-nowrap">{{ config('app.name') }}</span>
+                    <span class="self-center text-3xl font-semibold text-white whitespace-nowrap">{{ config('app.name') }}</span>
                 </a>
 
                 <p class="max-w-xs mt-4 text-sm text-gray-300">
@@ -637,7 +637,7 @@
         </div>
 
         <p class="mt-8 text-xs text-gray-300">
-            &copy; 2022 Company Name
+            &copy; 2022 {{ config('app.name') }} Inc.
         </p>
     </div>
 </footer>
