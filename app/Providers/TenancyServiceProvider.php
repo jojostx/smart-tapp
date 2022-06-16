@@ -5,8 +5,7 @@ declare(strict_types=1);
 namespace App\Providers;
 
 use App\Events\Tenant\TenantVerified;
-use App\Jobs\Tenant\CreateFrameworkDirectoriesForTenant;
-use App\Jobs\Tenant\DeleteTenantDatabase;
+use App\Jobs\Tenant;
 use App\Jobs\Tenant\SendTenantVerificationEmail;
 use Illuminate\Support\Facades\Event;
 use Illuminate\Support\Facades\Route;
@@ -35,7 +34,7 @@ class TenancyServiceProvider extends ServiceProvider
 
                 ])->send(function (Events\TenantCreated $event) {
                     return $event->tenant;
-                })->shouldBeQueued(false),
+                })->shouldBeQueued(true),
             ],
 
             // fired when a tenant is verified (email or phone number)
@@ -47,11 +46,13 @@ class TenancyServiceProvider extends ServiceProvider
 
                     // Your own jobs to prepare the tenant.
                     // Provision API keys, create S3 buckets, anything you want!
-                    CreateFrameworkDirectoriesForTenant::class,
-
+                    Tenant\CreateFrameworkDirectoriesForTenant::class,
+                    
+                    // create Tenant Subdomain
+                    Tenant\CreateTenantSubdomain::class,
                 ])->send(function (TenantVerified $event) {
                     return $event->tenant;
-                })->shouldBeQueued(false), // `false` by default, but you probably want to make this `true` for production.
+                })->shouldBeQueued(true), // `false` by default, but you probably want to make this `true` for production.
             ],
 
             Events\SavingTenant::class => [],
@@ -59,9 +60,10 @@ class TenancyServiceProvider extends ServiceProvider
             Events\UpdatingTenant::class => [],
             Events\TenantUpdated::class => [],
             Events\DeletingTenant::class => [],
+
             Events\TenantDeleted::class => [
                 JobPipeline::make([
-                    DeleteTenantDatabase::class,
+                    Tenant\DeleteTenantDatabase::class,
                 ])->send(function (Events\TenantDeleted $event) {
                     return $event->tenant;
                 })->shouldBeQueued(false), // `false` by default, but you probably want to make this `true` for production.
@@ -69,7 +71,9 @@ class TenancyServiceProvider extends ServiceProvider
 
             // Domain events
             Events\CreatingDomain::class => [],
+
             Events\DomainCreated::class => [],
+
             Events\SavingDomain::class => [],
             Events\DomainSaved::class => [],
             Events\UpdatingDomain::class => [],
@@ -79,7 +83,15 @@ class TenancyServiceProvider extends ServiceProvider
 
             // Database events
             Events\DatabaseCreated::class => [],
-            Events\DatabaseMigrated::class => [],
+
+            Events\DatabaseMigrated::class => [
+                JobPipeline::make([
+                    Tenant\CreateTenantAdminUser::class,
+                ])->send(function (Events\DatabaseMigrated $event) {
+                    return $event->tenant;
+                })->shouldBeQueued(true),
+            ],
+
             Events\DatabaseSeeded::class => [],
             Events\DatabaseRolledBack::class => [],
             Events\DatabaseDeleted::class => [],

@@ -2,68 +2,99 @@
 
 namespace App\Http\Livewire\Auth;
 
+use App\Events\Tenant\TenantVerified;
 use App\Models\Tenant;
+use Illuminate\Support\Facades\Password;
 use Livewire\Component;
+use Log;
+use Otp;
 
 class Verify extends Component
 {
-    /** @var string */
-    public $email;
+    public string $email = '';
 
-    public Tenant $verifiable;
+    public string $otp = '';
 
-    /** @var string */
-    public $emailSentMessage;
+    public Tenant $tenant;
+
+    public bool $emailSent = false;
+
+    public bool $isCreatingAccount = false;
 
     public function mount($id = null)
     {
-        \dd($tenant = Tenant::find($id), isset($tenant), $id);
+        if (!blank($id)) {
+            $this->tenant = Tenant::findOrFail($id);
 
-        // if ($verifiable instanceof Model && $verifiable instanceof MustVerifyEmail) {
-        //     $this->verifiable = $verifiable;
-        // } else if (is_string($verifiable)) {
-        //     dd('is_string:', $verifiable);
-        // } else {
-        //     \dd('null route parameter',  $verifiable);
-        // }
+            $this->email = $this->tenant->email;
+
+            $this->emailSent = true;
+        }else {
+            $this->emailSent = false;
+        }
     }
 
-    public function sendEmailVerificationMail()
+    public function sendVerificationNotification()
     {
-        // Auth::attempt([]);
+        // validate credentials
+        $this->validateOnly('email', ['required', 'string', 'email', 'exists:tenants:email']);
 
-        // if (Auth::user()->hasVerifiedEmail()) {
-        //     redirect(route('home'));
-        // }
+        // retrieve tenant from database
+        $this->tenant = Tenant::where(['email' => $this->email])->firstOrFail();
 
-        // Auth::user()->sendEmailVerificationNotification();
+        // send verification notification
+        $this->tenant->sendEmailVerificationNotification();
 
-        // $this->emit('resent');
-
-        // if ($response == Password::RESET_LINK_SENT) {
-        //     $this->emailSentMessage = trans($response);
-
-        //     return;
-        // }
-
-        // session()->flash('resent');
+        // show otp verification section
+        $this->emailSent = true;
     }
 
     public function verifyEmail()
     {
-        # code... 
-        // verifiy email
+        // validate credentials
+        $this->validate([
+            'otp' => ['required', 'string'],
+            'email' => ['required', 'string', 'email', 'exists:tenants,email'],
+        ]);
 
-        // if (Auth::user()->hasVerifiedEmail()) {
-        //      Emit VerifiedEvent
-        //      create tenant and domain
-        //      $tenant->domains()->create(['domain' => $result['fqsd']]);
-        //      after creation, redirect to admin login
-        // }
+        // only proceed when we have an unverified tenant
+        if (!$this->tenant instanceof Tenant && $this->tenant->hasVerifiedEmail()) {
+             return;
+        }
+
+        // validate otp
+        if (!$this->tenant->validateOTP($this->otp)->status) {
+             $this->addError('otp', 'Invalid OTP');
+        
+             return;
+        }
+
+        if ($this->tenant->markEmailAsVerified()) {
+            //  show tenant onboarding loading modal
+             $this->isCreatingAccount = true;
+
+            //  Emit VerifiedEvent
+             event(new TenantVerified($this->tenant));
+        }
+    }
+
+    public function redirectIfSubdomainIsCreated()
+    {
+        if (blank($this->tenant)) {
+            return;
+        }
+
+        if (blank($this->tenant->domains()->first())) {
+            return;
+        }
+
+        $subdomain = $this->tenant->domains()->first()->domain;
+
+        return redirect(tenant_route($subdomain, 'filament.auth.login'));
     }
 
     public function render()
     {
-        // return view('livewire.auth.verify')->extends('layouts.auth');
+        return view('livewire.auth.verify')->extends('layouts.auth');
     }
 }

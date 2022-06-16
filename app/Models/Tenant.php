@@ -10,6 +10,9 @@ use Stancl\Tenancy\Database\Concerns\HasDomains;
 use App\Traits\MustVerifyTenantEmail;
 use Illuminate\Notifications\Notifiable;
 
+/**
+ * @mixin IdeHelperTenant
+ */
 class Tenant extends BaseTenant implements TenantWithDatabase, MustVerifyEmail
 {
     use HasDatabase, MustVerifyTenantEmail, HasDomains, Notifiable;
@@ -20,12 +23,18 @@ class Tenant extends BaseTenant implements TenantWithDatabase, MustVerifyEmail
      * @var array<int, string>
      */
     protected $fillable = [
+        'name',
         'email',
         'password',
         'domain',
         'organization',
     ];
-
+    
+    /**
+     * The custom columns that are assignable when creating or updating the model.
+     *
+     * @return array
+     */
     public static function getCustomColumns(): array
     {
         return [
@@ -34,6 +43,7 @@ class Tenant extends BaseTenant implements TenantWithDatabase, MustVerifyEmail
             'password',
             'domain',
             'organization',
+            'email_verified_at'
         ];
     }
 

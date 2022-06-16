@@ -23,8 +23,4 @@ Route::middleware(['guest', 'landlord.guest'])->group(function () {
 
     Route::get('email/verify/{id?}', Verify::class)
         ->name('verification.notice');
-
-    // Route::get('email/verify/{verifable?}', function ($verifiable = null) {
-    //     dd('is_string:', is_string($verifiable), $verifiable);
-    // })->name('verification.notice');
 });

@@ -44,10 +44,10 @@ class Register extends Component
     protected function rules()
     {
         return [
+            'name' => ['required', 'string', 'max:255'],
             'organization' => ['required', 'string', 'max:255'],
             'domain' => ['bail', 'required', 'string', 'min:2', 'max:' . config('tenancy.subdomain_maxlength'), new Subdomain],
             'fqsd' => ['bail', 'required', 'string', 'min:2', 'unique:domains,domain', 'unique:tenants,domain'],
-            'name' => ['required', 'string', 'max:255'],
             'email' => ['required', 'string', 'email', 'max:255'],
             'password' => ['required', 'min:8', 'same:passwordConfirmation', Password::defaults()],
             'terms' => ['required', 'accepted'],
@@ -72,9 +72,8 @@ class Register extends Component
 
     public function register()
     {
+        // validate
         $result = $this->validate();
-
-        // \dd($result);
 
         // create temporary unverified tenant
         $Tenant = Tenant::create([
@@ -84,8 +83,6 @@ class Register extends Component
             'organization' => $result['organization'],
             'domain' => $result['fqsd'],
         ]);
-        
-        \dd($result, $Tenant);
 
         // redirect to email verification page
         return redirect()->intended(route('verification.notice', ['id' => $Tenant->getKey()]));

@@ -7,10 +7,10 @@ use Illuminate\Auth\Notifications\VerifyEmail;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Notifications\Messages\MailMessage;
 use Illuminate\Support\Facades\Lang;
-use Tzsk\Otp\Facades\Otp;
 
 trait MustVerifyTenantEmail
 {
+  use HasOTP;
   /**
    * Determine if the user has verified their email address.
    *
@@ -42,8 +42,8 @@ trait MustVerifyTenantEmail
   {
     $verificationNotification = new VerifyEmail;
 
-    $verificationNotification::toMailUsing(static::toMailUsing());
-    $verificationNotification::createUrlUsing(static::createUrlUsing());
+    $verificationNotification::toMailUsing($this->toMailUsing());
+    $verificationNotification::createUrlUsing($this->createUrlUsing());
 
     $this->notify($verificationNotification);
   }
@@ -54,24 +54,17 @@ trait MustVerifyTenantEmail
    * @param  \Closure|null  $callback
    * @return Closure
    */
-  public static function toMailUsing(?Closure $callback = null)
+  public function toMailUsing()
   {
-    if ($callback) {
-      return $callback;
-    }
+    $otp = $this->generateOtp()->token;
 
-    return function (Model $notifiable, $verificationUrl) {
-      // create otp with hash of users email and id,
-      $uniqueSecret = sha1($notifiable->getKey() . $notifiable->getEmailForVerification());
-    
-      $verificationOTP = Otp::generate($uniqueSecret);
-
+    return function (Model $notifiable, $verificationUrl) use ($otp) {
       return (new MailMessage)
-        ->subject(Lang::get('Verify Email Address'))
+        ->subject(config('app.mail_subject_prefix') . ' - ' . Lang::get('Verify Email Address'))
         ->greeting('Hello!')
         ->line("Thank you for choosing " . config('app.name', 'Smart-tapp') . ", Use the following OTP to complete your Sign Up procedures. OTP is valid for 5 minutes")
         ->line(Lang::get('Your verification OTP is'))
-        ->line($verificationOTP)
+        ->line($otp)
         ->line(Lang::get('If you did not create an account, no further action is required.'));
     };
   }
@@ -82,12 +75,8 @@ trait MustVerifyTenantEmail
    * @param  \Closure  $callback
    * @return void
    */
-  public static function createUrlUsing(?Closure $callback = null)
+  public function createUrlUsing()
   {
-    if ($callback) {
-      return $callback;
-    }
-
     // build url here
     return function (Model $notifiable) {
       return route('verification.notice', ['id' => $notifiable->getKey()]);
