@@ -19,7 +19,7 @@
         </li>
     </ul>
     <div class="hidden ml-auto sm:ml-0 md:block">
-        <a href="{{ route('register') }}" class="mr-2 text-white transition duration-150 ease-in-out bg-indigo-600 sm:w-max hover:bg-indigo-500 focus:outline-none focus:ring-indigo-300 active:bg-indigo-700 rounded-lg text-sm px-5 py-2.5 text-center inline-flex items-center">
+        <a href="{{ route('login') }}" class="mr-2 text-white transition duration-150 ease-in-out bg-indigo-600 sm:w-max hover:bg-indigo-500 focus:outline-none focus:ring-indigo-300 active:bg-indigo-700 rounded-lg text-sm px-5 py-2.5 text-center inline-flex items-center">
             Login
         </a>
         <a href="{{ route('register')  }}" class="text-white bg-black hover:bg-gray-800 focus:ring-4 focus:outline-none focus:ring-gray-300 font-medium rounded-lg text-sm px-5 py-2.5 text-center inline-flex items-center">
