@@ -13,7 +13,7 @@ use Illuminate\Routing\Middleware\SubstituteBindings;
 use Illuminate\Session\Middleware\AuthenticateSession;
 use Illuminate\Session\Middleware\StartSession;
 use Illuminate\View\Middleware\ShareErrorsFromSession;
-use Stancl\Tenancy\Middleware\InitializeTenancyBySubdomain;
+use Stancl\Tenancy\Middleware\InitializeTenancyByDomain;
 use Stancl\Tenancy\Middleware\PreventAccessFromCentralDomains;
 
 return [
@@ -294,7 +294,7 @@ return [
             // custom middleware & middleware from third party packages
             'universal',
             PreventAccessFromCentralDomains::class,
-            InitializeTenancyBySubdomain::class
+            InitializeTenancyByDomain::class
         ],
     ],
 

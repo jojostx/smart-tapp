@@ -16,7 +16,7 @@ use Stancl\Tenancy\Events;
 use Stancl\Tenancy\Jobs;
 use Stancl\Tenancy\Listeners;
 use Stancl\Tenancy\Middleware;
-use Stancl\Tenancy\Middleware\InitializeTenancyBySubdomain;
+use Stancl\Tenancy\Middleware\InitializeTenancyByDomain;
 
 class TenancyServiceProvider extends ServiceProvider
 {
@@ -134,7 +134,7 @@ class TenancyServiceProvider extends ServiceProvider
 
         $this->makeTenancyMiddlewareHighestPriority();
 
-        TenantAssetsController::$tenancyMiddleware = InitializeTenancyBySubdomain::class;
+        TenantAssetsController::$tenancyMiddleware = InitializeTenancyByDomain::class;
     }
 
     protected function bootEvents()

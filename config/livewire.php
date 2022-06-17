@@ -1,5 +1,6 @@
 <?php
 
+use Stancl\Tenancy\Middleware\InitializeTenancyByDomain;
 use Stancl\Tenancy\Middleware\InitializeTenancyBySubdomain;
 
 return [
@@ -86,7 +87,7 @@ return [
     'middleware_group' => [
         'web',
         'universal',
-        InitializeTenancyBySubdomain::class, // or whatever tenancy middleware you use
+        InitializeTenancyByDomain::class, // or whatever tenancy middleware you use
     ],
 
     /*
