@@ -1,7 +1,6 @@
 <?php
 
 use Stancl\Tenancy\Middleware\InitializeTenancyByDomain;
-use Stancl\Tenancy\Middleware\InitializeTenancyBySubdomain;
 
 return [
 
