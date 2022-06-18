@@ -10,8 +10,8 @@
             </div>
             <div class="space-x-4 text-center md:text-white">
                 <span>© {{ config('app.name') }}</span>
-                <a href="#" class="text-sm hover:text-indigo-100 hover:underline">Contact</a>
-                <a href="#" class="text-sm hover:text-indigo-100 hover:underline">Privacy &amp; Terms</a>
+                <a href="#" class="text-sm hover:text-primary-100 hover:underline">Contact</a>
+                <a href="#" class="text-sm hover:text-primary-100 hover:underline">Privacy &amp; Terms</a>
             </div>
         </div>
     </div>

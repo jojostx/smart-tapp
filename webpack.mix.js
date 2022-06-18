@@ -13,9 +13,22 @@ require("laravel-mix-tailwind");
  |
  */
 
-mix.js("resources/js/app.js", "public/js/app.js")
+// mix.js("resources/js/app.js", "public/js/app.js")
+//     .postCss('resources/css/filament.css', 'public/filament.css')
+//     .sass("resources/sass/app.scss", "public/css/app.css")
+//     .tailwind("./tailwind.config.js")
+//     .sourceMaps();
+
+mix.js('resources/js/app.js', 'public/js')
+    .postCss('resources/css/app.css', 'public/css', [
+        require('postcss-import'),
+        require('tailwindcss'),
+        require('autoprefixer'),
+    ]).postCss('resources/css/filament.css', 'public/css', [
+        require('tailwindcss'),
+        require('autoprefixer'),
+    ])
     .sass("resources/sass/app.scss", "public/css/app.css")
-    .tailwind("./tailwind.config.js")
     .sourceMaps();
 
 if (mix.inProduction()) {

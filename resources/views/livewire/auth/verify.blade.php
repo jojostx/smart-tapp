@@ -2,7 +2,7 @@
 <div>
     <div class="sm:mx-auto sm:w-full sm:max-w-md">
         <a href="{{ route('home') }}">
-            <x-logo class="w-auto h-16 mx-auto text-indigo-600" />
+            <x-logo class="w-auto h-16 mx-auto text-primary-600" />
         </a>
 
         <h2 class="mt-6 text-3xl font-extrabold leading-9 text-center text-gray-900">
@@ -47,7 +47,7 @@
                 <div class="flex items-center justify-between mt-4">
                     <x-button type="submit" class="flex justify-center text-sm font-medium capitalize">Verify OTP</x-button>
 
-                    <button type="button" wire:click.prevent="sendVerificationNotification" class="flex justify-center px-4 py-2 text-sm font-medium underline border-0 hover:text-indigo-500 focus:text-indigo-600">
+                    <button type="button" wire:click.prevent="sendVerificationNotification" class="flex justify-center px-4 py-2 text-sm font-medium underline border-0 hover:text-primary-500 focus:text-primary-600">
                         Resend OTP
                     </button>
                 </div>
@@ -80,11 +80,11 @@
         <div x-trap.inert.noscroll="show" x-show="show" class="p-12 text-center bg-white border shadow-md rounded-xl">
             <div>
                 <svg class="w-20 h-20 m-auto" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" viewBox="0 0 100 100" preserveAspectRatio="xMidYMid">
-                    <circle cx="50" cy="50" r="0" fill="none" class="stroke-indigo-400" stroke-width="3">
+                    <circle cx="50" cy="50" r="0" fill="none" class="stroke-primary-400" stroke-width="3">
                         <animate attributeName="r" repeatCount="indefinite" dur="1s" values="0;40" keyTimes="0;1" keySplines="0 0.2 0.8 1" calcMode="spline" begin="0s"></animate>
                         <animate attributeName="opacity" repeatCount="indefinite" dur="1s" values="1;0" keyTimes="0;1" keySplines="0.2 0 0.8 1" calcMode="spline" begin="0s"></animate>
                     </circle>
-                    <circle cx="50" cy="50" r="0" fill="none" class="stroke-indigo-800" stroke-width="3">
+                    <circle cx="50" cy="50" r="0" fill="none" class="stroke-primary-800" stroke-width="3">
                         <animate attributeName="r" repeatCount="indefinite" dur="1s" values="0;40" keyTimes="0;1" keySplines="0 0.2 0.8 1" calcMode="spline" begin="-0.5s"></animate>
                         <animate attributeName="opacity" repeatCount="indefinite" dur="1s" values="1;0" keyTimes="0;1" keySplines="0.2 0 0.8 1" calcMode="spline" begin="-0.5s"></animate>
                     </circle>

@@ -3,7 +3,7 @@
 <div>
     <div class="sm:mx-auto sm:w-full sm:max-w-md">
         <a href="{{ route('home') }}">
-            <x-logo class="w-auto h-16 mx-auto text-indigo-600" />
+            <x-logo class="w-auto h-16 mx-auto text-primary-600" />
         </a>
 
         <h2 class="mt-6 text-3xl font-extrabold leading-9 text-center text-gray-900">
@@ -48,7 +48,7 @@
 
                  <!-- Name -->
                 <div class="mt-4">
-                    <x-label for="name" :value="__('Name')" />
+                    <x-label for="name" :value="__('Full name')" />
 
                     <x-input name="name" wire:model.lazy="name" id="name" class="block w-full mt-1" placeholder="John Doe" type="text" :value="old('name')" required />
 
@@ -59,7 +59,7 @@
 
                 <!-- Email Address -->
                 <div class="mt-4">
-                    <x-label for="email" :value="__('Email')" />
+                    <x-label for="email" :value="__('Email address')" />
 
                     <x-input wire:model.lazy="email" id="email" class="block w-full mt-1" placeholder="name@company.com" type="email" name="email" :value="old('email')" required />
 
@@ -101,7 +101,7 @@
 
                 <div class="mt-4">
                     <span class="block w-full rounded-md shadow-sm">
-                        <button type="submit" class="flex justify-center w-full px-4 py-2 text-sm font-medium text-white transition duration-150 ease-in-out bg-indigo-600 border border-transparent rounded-md hover:bg-indigo-500 focus:outline-none focus:border-indigo-700 focus:ring-indigo active:bg-indigo-700">
+                        <button type="submit" class="flex justify-center w-full px-4 py-2 text-sm font-medium text-white transition duration-150 ease-in-out bg-primary-600 border border-transparent rounded-md hover:bg-primary-500 focus:outline-none focus:border-primary-700 focus:ring-primary active:bg-primary-700">
                             Register
                         </button>
                     </span>

@@ -3,7 +3,7 @@
 <div>
     <div class="sm:mx-auto sm:w-full sm:max-w-md">
         <a href="{{ route('landlord.home') }}">
-            <x-logo class="w-auto h-16 mx-auto text-indigo-600" />
+            <x-logo class="w-auto h-16 mx-auto text-primary-600" />
         </a>
 
         <h2 class="mt-6 text-3xl font-extrabold leading-9 text-center text-gray-900">
@@ -33,7 +33,7 @@
 
                 <div class="flex items-center justify-end mt-6">
                     <div class="text-sm leading-5">
-                        <a href="{{ route('landlord.password.request') }}" class="font-medium text-indigo-600 transition duration-150 ease-in-out hover:text-indigo-500 focus:outline-none focus:underline">
+                        <a href="{{ route('landlord.password.request') }}" class="font-medium text-primary-600 transition duration-150 ease-in-out hover:text-primary-500 focus:outline-none focus:underline">
                             Forgot your password?
                         </a>
                     </div>
@@ -41,7 +41,7 @@
 
                 <div class="mt-6">
                     <span class="block w-full rounded-md shadow-sm">
-                        <button type="submit" class="flex justify-center w-full px-4 py-2 text-sm font-medium text-white transition duration-150 ease-in-out bg-indigo-600 border border-transparent rounded-md hover:bg-indigo-500 focus:outline-none focus:border-indigo-700 focus:ring-indigo active:bg-indigo-700">
+                        <button type="submit" class="flex justify-center w-full px-4 py-2 text-sm font-medium text-white transition duration-150 ease-in-out bg-primary-600 border border-transparent rounded-md hover:bg-primary-500 focus:outline-none focus:border-primary-700 focus:ring-primary active:bg-primary-700">
                             Confirm password
                         </button>
                     </span>

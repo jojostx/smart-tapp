@@ -4,7 +4,7 @@
 
 <nav class="absolute z-20 flex items-center content-center justify-between w-full px-4 py-6 lg:px-24 md:px-12">
     <a href="{{ route('home') }}" class="flex items-center">
-        <x-logo class="w-auto mr-3 text-indigo-600 h-9" alt="{{ config('app.name') }} Logo" />
+        <x-logo class="w-auto mr-3 text-primary-600 h-9" alt="{{ config('app.name') }} Logo" />
         <span class="self-center hidden text-xl font-semibold whitespace-nowrap md:inline">{{ config('app.name') }}</span>
     </a>
     <ul class="items-center hidden md:flex">
@@ -18,17 +18,21 @@
             <a href="company">Company</a>
         </li>
     </ul>
-    <div class="hidden ml-auto sm:ml-0 md:block">
-        <a href="{{ route('login') }}" class="mr-2 text-white transition duration-150 ease-in-out bg-indigo-600 sm:w-max hover:bg-indigo-500 focus:outline-none focus:ring-indigo-300 active:bg-indigo-700 rounded-lg text-sm px-5 py-2.5 text-center inline-flex items-center">
-            Login
-        </a>
-        <a href="{{ route('register')  }}" class="text-white bg-black hover:bg-gray-800 focus:ring-4 focus:outline-none focus:ring-gray-300 font-medium rounded-lg text-sm px-5 py-2.5 text-center inline-flex items-center">
-            Sign up
-            <svg class="w-4 h-4 ml-2 -mr-1" fill="currentColor" viewBox="0 0 20 20" xmlns="http://www.w3.org/2000/svg">
-                <path fill-rule="evenodd" d="M10.293 3.293a1 1 0 011.414 0l6 6a1 1 0 010 1.414l-6 6a1 1 0 01-1.414-1.414L14.586 11H3a1 1 0 110-2h11.586l-4.293-4.293a1 1 0 010-1.414z" clip-rule="evenodd"></path>
-            </svg>
-        </a>
-    </div>
+    @guest
+        @unlessauthtenant
+        <div class="hidden ml-auto sm:ml-0 md:block">
+            <a href="{{ route('login') }}" class="mr-2 text-white transition duration-150 ease-in-out bg-primary-600 sm:w-max hover:bg-primary-500 focus:outline-none focus:ring-primary-300 active:bg-primary-700 rounded-lg text-sm px-5 py-2.5 text-center inline-flex items-center">
+                Login
+            </a>
+            <a href="{{ route('register')  }}" class="text-white bg-black hover:bg-gray-800 focus:ring-4 focus:outline-none focus:ring-gray-300 font-medium rounded-lg text-sm px-5 py-2.5 text-center inline-flex items-center">
+                Sign up
+                <svg class="w-4 h-4 ml-2 -mr-1" fill="currentColor" viewBox="0 0 20 20" xmlns="http://www.w3.org/2000/svg">
+                    <path fill-rule="evenodd" d="M10.293 3.293a1 1 0 011.414 0l6 6a1 1 0 010 1.414l-6 6a1 1 0 01-1.414-1.414L14.586 11H3a1 1 0 110-2h11.586l-4.293-4.293a1 1 0 010-1.414z" clip-rule="evenodd"></path>
+                </svg>
+            </a>
+        </div>
+        @endauthtenant
+    @endguest
     <div id="showMenu" class="ml-2 md:hidden">
         <button data-collapse-toggle="mobile-menu-4" type="button" class="inline-flex items-center p-2 text-sm text-gray-500 rounded-lg md:hidden hover:bg-gray-100 focus:outline-none focus:ring-2 focus:ring-gray-200" aria-controls="mobile-menu-4" aria-expanded="false">
             <span class="sr-only">Open main menu</span>
@@ -45,15 +49,15 @@
 <section class="relative flex flex-col justify-center bg-gray-50 sm:px-6 lg:px-8">
     <div class="absolute inset-x-0 flex justify-center w-full -top-1/3 md:-top-3/4 opacity-20">
         <svg class="w-full m-auto md:w-2/3" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" viewBox="0 0 100 100" preserveAspectRatio="xMidYMid">
-            <circle cx="50" cy="50" r="0" fill="none" class="stroke-indigo-400" stroke-width="3">
+            <circle cx="50" cy="50" r="0" fill="none" class="stroke-primary-400" stroke-width="3">
                 <animate attributeName="r" repeatCount="indefinite" dur="5s" values="0;40" keyTimes="0;1" keySplines="0 0.2 0.8 1" calcMode="spline" begin="0s"></animate>
                 <animate attributeName="opacity" repeatCount="indefinite" dur="5s" values="1;0" keyTimes="0;1" keySplines="0.2 0 0.8 1" calcMode="spline" begin="0s"></animate>
             </circle> 
-            <circle cx="50" cy="50" r="0" fill="none" class="stroke-indigo-400" stroke-width="3">
+            <circle cx="50" cy="50" r="0" fill="none" class="stroke-primary-400" stroke-width="3">
                 <animate attributeName="r" repeatCount="indefinite" dur="5s" values="0;40" keyTimes="0;1" keySplines="0 0.2 0.8 1" calcMode="spline" begin="-1s"></animate>
                 <animate attributeName="opacity" repeatCount="indefinite" dur="5s" values="1;0" keyTimes="0;1" keySplines="0.2 0 0.8 1" calcMode="spline" begin="-1s"></animate>
             </circle>
-            <circle cx="50" cy="50" r="0" fill="none" class="stroke-indigo-800" stroke-width="3">
+            <circle cx="50" cy="50" r="0" fill="none" class="stroke-primary-800" stroke-width="3">
                 <animate attributeName="r" repeatCount="indefinite" dur="5s" values="0;40" keyTimes="0;1" keySplines="0 0.2 0.8 1" calcMode="spline" begin="-2s"></animate>
                 <animate attributeName="opacity" repeatCount="indefinite" dur="5s" values="1;0" keyTimes="0;1" keySplines="0.2 0 0.8 1" calcMode="spline" begin="-2s"></animate>
             </circle>
@@ -65,7 +69,7 @@
             <h1 class="text-5xl font-extrabold tracking-wider text-center text-gray-800 md:text-7xl">
                 World-Class Parking
                 <strong>
-                    <span class="text-indigo-600">
+                    <span class="text-primary-600">
                         Control
                     </span>
                     Platform
@@ -77,7 +81,7 @@
             </p>
 
             <div class="flex flex-wrap justify-center gap-4 mt-8">
-                <a href="{{ route('register')  }}" class="block w-full px-5 py-3 font-medium text-white transition duration-150 ease-in-out bg-indigo-600 border border-transparent rounded-lg sm:w-max hover:bg-indigo-500 focus:outline-none focus:border-indigo-700 focus:ring-indigo active:bg-indigo-700">
+                <a href="{{ route('register')  }}" class="block w-full px-5 py-3 font-medium text-white transition duration-150 ease-in-out bg-primary-600 border border-transparent rounded-lg sm:w-max hover:bg-primary-500 focus:outline-none focus:border-primary-700 focus:ring-primary active:bg-primary-700">
                     Get started
                 </a>
 
@@ -104,7 +108,7 @@
                 Obcaecati, autem.
             </p>
 
-            <a href="{{ route('register')  }}" class=" mt-8 text-white bg-indigo-600 hover:bg-indigo-800 focus:ring-4 focus:outline-none focus:ring-indigo-300 font-medium rounded-lg text-sm px-5 py-2.5 text-center inline-flex items-center">
+            <a href="{{ route('register')  }}" class=" mt-8 text-white bg-primary-600 hover:bg-primary-800 focus:ring-4 focus:outline-none focus:ring-primary-300 font-medium rounded-lg text-sm px-5 py-2.5 text-center inline-flex items-center">
                 Get Started
                 <svg class="w-4 h-4 ml-2" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor">
                     <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17 8l4 4m0 0l-4 4m4-4H3" />
@@ -119,7 +123,7 @@
         </style>
 
         <div class="relative w-full">
-            <div class="relative inset-0 z-0 w-full bg-indigo-600 rounded-full aspect-w-1 aspect-h-1"></div>
+            <div class="relative inset-0 z-0 w-full bg-primary-600 rounded-full aspect-w-1 aspect-h-1"></div>
 
             <div class="absolute top-0 z-10 w-full" x-data="{count: 0}" x-init="
                     $el.children.item(count).classList.add('active');
@@ -177,7 +181,7 @@
                             No matter how many team members you have - our pricing is simple, transparent and adapts to the size of your company
                         </p>
 
-                        <a href="{{ route('register')  }}" class="text-white bg-indigo-600 hover:bg-indigo-800 focus:ring-4 focus:outline-none focus:ring-indigo-300 font-medium rounded-lg text-sm px-5 py-2.5 text-center inline-flex items-center">
+                        <a href="{{ route('register')  }}" class="text-white bg-primary-600 hover:bg-primary-800 focus:ring-4 focus:outline-none focus:ring-primary-300 font-medium rounded-lg text-sm px-5 py-2.5 text-center inline-flex items-center">
                             More Details
                             <svg class="w-4 h-4 ml-2" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor">
                                 <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17 8l4 4m0 0l-4 4m4-4H3" />
@@ -194,7 +198,7 @@
 <section class="py-16 sm:py-24 bg-gray-50">
     <div class="container px-4 m-auto space-y-8 text-gray-500 md:px-12">
         <div>
-            <span class="px-2 py-1 text-lg font-semibold text-indigo-600 bg-indigo-200 rounded-full">Main features</span>
+            <span class="px-2 py-1 text-lg font-semibold text-primary-600 bg-primary-200 rounded-full">Main features</span>
             <h2 class="max-w-lg mt-4 text-2xl font-bold text-gray-900 md:text-4xl">A Technology-Powered Approach to Parking Control</h2>
         </div>
         <div class="grid mt-16 overflow-hidden border divide-x divide-y rounded-xl sm:grid-cols-2 lg:divide-y-0 lg:grid-cols-3 xl:grid-cols-4">
@@ -203,10 +207,10 @@
                     <!-- <img src="images/avatars/burger.png" class="w-10" width="512" height="512" alt="burger illustration"> -->
 
                     <div class="space-y-2">
-                        <h5 class="text-xl font-medium text-gray-800 transition group-hover:text-indigo-600">First feature</h5>
+                        <h5 class="text-xl font-medium text-gray-800 transition group-hover:text-primary-600">First feature</h5>
                         <p class="text-sm text-gray-600">Neque Dolor, fugiat non cum doloribus aperiam voluptates nostrum.</p>
                     </div>
-                    <a href="#" class="flex items-center justify-between group-hover:text-indigo-600">
+                    <a href="#" class="flex items-center justify-between group-hover:text-primary-600">
                         <span class="text-sm">Read more</span>
                         <span class="text-2xl transition duration-300 -translate-x-4 opacity-0 group-hover:opacity-100 group-hover:translate-x-0">&RightArrow;</span>
                     </a>
@@ -217,10 +221,10 @@
                     <!-- <img src="images/avatars/trowel.png" class="w-10" width="512" height="512" alt="burger illustration"> -->
 
                     <div class="space-y-2">
-                        <h5 class="text-xl font-medium text-gray-800 transition group-hover:text-indigo-600">Second feature</h5>
+                        <h5 class="text-xl font-medium text-gray-800 transition group-hover:text-primary-600">Second feature</h5>
                         <p class="text-sm text-gray-600">Neque Dolor, fugiat non cum doloribus aperiam voluptates nostrum.</p>
                     </div>
-                    <a href="#" class="flex items-center justify-between group-hover:text-indigo-600">
+                    <a href="#" class="flex items-center justify-between group-hover:text-primary-600">
                         <span class="text-sm">Read more</span>
                         <span class="text-2xl transition duration-300 -translate-x-4 opacity-0 group-hover:opacity-100 group-hover:translate-x-0">&RightArrow;</span>
                     </a>
@@ -231,10 +235,10 @@
                     <!-- <img src="images/avatars/package-delivery.png" class="w-10" width="512" height="512" alt="burger illustration"> -->
 
                     <div class="space-y-2">
-                        <h5 class="text-xl font-medium text-gray-800 transition group-hover:text-indigo-600">Third feature</h5>
+                        <h5 class="text-xl font-medium text-gray-800 transition group-hover:text-primary-600">Third feature</h5>
                         <p class="text-sm text-gray-600">Neque Dolor, fugiat non cum doloribus aperiam voluptates nostrum.</p>
                     </div>
-                    <a href="#" class="flex items-center justify-between group-hover:text-indigo-600">
+                    <a href="#" class="flex items-center justify-between group-hover:text-primary-600">
                         <span class="text-sm">Read more</span>
                         <span class="text-2xl transition duration-300 -translate-x-4 opacity-0 group-hover:opacity-100 group-hover:translate-x-0">&RightArrow;</span>
                     </a>
@@ -245,10 +249,10 @@
                     <!-- <img src="images/avatars/metal.png" class="w-10" width="512" height="512" alt="burger illustration"> -->
 
                     <div class="space-y-2">
-                        <h5 class="text-xl font-medium text-gray-800 transition group-hover:text-indigo-600">More features</h5>
+                        <h5 class="text-xl font-medium text-gray-800 transition group-hover:text-primary-600">More features</h5>
                         <p class="text-sm text-gray-600">Neque Dolor, fugiat non cum doloribus aperiam voluptates nostrum.</p>
                     </div>
-                    <a href="#" class="flex items-center justify-between group-hover:text-indigo-600">
+                    <a href="#" class="flex items-center justify-between group-hover:text-primary-600">
                         <span class="text-sm">Read more</span>
                         <span class="text-2xl transition duration-300 -translate-x-4 opacity-0 group-hover:opacity-100 group-hover:translate-x-0">&RightArrow;</span>
                     </a>
@@ -271,8 +275,8 @@
         </div>
 
         <div class="grid grid-cols-1 gap-8 mt-12 md:grid-cols-2 lg:grid-cols-3">
-            <a class="block p-8 transition border border-gray-600 shadow-xl rounded-xl hover:shadow-indigo-500/10 hover:border-indigo-500/10" href="/services/digital-campaigns">
-                <svg xmlns="http://www.w3.org/2000/svg" class="w-10 h-10 text-indigo-500" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+            <a class="block p-8 transition border border-gray-600 shadow-xl rounded-xl hover:shadow-primary-500/10 hover:border-primary-500/10" href="/services/digital-campaigns">
+                <svg xmlns="http://www.w3.org/2000/svg" class="w-10 h-10 text-primary-500" fill="none" viewBox="0 0 24 24" stroke="currentColor">
                     <path d="M12 14l9-5-9-5-9 5 9 5z" />
                     <path d="M12 14l6.16-3.422a12.083 12.083 0 01.665 6.479A11.952 11.952 0 0012 20.055a11.952 11.952 0 00-6.824-2.998 12.078 12.078 0 01.665-6.479L12 14z" />
                     <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 14l9-5-9-5-9 5 9 5zm0 0l6.16-3.422a12.083 12.083 0 01.665 6.479A11.952 11.952 0 0012 20.055a11.952 11.952 0 00-6.824-2.998 12.078 12.078 0 01.665-6.479L12 14zm-4 6v-7.5l4-2.222" />
@@ -292,25 +296,25 @@
 
                 <ul class="mt-4 -mb-2 text-gray-400 grow">
                     <li class="flex items-center mb-2">
-                        <svg class="w-3 h-3 mr-3 text-indigo-400 fill-current shrink-0" viewBox="0 0 12 12" xmlns="http://www.w3.org/2000/svg">
+                        <svg class="w-3 h-3 mr-3 text-primary-400 fill-current shrink-0" viewBox="0 0 12 12" xmlns="http://www.w3.org/2000/svg">
                             <path d="M10.28 2.28L3.989 8.575 1.695 6.28A1 1 0 00.28 7.695l3 3a1 1 0 001.414 0l7-7A1 1 0 0010.28 2.28z"></path>
                         </svg>
                         <span>Up to 2 team members</span>
                     </li>
                     <li class="flex items-center mb-2">
-                        <svg class="w-3 h-3 mr-3 text-indigo-400 fill-current shrink-0" viewBox="0 0 12 12" xmlns="http://www.w3.org/2000/svg">
+                        <svg class="w-3 h-3 mr-3 text-primary-400 fill-current shrink-0" viewBox="0 0 12 12" xmlns="http://www.w3.org/2000/svg">
                             <path d="M10.28 2.28L3.989 8.575 1.695 6.28A1 1 0 00.28 7.695l3 3a1 1 0 001.414 0l7-7A1 1 0 0010.28 2.28z"></path>
                         </svg>
                         <span>Up to 1 parking lots</span>
                     </li>
                     <li class="flex items-center mb-2">
-                        <svg class="w-3 h-3 mr-3 text-indigo-400 fill-current shrink-0" viewBox="0 0 12 12" xmlns="http://www.w3.org/2000/svg">
+                        <svg class="w-3 h-3 mr-3 text-primary-400 fill-current shrink-0" viewBox="0 0 12 12" xmlns="http://www.w3.org/2000/svg">
                             <path d="M10.28 2.28L3.989 8.575 1.695 6.28A1 1 0 00.28 7.695l3 3a1 1 0 001.414 0l7-7A1 1 0 0010.28 2.28z"></path>
                         </svg>
                         <span>Up to 50 vehicles per parking lot</span>
                     </li>
                     <li class="flex items-center mb-2">
-                        <svg class="w-3 h-3 mr-3 text-indigo-400 fill-current shrink-0" viewBox="0 0 12 12" xmlns="http://www.w3.org/2000/svg">
+                        <svg class="w-3 h-3 mr-3 text-primary-400 fill-current shrink-0" viewBox="0 0 12 12" xmlns="http://www.w3.org/2000/svg">
                             <path d="M10.28 2.28L3.989 8.575 1.695 6.28A1 1 0 00.28 7.695l3 3a1 1 0 001.414 0l7-7A1 1 0 0010.28 2.28z"></path>
                         </svg>
                         <span>Dedicated Support</span>
@@ -318,8 +322,8 @@
                 </ul>
             </a>
 
-            <a class="block p-8 transition border-2 border-indigo-500 shadow-xl bg-indigo-500/30 rounded-xl hover:shadow-indigo-500/20 hover:border-indigo-500/90" href="/services/digital-campaigns">
-                <svg xmlns="http://www.w3.org/2000/svg" class="w-10 h-10 text-indigo-500" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+            <a class="block p-8 transition border-2 border-primary-500 shadow-xl bg-primary-500/30 rounded-xl hover:shadow-primary-500/20 hover:border-primary-500/90" href="/services/digital-campaigns">
+                <svg xmlns="http://www.w3.org/2000/svg" class="w-10 h-10 text-primary-500" fill="none" viewBox="0 0 24 24" stroke="currentColor">
                     <path d="M12 14l9-5-9-5-9 5 9 5z" />
                     <path d="M12 14l6.16-3.422a12.083 12.083 0 01.665 6.479A11.952 11.952 0 0012 20.055a11.952 11.952 0 00-6.824-2.998 12.078 12.078 0 01.665-6.479L12 14z" />
                     <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 14l9-5-9-5-9 5 9 5zm0 0l6.16-3.422a12.083 12.083 0 01.665 6.479A11.952 11.952 0 0012 20.055a11.952 11.952 0 00-6.824-2.998 12.078 12.078 0 01.665-6.479L12 14zm-4 6v-7.5l4-2.222" />
@@ -339,25 +343,25 @@
 
                 <ul class="mt-4 -mb-2 text-gray-400 grow">
                     <li class="flex items-center mb-2">
-                        <svg class="w-3 h-3 mr-3 text-indigo-400 fill-current shrink-0" viewBox="0 0 12 12" xmlns="http://www.w3.org/2000/svg">
+                        <svg class="w-3 h-3 mr-3 text-primary-400 fill-current shrink-0" viewBox="0 0 12 12" xmlns="http://www.w3.org/2000/svg">
                             <path d="M10.28 2.28L3.989 8.575 1.695 6.28A1 1 0 00.28 7.695l3 3a1 1 0 001.414 0l7-7A1 1 0 0010.28 2.28z"></path>
                         </svg>
                         <span>Up to 5 team members</span>
                     </li>
                     <li class="flex items-center mb-2">
-                        <svg class="w-3 h-3 mr-3 text-indigo-400 fill-current shrink-0" viewBox="0 0 12 12" xmlns="http://www.w3.org/2000/svg">
+                        <svg class="w-3 h-3 mr-3 text-primary-400 fill-current shrink-0" viewBox="0 0 12 12" xmlns="http://www.w3.org/2000/svg">
                             <path d="M10.28 2.28L3.989 8.575 1.695 6.28A1 1 0 00.28 7.695l3 3a1 1 0 001.414 0l7-7A1 1 0 0010.28 2.28z"></path>
                         </svg>
                         <span>Up to 5 parking lots</span>
                     </li>
                     <li class="flex items-center mb-2">
-                        <svg class="w-3 h-3 mr-3 text-indigo-400 fill-current shrink-0" viewBox="0 0 12 12" xmlns="http://www.w3.org/2000/svg">
+                        <svg class="w-3 h-3 mr-3 text-primary-400 fill-current shrink-0" viewBox="0 0 12 12" xmlns="http://www.w3.org/2000/svg">
                             <path d="M10.28 2.28L3.989 8.575 1.695 6.28A1 1 0 00.28 7.695l3 3a1 1 0 001.414 0l7-7A1 1 0 0010.28 2.28z"></path>
                         </svg>
                         <span>Up to 100 vehicles per parking lot</span>
                     </li>
                     <li class="flex items-center mb-2">
-                        <svg class="w-3 h-3 mr-3 text-indigo-400 fill-current shrink-0" viewBox="0 0 12 12" xmlns="http://www.w3.org/2000/svg">
+                        <svg class="w-3 h-3 mr-3 text-primary-400 fill-current shrink-0" viewBox="0 0 12 12" xmlns="http://www.w3.org/2000/svg">
                             <path d="M10.28 2.28L3.989 8.575 1.695 6.28A1 1 0 00.28 7.695l3 3a1 1 0 001.414 0l7-7A1 1 0 0010.28 2.28z"></path>
                         </svg>
                         <span>Dedicated Support</span>
@@ -365,8 +369,8 @@
                 </ul>
             </a>
 
-            <a class="block p-8 transition border border-gray-600 shadow-xl rounded-xl hover:shadow-indigo-500/10 hover:border-indigo-500/10" href="/services/digital-campaigns">
-                <svg xmlns="http://www.w3.org/2000/svg" class="w-10 h-10 text-indigo-500" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+            <a class="block p-8 transition border border-gray-600 shadow-xl rounded-xl hover:shadow-primary-500/10 hover:border-primary-500/10" href="/services/digital-campaigns">
+                <svg xmlns="http://www.w3.org/2000/svg" class="w-10 h-10 text-primary-500" fill="none" viewBox="0 0 24 24" stroke="currentColor">
                     <path d="M12 14l9-5-9-5-9 5 9 5z" />
                     <path d="M12 14l6.16-3.422a12.083 12.083 0 01.665 6.479A11.952 11.952 0 0012 20.055a11.952 11.952 0 00-6.824-2.998 12.078 12.078 0 01.665-6.479L12 14z" />
                     <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 14l9-5-9-5-9 5 9 5zm0 0l6.16-3.422a12.083 12.083 0 01.665 6.479A11.952 11.952 0 0012 20.055a11.952 11.952 0 00-6.824-2.998 12.078 12.078 0 01.665-6.479L12 14zm-4 6v-7.5l4-2.222" />
@@ -386,25 +390,25 @@
 
                 <ul class="mt-4 -mb-2 text-gray-400 grow">
                     <li class="flex items-center mb-2">
-                        <svg class="w-3 h-3 mr-3 text-indigo-400 fill-current shrink-0" viewBox="0 0 12 12" xmlns="http://www.w3.org/2000/svg">
+                        <svg class="w-3 h-3 mr-3 text-primary-400 fill-current shrink-0" viewBox="0 0 12 12" xmlns="http://www.w3.org/2000/svg">
                             <path d="M10.28 2.28L3.989 8.575 1.695 6.28A1 1 0 00.28 7.695l3 3a1 1 0 001.414 0l7-7A1 1 0 0010.28 2.28z"></path>
                         </svg>
                         <span>Up to 10 team members</span>
                     </li>
                     <li class="flex items-center mb-2">
-                        <svg class="w-3 h-3 mr-3 text-indigo-400 fill-current shrink-0" viewBox="0 0 12 12" xmlns="http://www.w3.org/2000/svg">
+                        <svg class="w-3 h-3 mr-3 text-primary-400 fill-current shrink-0" viewBox="0 0 12 12" xmlns="http://www.w3.org/2000/svg">
                             <path d="M10.28 2.28L3.989 8.575 1.695 6.28A1 1 0 00.28 7.695l3 3a1 1 0 001.414 0l7-7A1 1 0 0010.28 2.28z"></path>
                         </svg>
                         <span>Up to 20 parking lots</span>
                     </li>
                     <li class="flex items-center mb-2">
-                        <svg class="w-3 h-3 mr-3 text-indigo-400 fill-current shrink-0" viewBox="0 0 12 12" xmlns="http://www.w3.org/2000/svg">
+                        <svg class="w-3 h-3 mr-3 text-primary-400 fill-current shrink-0" viewBox="0 0 12 12" xmlns="http://www.w3.org/2000/svg">
                             <path d="M10.28 2.28L3.989 8.575 1.695 6.28A1 1 0 00.28 7.695l3 3a1 1 0 001.414 0l7-7A1 1 0 0010.28 2.28z"></path>
                         </svg>
                         <span>Up to 200 vehicles per parking lot</span>
                     </li>
                     <li class="flex items-center mb-2">
-                        <svg class="w-3 h-3 mr-3 text-indigo-400 fill-current shrink-0" viewBox="0 0 12 12" xmlns="http://www.w3.org/2000/svg">
+                        <svg class="w-3 h-3 mr-3 text-primary-400 fill-current shrink-0" viewBox="0 0 12 12" xmlns="http://www.w3.org/2000/svg">
                             <path d="M10.28 2.28L3.989 8.575 1.695 6.28A1 1 0 00.28 7.695l3 3a1 1 0 001.414 0l7-7A1 1 0 0010.28 2.28z"></path>
                         </svg>
                         <span>Dedicated Support</span>
@@ -414,7 +418,7 @@
         </div>
 
         <div class="mt-12 text-center">
-            <a href="{{ route('register')  }}" class="text-white bg-indigo-600 hover:bg-indigo-800 focus:ring-4 focus:outline-none focus:ring-indigo-300 font-medium rounded-lg text-sm px-5 py-2.5 text-center inline-flex items-center">
+            <a href="{{ route('register')  }}" class="text-white bg-primary-600 hover:bg-primary-800 focus:ring-4 focus:outline-none focus:ring-primary-300 font-medium rounded-lg text-sm px-5 py-2.5 text-center inline-flex items-center">
                 More Details
                 <svg class="w-4 h-4 ml-2" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor">
                     <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17 8l4 4m0 0l-4 4m4-4H3" />
@@ -511,14 +515,14 @@
 
 <section class="py-16 overflow-hidden md:py-24 md:pt-0 bg-gray-50">
     <div class="container px-4 m-auto space-y-8 md:px-12">
-        <div class="flex flex-col items-center justify-between px-8 py-16 overflow-hidden bg-indigo-600 md:px-12 md:flex-row rounded-xl">
+        <div class="flex flex-col items-center justify-between px-8 py-16 overflow-hidden bg-primary-600 md:px-12 md:flex-row rounded-xl">
             <div class="mb-6 md:mb-0">
                 <h2 class="text-3xl font-bold text-center text-white md:text-left md:text-4xl">Ready to get started?</h2>
-                <p class="mt-2 text-lg font-semibold text-center text-indigo-300 md:text-left">We have a generous Basic tier available to get you started right away.</p>
+                <p class="mt-2 text-lg font-semibold text-center text-primary-300 md:text-left">We have a generous Basic tier available to get you started right away.</p>
             </div>
 
             <div>
-                <a href="{{ route('register')  }}" class="text-indigo-600 bg-white hover:bg-gray-100 focus:ring-4 focus:outline-none focus:ring-indigo-300 font-semibold rounded-lg text-sm px-5 py-2.5 text-center inline-flex items-center">
+                <a href="{{ route('register')  }}" class="text-primary-600 bg-white hover:bg-gray-100 focus:ring-4 focus:outline-none focus:ring-primary-300 font-semibold rounded-lg text-sm px-5 py-2.5 text-center inline-flex items-center">
                     Get Started
                     <svg class="w-4 h-4 ml-2 -mr-1" fill="currentColor" viewBox="0 0 20 20" xmlns="http://www.w3.org/2000/svg">
                         <path fill-rule="evenodd" d="M10.293 3.293a1 1 0 011.414 0l6 6a1 1 0 010 1.414l-6 6a1 1 0 01-1.414-1.414L14.586 11H3a1 1 0 110-2h11.586l-4.293-4.293a1 1 0 010-1.414z" clip-rule="evenodd"></path>
@@ -534,7 +538,7 @@
         <div class="grid grid-cols-1 gap-8 lg:grid-cols-3">
             <div>
                 <a href="{{ route('home') }}" class="flex items-center">
-                    <x-logo class="w-auto mr-3 text-indigo-600 h-9" alt="{{ config('app.name') }} Logo" />
+                    <x-logo class="w-auto mr-3 text-primary-600 h-9" alt="{{ config('app.name') }} Logo" />
                     <span class="self-center text-3xl font-semibold text-white whitespace-nowrap">{{ config('app.name') }}</span>
                 </a>
 

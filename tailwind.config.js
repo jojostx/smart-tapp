@@ -1,6 +1,14 @@
 const defaultTheme = require('tailwindcss/defaultTheme');
+const colors = require('tailwindcss/colors');
 
 module.exports = {
+    content: [
+        './app/**/*.php',
+        './resources/**/*.html',
+        './resources/**/*.js',
+        './resources/**/*.php',
+        './vendor/filament/**/*.blade.php',
+    ],
     theme: {
         extend: {
             backgroundImage: {
@@ -14,6 +22,12 @@ module.exports = {
                 'ping-slow': 'ping 3s linear infinite',
                 'pulse-slow': 'pulse 3s linear infinite',
             },
+            colors: {
+                danger: colors.rose,
+                primary: colors.indigo,
+                success: colors.green,
+                warning: colors.yellow,
+            },
         },
     },
     variants: {
@@ -21,17 +35,6 @@ module.exports = {
             backgroundColor: ['active'],
         }
     },
-    content: [
-        './app/**/*.php',
-        './resources/**/*.html',
-        './resources/**/*.js',
-        './resources/**/*.jsx',
-        './resources/**/*.ts',
-        './resources/**/*.tsx',
-        './resources/**/*.php',
-        './resources/**/*.vue',
-        './resources/**/*.twig',
-    ],
     plugins: [
         require('@tailwindcss/forms'),
         require('@tailwindcss/typography'),

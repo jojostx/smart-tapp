@@ -1,0 +1,1 @@
+<x-logo class="object-contain w-full h-full text-primary-600" alt="{{ config('app.name') }} Logo" />
