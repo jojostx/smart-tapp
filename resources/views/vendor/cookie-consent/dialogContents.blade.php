@@ -8,7 +8,7 @@
                     </p>
                 </div>
                 <div class="flex-shrink-0 w-full mt-2 sm:mt-0 sm:w-auto">
-                    <button class="flex items-center justify-center px-4 py-2 text-sm font-medium rounded-md cursor-pointer text-primary-100 bg-primary-800 js-cookie-consent-agree cookie-consent__agree hover:bg-primary-300">
+                    <button class="flex items-center justify-center px-4 py-2 text-sm font-medium rounded-md cursor-pointer text-primary-100 bg-primary-600 js-cookie-consent-agree cookie-consent__agree hover:bg-primary-500">
                         {{ trans('cookie-consent::texts.agree') }}
                     </button>
                 </div>

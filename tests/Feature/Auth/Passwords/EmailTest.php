@@ -2,7 +2,7 @@
 
 namespace Tests\Feature\Auth\Passwords;
 
-use App\Models\User;
+use App\Models\Tenant\User;
 use Illuminate\Foundation\Testing\RefreshDatabase;
 use Livewire\Livewire;
 use Tests\TestCase;

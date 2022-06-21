@@ -23,7 +23,7 @@ class Kernel extends HttpKernel
         \Illuminate\Foundation\Http\Middleware\ConvertEmptyStringsToNull::class,
         // \App\Http\Middleware\PreventAccessFromTenantDomains::class,
         \Spatie\CookieConsent\CookieConsentMiddleware::class,
-        \App\Http\Middleware\AddTenancyCookieMiddleware::class,
+        // \App\Http\Middleware\AddTenancyCookieMiddleware::class,
     ];
 
     /**

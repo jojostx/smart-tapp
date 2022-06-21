@@ -10,8 +10,6 @@ class LogoutResponse extends AuthLogoutResponse
 {
     public function toResponse($request): RedirectResponse
     {
-        Cookie::queue(Cookie::forget(config('tenancy.cookie')));
-
         return parent::toResponse($request);
     }
 }

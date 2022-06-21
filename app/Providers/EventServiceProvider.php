@@ -4,6 +4,8 @@ namespace App\Providers;
 
 use App\Events\UnverifiedTenantRegistered;
 use App\Events\UnverifiedTenantVerified;
+use App\Listeners\Tenant\TenantUserLoggedOut;
+use Illuminate\Auth\Events\Logout;
 use Illuminate\Auth\Events\Registered;
 use Illuminate\Auth\Events\Verified;
 use Illuminate\Auth\Listeners\SendEmailVerificationNotification;
@@ -21,6 +23,8 @@ class EventServiceProvider extends ServiceProvider
         Registered::class => [
             SendEmailVerificationNotification::class,
         ],
+        Logout::class => [
+            TenantUserLoggedOut::class,]
     ];
 
     /**

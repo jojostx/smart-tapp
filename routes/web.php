@@ -18,6 +18,17 @@ use Illuminate\Support\Facades\Route;
 
 Route::view('/', 'welcome')->name('home');
 
+// Route::get('/', function (Request $request)
+// {
+//     // $sessionModel = SessionModel::findOrFail($request->session()->getId());
+
+//     // $sessionModel->tenant_id = tenant('id');
+
+//     // $sessionModel->save();
+
+//     dd(setTenantCentralSession($request, $request->user()?->id));
+// })->name('home');
+
 Route::middleware(['web', 'guest', 'landlord.guest'])->withoutMiddleware('cookie_consent')->group(function () {
     Route::get('register', Register::class)
         ->name('register');

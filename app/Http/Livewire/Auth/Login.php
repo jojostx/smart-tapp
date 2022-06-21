@@ -2,12 +2,9 @@
 
 namespace App\Http\Livewire\Auth;
 
-use App\Models\User;
+use App\Models\Tenant\User;
 use DanHarrin\LivewireRateLimiting\WithRateLimiting;
-use Illuminate\Support\Facades\Cookie;
-use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Hash;
-use Illuminate\Validation\Rule;
 use Livewire\Component;
 
 class Login extends Component
@@ -60,6 +57,9 @@ class Login extends Component
 
     public function authenticate()
     {
+        // // set the user's session [user_id & tenant_id] on the central db session table before login
+        // setTenantCentralSession(request());
+
         $this->rateLimit(20);
 
         $validated = $this->validate();
@@ -87,8 +87,6 @@ class Login extends Component
 
         $token = tenancy()->impersonate($tenant, $user->id, $this->redirectUrl);
         $domain = $tenant->domain;
-        
-        Cookie::queue(config('tenancy.cookie'), $tenant->domain, 2628000);
 
         return redirect("https://$domain/impersonate/{$token->token}");
     }
