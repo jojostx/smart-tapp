@@ -92,7 +92,7 @@ return [
     'auth' => [
         'guard' => env('FILAMENT_AUTH_GUARD', 'web'),
         'pages' => [
-            'login' => \Filament\Http\Livewire\Auth\Login::class,
+            'login' => App\Http\Livewire\Auth\Login::class,
         ],
     ],
 
@@ -196,7 +196,7 @@ return [
             'have_inline_labels' => false,
         ],
         'footer' => [
-            'should_show_logo' => true,
+            'should_show_logo' => false,
         ],
         'max_content_width' => '7xl',
         'notifications' => [
@@ -288,13 +288,14 @@ return [
             ShareErrorsFromSession::class,
             VerifyCsrfToken::class,
             SubstituteBindings::class,
+            \App\Http\Middleware\RedirectIfAuthenticated::class,
             DispatchServingFilamentEvent::class,
             MirrorConfigToSubpackages::class,
 
             // custom middleware & middleware from third party packages
             'universal',
             PreventAccessFromCentralDomains::class,
-            InitializeTenancyByDomain::class
+            App\Http\Middleware\InitializeTenancyByDomain::class
         ],
     ],
 

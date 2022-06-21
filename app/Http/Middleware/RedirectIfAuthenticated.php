@@ -6,6 +6,7 @@ use App\Providers\RouteServiceProvider;
 use Closure;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
+use Stancl\Tenancy\Middleware\ScopeSessions;
 
 class RedirectIfAuthenticated
 {
@@ -23,7 +24,13 @@ class RedirectIfAuthenticated
 
         foreach ($guards as $guard) {
             if (Auth::guard($guard)->check()) {
-                return redirect(RouteServiceProvider::HOME);
+                if (blank(tenant())) {
+                    return redirect(RouteServiceProvider::HOME);
+                }
+
+                if (request()->routeIs('filament.auth.login')) {
+                    return redirect()->route('filament.pages.dashboard');
+                }
             }
         }
 

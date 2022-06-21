@@ -13,7 +13,7 @@
             @if (Route::has('register'))
             <p class="mt-2 text-sm leading-5 text-center text-gray-600 max-w">
                 Or
-                <a href="{{ route('register') }}" class="font-medium text-primary-600 transition duration-150 ease-in-out hover:text-primary-500 focus:outline-none focus:underline">
+                <a href="{{ route('register') }}" class="font-medium transition duration-150 ease-in-out text-primary-600 hover:text-primary-500 focus:outline-none focus:underline">
                     create a new account
                 </a>
             </p>
@@ -24,6 +24,11 @@
     <div class="mt-8 sm:mx-auto sm:w-full sm:max-w-md">
         <div class="px-4 py-8 bg-white shadow sm:rounded-lg sm:px-10">
             <form wire:submit.prevent="authenticate">
+                @if (blank($this->currentTenant))                    
+                    <!-- Domain -->
+                    <x-domain-input/>
+                @endif
+
                 <!-- Email Address -->
                 <div class="mt-4">
                     <x-label for="email" :value="__('Email')" />
@@ -56,7 +61,7 @@
                     </div>
 
                     <div class="text-sm leading-5">
-                        <a href="#" class="font-medium text-primary-600 transition duration-150 ease-in-out hover:text-primary-500 focus:outline-none focus:underline">
+                        <a href="#" class="font-medium transition duration-150 ease-in-out text-primary-600 hover:text-primary-500 focus:outline-none focus:underline">
                             Forgot your password?
                         </a>
                     </div>
@@ -64,12 +69,14 @@
 
                 <div class="mt-6">
                     <span class="block w-full rounded-md shadow-sm">
-                        <button type="submit" class="flex justify-center w-full px-4 py-2 text-sm font-medium text-white transition duration-150 ease-in-out bg-primary-600 border border-transparent rounded-md hover:bg-primary-500 focus:outline-none focus:border-primary-700 focus:ring-primary active:bg-primary-700">
+                        <button type="submit" class="flex justify-center w-full px-4 py-2 text-sm font-medium text-white transition duration-150 ease-in-out border border-transparent rounded-md bg-primary-600 hover:bg-primary-500 focus:outline-none focus:border-primary-700 focus:ring-primary active:bg-primary-700">
                             Sign in
                         </button>
                     </span>
                 </div>
             </form>
         </div>
+
+        <x-form-footer/>
     </div>
 </div>

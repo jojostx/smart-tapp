@@ -18,6 +18,20 @@ return [
         env('TENANCY_CENTRAL_ADMIN_DOMAIN'),
     ],
 
+    'tenancy_middleware' => App\Http\Middleware\InitializeTenancyByDomain::class,
+
+    /*
+    |--------------------------------------------------------------------------
+    | Tenancy Session Cookie Name
+    |--------------------------------------------------------------------------
+    |
+    | Here you may change the name of the cookie used to identify a tenancy session
+    | instance by ID [tenant_id]. The name specified here will get used every time a
+    | new tenancy session cookie is created.
+    |
+    */
+    'cookie' =>  env('TENANCY_SESSION_COOKIE', 'tenancy_session'),
+
     /**
      * The list of domains hosting your central app.
      *
@@ -56,7 +70,7 @@ return [
          * prefix + tenant_id + suffix.
          */
         'prefix' => 'tenant:',
-        'suffix' => ':'. env('APP_NAME', 'Smart-tapp'),
+        'suffix' => ':' . env('APP_NAME', 'Smart-tapp'),
 
         /**
          * TenantDatabaseManagers are classes that handle the creation & deletion of tenant databases.
@@ -66,13 +80,13 @@ return [
             'mysql' => Stancl\Tenancy\TenantDatabaseManagers\MySQLDatabaseManager::class,
             'pgsql' => Stancl\Tenancy\TenantDatabaseManagers\PostgreSQLDatabaseManager::class,
 
-        /**
+            /**
          * Use this database manager for MySQL to have a DB user created for each tenant database.
          * You can customize the grants given to these users by changing the $grants property.
          */
             // 'mysql' => Stancl\Tenancy\TenantDatabaseManagers\PermissionControlledMySQLDatabaseManager::class,
 
-        /**
+            /**
          * Disable the pgsql manager above, and enable the one below if you
          * want to separate tenant DBs by schemas rather than databases.
          */
@@ -167,7 +181,7 @@ return [
      * understand which ones you want to enable.
      */
     'features' => [
-        // Stancl\Tenancy\Features\UserImpersonation::class,
+        Stancl\Tenancy\Features\UserImpersonation::class,
         // Stancl\Tenancy\Features\TelescopeTags::class,
         // Stancl\Tenancy\Features\TenantConfig::class, // https://tenancyforlaravel.com/docs/v3/features/tenant-config
         Stancl\Tenancy\Features\UniversalRoutes::class,

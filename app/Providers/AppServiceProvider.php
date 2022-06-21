@@ -2,6 +2,8 @@
 
 namespace App\Providers;
 
+use App\Http\Responses\Tenant\Auth\LogoutResponse as AuthLogoutResponse;
+use Filament\Http\Responses\Auth\LogoutResponse;
 use Illuminate\Support\ServiceProvider;
 
 class AppServiceProvider extends ServiceProvider
@@ -23,6 +25,9 @@ class AppServiceProvider extends ServiceProvider
      */
     public function boot()
     {
-        //
+        \app()->bind(
+            LogoutResponse::class,
+            AuthLogoutResponse::class
+        );
     }
 }

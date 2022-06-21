@@ -21,6 +21,9 @@ class Kernel extends HttpKernel
         \Illuminate\Foundation\Http\Middleware\ValidatePostSize::class,
         \App\Http\Middleware\TrimStrings::class,
         \Illuminate\Foundation\Http\Middleware\ConvertEmptyStringsToNull::class,
+        // \App\Http\Middleware\PreventAccessFromTenantDomains::class,
+        \Spatie\CookieConsent\CookieConsentMiddleware::class,
+        \App\Http\Middleware\AddTenancyCookieMiddleware::class,
     ];
 
     /**
@@ -32,6 +35,7 @@ class Kernel extends HttpKernel
         'web' => [
             \App\Http\Middleware\EncryptCookies::class,
             \Illuminate\Cookie\Middleware\AddQueuedCookiesToResponse::class,
+            \App\Http\Middleware\InitializeTenancyByDomain::class,
             \Illuminate\Session\Middleware\StartSession::class,
             \Illuminate\View\Middleware\ShareErrorsFromSession::class,
             \App\Http\Middleware\VerifyCsrfToken::class,
@@ -55,6 +59,8 @@ class Kernel extends HttpKernel
      * @var array<string, class-string|string>
      */
     protected $routeMiddleware = [
+        'cookie_consent'=> \Spatie\CookieConsent\CookieConsentMiddleware::class,
+        'tenant.cookie' => \App\Http\Middleware\AddTenancyCookieMiddleware::class,
         'landlord.auth' => \App\Http\Middleware\RedirectIfNotLandlord::class,
         'landlord.guest' => \App\Http\Middleware\RedirectIfLandlord::class,
         // 'landlord.verified' => \App\Http\Middleware\EnsureLandlordEmailIsVerified::class,

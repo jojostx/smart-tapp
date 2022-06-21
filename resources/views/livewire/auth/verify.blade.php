@@ -73,6 +73,7 @@
             </form>
             @endif
         </div>
+        <x-form-footer/>
     </div>
 
     @if ($isCreatingAccount)

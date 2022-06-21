@@ -32,8 +32,8 @@ class Register extends Component
     /** @var string */
     public $passwordConfirmation = '';
 
-    /** @var string|int|bool */
-    public $terms = '';
+    /** @var bool */
+    public $terms = false;
 
     protected $validationAttributes = [
         'organization' => 'Organization Name',

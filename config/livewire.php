@@ -86,7 +86,7 @@ return [
     'middleware_group' => [
         'web',
         'universal',
-        InitializeTenancyByDomain::class, // or whatever tenancy middleware you use
+        App\Http\Middleware\InitializeTenancyByDomain::class // or whatever tenancy middleware you use
     ],
 
     /*

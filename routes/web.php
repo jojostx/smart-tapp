@@ -1,5 +1,6 @@
 <?php
 
+use App\Http\Livewire\Auth\Login;
 use App\Http\Livewire\Auth\Register;
 use App\Http\Livewire\Auth\Verify;
 use Illuminate\Support\Facades\Route;
@@ -17,9 +18,12 @@ use Illuminate\Support\Facades\Route;
 
 Route::view('/', 'welcome')->name('home');
 
-Route::middleware(['guest', 'landlord.guest'])->group(function () {
+Route::middleware(['web', 'guest', 'landlord.guest'])->withoutMiddleware('cookie_consent')->group(function () {
     Route::get('register', Register::class)
         ->name('register');
+
+    Route::get('login', Login::class)
+        ->name('login');
 
     Route::get('email/verify/{id?}', Verify::class)
         ->name('verification.notice');
