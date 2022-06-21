@@ -7,6 +7,7 @@
     "require": {
         "php": "^8.0.2",
         "bmatovu/multi-auth": "^11.0",
+        "doctrine/dbal": "^3.3",
         "dyrynda/laravel-model-uuid": "^6.6",
         "filament/filament": "^2.13",
         "guzzlehttp/guzzle": "^7.2",

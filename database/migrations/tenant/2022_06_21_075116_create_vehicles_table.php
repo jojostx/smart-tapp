@@ -13,8 +13,13 @@ return new class extends Migration
      */
     public function up()
     {
-        Schema::create('parking_lots', function (Blueprint $table) {
+        Schema::create('vehicles', function (Blueprint $table) {
             $table->id();
+            $table->string('uuid')->unique();
+            $table->string('plate_number')->unique();
+            $table->string('brand')->nullable();
+            $table->string('model')->nullable();
+            $table->string('color')->nullable();
             $table->timestamps();
         });
     }
@@ -26,6 +31,6 @@ return new class extends Migration
      */
     public function down()
     {
-        Schema::dropIfExists('parking_lots');
+        Schema::dropIfExists('vehicles');
     }
 };

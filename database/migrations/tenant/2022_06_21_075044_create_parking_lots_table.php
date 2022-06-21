@@ -13,8 +13,10 @@ return new class extends Migration
      */
     public function up()
     {
-        Schema::create('accesses', function (Blueprint $table) {
+        Schema::create('parking_lots', function (Blueprint $table) {
             $table->id();
+            $table->string('uuid')->unique();
+            $table->string('name')->unique();
             $table->timestamps();
         });
     }
@@ -26,6 +28,6 @@ return new class extends Migration
      */
     public function down()
     {
-        Schema::dropIfExists('accesses');
+        Schema::dropIfExists('parking_lots');
     }
 };
