@@ -74,7 +74,7 @@ class Login extends Component
         });
 
         if (blank($user)) {
-            $this->addError('email', __('validation.exists', 'Email'));
+            $this->addError('email', __('The email is Invalid'));
 
             return;
         }
