@@ -21,13 +21,13 @@ return new class extends Migration
 
             $table->integer('status')->default(1);
             $table->integer('validity');
+
+            $table->foreignId('driver_id')->nullable()->constrained()->nullOnDelete();
+            $table->foreignId('vehicle_id')->constrained()->cascadeOnDelete();
             
-            $table->foreign('driver_id')->references('id')->on('drivers')->onUpdate('cascade')->onDelete('SET NULL');
-            $table->foreign('vehicle_id')->references('id')->on('vehicles')->onUpdate('cascade')->onDelete('cascade');
-            
-            $table->foreign('parking_lot_id')->references('id')->on('parking_lots')->onUpdate('cascade')->onDelete('cascade');
-            $table->foreign('created_by')->references('id')->on('users')->onUpdate('cascade')->onDelete('SET NULL');
-            $table->foreign('issued_by')->references('id')->on('users')->onUpdate('cascade')->onDelete('SET NULL');
+            $table->foreignId('parking_lot_id')->constrained('parking_lots')->cascadeOnDelete();
+            $table->foreignId('created_by')->nullable()->constrained('users')->nullOnDelete();
+            $table->foreignId('issued_by')->nullable()->constrained('users')->nullOnDelete();
             $table->timestamp('issued_at')->useCurrent();
             
             $table->timestamps();
