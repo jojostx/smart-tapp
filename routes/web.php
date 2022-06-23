@@ -1,8 +1,8 @@
 <?php
 
-use App\Http\Livewire\Auth\Login;
-use App\Http\Livewire\Auth\Register;
-use App\Http\Livewire\Auth\Verify;
+use App\Filament\Livewire\Auth\Login;
+use App\Filament\Livewire\Auth\Register;
+use App\Filament\Livewire\Auth\Verify;
 use Illuminate\Support\Facades\Route;
 
 /*

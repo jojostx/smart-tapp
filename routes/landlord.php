@@ -2,12 +2,12 @@
 
 use App\Http\Controllers\EmailVerificationController;
 use App\Http\Controllers\Landlord\Auth\LogoutController;
-use App\Http\Livewire\Landlord\Auth\Login;
-use App\Http\Livewire\Landlord\Auth\Passwords\Confirm;
-use App\Http\Livewire\Landlord\Auth\Passwords\Email;
-use App\Http\Livewire\Landlord\Auth\Passwords\Reset;
-use App\Http\Livewire\Landlord\Auth\Verify;
-use App\Http\Livewire\Landlord\Dashboard;
+use App\Filament\Livewire\Landlord\Auth\Login;
+use App\Filament\Livewire\Landlord\Auth\Passwords\Confirm;
+use App\Filament\Livewire\Landlord\Auth\Passwords\Email;
+use App\Filament\Livewire\Landlord\Auth\Passwords\Reset;
+use App\Filament\Livewire\Landlord\Auth\Verify;
+use App\Filament\Livewire\Landlord\Dashboard;
 use Illuminate\Support\Facades\Route;
 
 // Dashboard

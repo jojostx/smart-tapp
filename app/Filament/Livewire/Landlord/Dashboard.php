@@ -1,6 +1,6 @@
 <?php
 
-namespace App\Http\Livewire\Landlord;
+namespace App\Filament\Livewire\Landlord;
 
 use Livewire\Component;
 

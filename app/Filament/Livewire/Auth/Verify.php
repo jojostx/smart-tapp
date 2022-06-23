@@ -1,6 +1,6 @@
 <?php
 
-namespace App\Http\Livewire\Auth;
+namespace App\Filament\Livewire\Auth;
 
 use App\Events\Tenant\TenantVerified;
 use App\Models\Tenant;

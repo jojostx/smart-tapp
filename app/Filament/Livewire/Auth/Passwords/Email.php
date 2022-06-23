@@ -1,6 +1,6 @@
 <?php
 
-namespace App\Http\Livewire\Landlord\Auth\Passwords;
+namespace App\Filament\Livewire\Auth\Passwords;
 
 use Livewire\Component;
 use Illuminate\Support\Facades\Password;
@@ -42,6 +42,6 @@ class Email extends Component
 
     public function render()
     {
-        return view('livewire.landlord.auth.passwords.email')->extends('layouts.auth');
+        return view('livewire.auth.passwords.email')->extends('layouts.auth');
     }
 }

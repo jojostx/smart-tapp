@@ -1,6 +1,6 @@
 <?php
 
-namespace App\Http\Livewire\Landlord\Auth\Passwords;
+namespace App\Filament\Livewire\Landlord\Auth\Passwords;
 
 use Livewire\Component;
 
