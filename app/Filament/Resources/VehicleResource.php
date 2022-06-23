@@ -2,9 +2,9 @@
 
 namespace App\Filament\Resources;
 
-use App\Filament\Resources\ParkingLotResource\Pages;
-use App\Filament\Resources\ParkingLotResource\RelationManagers;
-use App\Models\Tenant\ParkingLot;
+use App\Filament\Resources\VehicleResource\Pages;
+use App\Filament\Resources\VehicleResource\RelationManagers;
+use App\Models\Tenant\Vehicle;
 use Filament\Forms;
 use Filament\Resources\Form;
 use Filament\Resources\Resource;
@@ -13,15 +13,13 @@ use Filament\Tables;
 use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\SoftDeletingScope;
 
-class ParkingLotResource extends Resource
+class VehicleResource extends Resource
 {
-    protected static ?string $model = ParkingLot::class;
+    protected static ?string $model = Vehicle::class;
 
-    protected static ?string $navigationIcon = 'heroicon-o-view-boards';
+    protected static ?string $navigationIcon = 'heroicon-o-truck';
 
     protected static ?string $navigationGroup = 'Parking';
-
-    protected static ?string $recordTitleAttribute = 'name';
 
     public static function form(Form $form): Form
     {
@@ -35,7 +33,10 @@ class ParkingLotResource extends Resource
     {
         return $table
             ->columns([
-                Tables\Columns\TextColumn::make('name'),
+                Tables\Columns\TextColumn::make('plate_number')->label('Plate Number'),
+                Tables\Columns\TextColumn::make('brand'),
+                Tables\Columns\TextColumn::make('model'),
+                Tables\Columns\TextColumn::make('color'),
                 Tables\Columns\TextColumn::make('updated_at')->label('Modified at')->date(config('filament.date_format'))->sortable(),
                 Tables\Columns\TextColumn::make('created_at')->date(config('filament.date_format'))->sortable(),
             ])
@@ -60,9 +61,9 @@ class ParkingLotResource extends Resource
     public static function getPages(): array
     {
         return [
-            'index' => Pages\ListParkingLots::route('/'),
-            'create' => Pages\CreateParkingLot::route('/create'),
-            'edit' => Pages\EditParkingLot::route('/{record}/edit'),
+            'index' => Pages\ListVehicles::route('/'),
+            'create' => Pages\CreateVehicle::route('/create'),
+            'edit' => Pages\EditVehicle::route('/{record}/edit'),
         ];
     }    
 }
