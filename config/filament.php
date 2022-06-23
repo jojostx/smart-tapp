@@ -92,7 +92,7 @@ return [
     'auth' => [
         'guard' => env('FILAMENT_AUTH_GUARD', 'web'),
         'pages' => [
-            'login' => App\Http\Livewire\Auth\Login::class,
+            'login' => App\Filament\Livewire\Auth\Login::class,
         ],
     ],
 
@@ -204,7 +204,7 @@ return [
             'alignment' => 'center',
         ],
         'sidebar' => [
-            'is_collapsible_on_desktop' => false,
+            'is_collapsible_on_desktop' => true,
             'groups' => [
                 'are_collapsible' => true,
             ],
@@ -264,7 +264,18 @@ return [
     |
     */
 
-    'google_fonts' => 'https://fonts.googleapis.com/css2?family=DM+Sans:ital,wght@0,400;0,500;0,700;1,400;1,500;1,700&display=swap',
+    'google_fonts' => 'https://rsms.me/inter/inter.css',
+
+    /*
+    |--------------------------------------------------------------------------
+    | Date Format
+    |--------------------------------------------------------------------------
+    |
+    | This is the format for date\datetime columns on the tables.
+    |
+    */
+
+    'date_format' => 'd M Y',
 
     /*
     |--------------------------------------------------------------------------
