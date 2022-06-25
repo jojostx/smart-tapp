@@ -3736,9 +3736,6 @@ select{
 .flex-wrap{
   flex-wrap: wrap;
 }
-.place-content-end{
-  place-content: end;
-}
 .items-start{
   align-items: flex-start;
 }
@@ -4130,10 +4127,6 @@ select{
   --tw-bg-opacity: 1;
   background-color: rgb(224 231 255 / var(--tw-bg-opacity));
 }
-.bg-primary-800{
-  --tw-bg-opacity: 1;
-  background-color: rgb(55 48 163 / var(--tw-bg-opacity));
-}
 .bg-green-500{
   --tw-bg-opacity: 1;
   background-color: rgb(34 197 94 / var(--tw-bg-opacity));
@@ -4434,8 +4427,8 @@ select{
 .text-right{
   text-align: right;
 }
-.font-sans{
-  font-family: Inter var, ui-sans-serif, system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial, "Noto Sans", sans-serif, "Apple Color Emoji", "Segoe UI Emoji", "Segoe UI Symbol", "Noto Color Emoji";
+.font-jet{
+  font-family: JetBrains Mono, monospace, ui-sans-serif, system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial, "Noto Sans", sans-serif, "Apple Color Emoji", "Segoe UI Emoji", "Segoe UI Symbol", "Noto Color Emoji";
 }
 .font-mono{
   font-family: ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, "Liberation Mono", "Courier New", monospace;
@@ -5155,11 +5148,6 @@ select{
 .hover\:bg-blue-700:hover{
   --tw-bg-opacity: 1;
   background-color: rgb(29 78 216 / var(--tw-bg-opacity));
-}
-
-.hover\:bg-primary-300:hover{
-  --tw-bg-opacity: 1;
-  background-color: rgb(165 180 252 / var(--tw-bg-opacity));
 }
 
 .hover\:bg-gray-500\/5:hover{
@@ -7589,4 +7577,6 @@ select{
   }
 }
 
-
+html {
+    font-family: "JetBrains Mono", monospace !important;
+}

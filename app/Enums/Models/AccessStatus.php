@@ -2,8 +2,9 @@
 
 namespace App\Enums\Models;
 
-Enum AccessStatus: int {
-  case Inactive = 1;
-  case Issued = 2;
-  case Active = 3;
+enum AccessStatus: string
+{
+  case Inactive = 'inactive';
+  case Issued = 'issued';
+  case Active = 'active';
 }

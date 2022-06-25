@@ -18,11 +18,13 @@ class DriverResource extends Resource
 {
     protected static ?string $model = Driver::class;
 
-    protected static ?string $navigationIcon = 'heroicon-o-user-group';
+    protected static ?string $navigationIcon = 'heroicon-o-support';
 
     protected static ?string $navigationGroup = 'Parking';
 
     protected static ?string $recordTitleAttribute = 'phone_number';
+
+    protected static ?int $navigationSort = 4;
 
     public static function form(Form $form): Form
     {
@@ -69,9 +71,16 @@ class DriverResource extends Resource
                 Tables\Columns\TextColumn::make('name'),
                 Tables\Columns\TextColumn::make('email'),
                 Tables\Columns\TextColumn::make('phone_number')->searchable(),
-                Tables\Columns\TextColumn::make('phone_verified_at')->date(config('filament.date_format'))->sortable(),
-                Tables\Columns\TextColumn::make('email_verified_at')->date(config('filament.date_format'))->sortable(),
-                Tables\Columns\TextColumn::make('created_at')->date(config('filament.date_format'))->sortable(),
+                Tables\Columns\TextColumn::make('phone_verified_at')->date(config('filament.date_format'))
+                    ->toggleable()
+                    ->sortable(),
+                Tables\Columns\TextColumn::make('email_verified_at')->date(config('filament.date_format'))
+                    ->toggleable()
+                    ->sortable(),
+                Tables\Columns\TextColumn::make('created_at')->date(config('filament.date_format'))
+                    ->toggleable()
+                    ->toggledHiddenByDefault()
+                    ->sortable(),
             ])
             ->filters([
                 //

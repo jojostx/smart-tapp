@@ -1,1 +1,4 @@
 @import '../../vendor/filament/filament/resources/css/app.css';
+html {
+    font-family: "JetBrains Mono", monospace !important;
+}

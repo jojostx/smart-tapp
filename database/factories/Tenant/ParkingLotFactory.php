@@ -9,6 +9,8 @@ use Illuminate\Database\Eloquent\Factories\Factory;
  */
 class ParkingLotFactory extends Factory
 {
+    protected $model =  \App\Models\Tenant\ParkingLot::class;
+
     /**
      * Define the model's default state.
      *
@@ -17,7 +19,8 @@ class ParkingLotFactory extends Factory
     public function definition()
     {
         return [
-            //
+            'uuid' => $this->faker->unique()->uuid(),
+            'name' => $this->faker->unique()->name(),
         ];
     }
 }

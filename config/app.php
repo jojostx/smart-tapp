@@ -214,6 +214,7 @@ return [
         App\Providers\BladeServiceProvider::class,
         App\Providers\TenancyServiceProvider::class,
         App\Providers\FilamentServiceProvider::class,
+        App\Providers\FakerServiceProvider::class,
     ],
 
     /*
