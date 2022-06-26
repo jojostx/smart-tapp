@@ -2,6 +2,7 @@
 
 namespace App\Models\Tenant;
 
+use App\Enums\Models\ParkingLotStatus;
 use Dyrynda\Database\Support\BindsOnUuid;
 use Dyrynda\Database\Support\GeneratesUuid;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
@@ -19,6 +20,16 @@ class ParkingLot extends Model
      */
     protected $fillable = [
         'name',
+        'status',
+    ];
+
+    /**
+     * The attributes that should be cast.
+     *
+     * @var array
+     */
+    protected $casts = [
+        'status' => ParkingLotStatus::class,
     ];
 
     /**

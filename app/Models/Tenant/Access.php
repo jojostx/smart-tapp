@@ -21,7 +21,8 @@ class Access extends Model
     protected $fillable = [
         'url',
         'status',
-        'validity',
+        'valid_until',
+        'expires_after',
     ];
 
     /**
@@ -32,7 +33,8 @@ class Access extends Model
     protected $casts = [
         'status' => AccessStatus::class,
         'issued_at' => 'datetime',
-        'validity' => 'integer',
+        'valid_until' => 'datetime',
+        'expires_after' => 'integer',
     ];
 
     /**

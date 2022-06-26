@@ -2,6 +2,7 @@
 
 namespace App\Filament\Resources;
 
+use App\Enums\Models\ParkingLotStatus;
 use App\Filament\Resources\ParkingLotResource\Pages;
 use App\Filament\Resources\ParkingLotResource\RelationManagers;
 use App\Models\Tenant\ParkingLot;
@@ -29,7 +30,31 @@ class ParkingLotResource extends Resource
     {
         return $form
             ->schema([
-                //
+                Forms\Components\Card::make()
+                    ->schema([
+                        Forms\Components\TextInput::make('name')
+                            ->label('Name')
+                            ->required()
+                            ->rules(['alpha_dash'])
+                            ->unique(),
+                        Forms\Components\Radio::make('status')
+                            ->options(ParkingLotStatus::toArray())->default(ParkingLotStatus::OPEN)
+                            ->descriptions(ParkingLotStatus::toDescriptionArray())->columnSpan('full')
+                            ->required(),
+                    ])->columnSpan(1),
+
+                Forms\Components\Card::make()
+                    ->schema([
+                        Forms\Components\Placeholder::make('updated_at')
+                            ->label('Last modified at')
+                            ->content(fn (?ParkingLot $record): string => $record ? $record->updated_at->diffForHumans() : '-'),
+                        Forms\Components\Placeholder::make('created_at')
+                            ->label('Created at')
+                            ->content(fn (?ParkingLot $record): string => $record ? $record->created_at->diffForHumans() : '-')
+                    ])
+                    ->columnSpan(1),
+            ])->columns([
+                'sm' => 1,
             ]);
     }
 
@@ -38,6 +63,12 @@ class ParkingLotResource extends Resource
         return $table
             ->columns([
                 Tables\Columns\TextColumn::make('name')->searchable(),
+                Tables\Columns\BadgeColumn::make('status')
+                    ->enum([ParkingLotStatus::cases()])
+                    ->colors([
+                        'warning' => fn ($state): bool => $state === ParkingLotStatus::CLOSED->value,
+                        'success' => fn ($state): bool => $state === ParkingLotStatus::OPEN->value,
+                    ]),
                 Tables\Columns\TextColumn::make('updated_at')->label('Modified at')->date(config('filament.date_format'))->sortable(),
                 Tables\Columns\TextColumn::make('created_at')->date(config('filament.date_format'))->sortable(),
             ])
@@ -51,20 +82,19 @@ class ParkingLotResource extends Resource
                 Tables\Actions\DeleteBulkAction::make(),
             ]);
     }
-    
+
     public static function getRelations(): array
     {
         return [
             //
         ];
     }
-    
+
     public static function getPages(): array
     {
         return [
             'index' => Pages\ListParkingLots::route('/'),
-            'create' => Pages\CreateParkingLot::route('/create'),
             'edit' => Pages\EditParkingLot::route('/{record}/edit'),
         ];
-    }    
+    }
 }

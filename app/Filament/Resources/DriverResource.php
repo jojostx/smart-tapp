@@ -104,7 +104,6 @@ class DriverResource extends Resource
     {
         return [
             'index' => Pages\ListDrivers::route('/'),
-            'create' => Pages\CreateDriver::route('/create'),
             'edit' => Pages\EditDriver::route('/{record}/edit'),
         ];
     }

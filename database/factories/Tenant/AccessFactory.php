@@ -22,8 +22,9 @@ class AccessFactory extends Factory
         return [
             'uuid' => $this->faker->unique()->uuid(),
             'url' => $this->faker->url(),
-            'status' => AccessStatus::Inactive->value,
-            'validity' => 10,
+            'status' => AccessStatus::INACTIVE->value,
+            'expires_after' => 30,
+            'valid_until' => now()->addDay(),
             'issued_at' => now(),
         ];
     }
@@ -37,7 +38,7 @@ class AccessFactory extends Factory
     {
         return $this->state(function (array $attributes) {
             return [
-                'status' => AccessStatus::Inactive->value,
+                'status' => AccessStatus::INACTIVE->value,
             ];
         });
     }
@@ -51,7 +52,7 @@ class AccessFactory extends Factory
     {
         return $this->state(function (array $attributes) {
             return [
-                'status' => AccessStatus::Active->value,
+                'status' => AccessStatus::ACTIVE->value,
             ];
         });
     }
@@ -65,7 +66,7 @@ class AccessFactory extends Factory
     {
         return $this->state(function (array $attributes) {
             return [
-                'status' => AccessStatus::Issued->value,
+                'status' => AccessStatus::ISSUED->value,
             ];
         });
     }

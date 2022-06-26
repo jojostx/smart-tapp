@@ -20,8 +20,9 @@ return new class extends Migration
             
             $table->string('url')->unique();
 
-            $table->string('status')->default(AccessStatus::Inactive->value);
-            $table->integer('validity');
+            $table->string('status')->default(AccessStatus::INACTIVE->value);
+            $table->integer('expires_after')->default(30);
+            $table->timestamp('valid_until')->nullable();
 
             $table->foreignId('driver_id')->nullable()->constrained()->nullOnDelete();
             $table->foreignId('vehicle_id')->constrained()->cascadeOnDelete();
