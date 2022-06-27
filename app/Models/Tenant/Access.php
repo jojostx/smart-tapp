@@ -5,6 +5,7 @@ namespace App\Models\Tenant;
 use App\Enums\Models\AccessStatus;
 use Dyrynda\Database\Support\BindsOnUuid;
 use Dyrynda\Database\Support\GeneratesUuid;
+use Illuminate\Database\Eloquent\Casts\Attribute;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
@@ -19,7 +20,6 @@ class Access extends Model
      * @var string[]
      */
     protected $fillable = [
-        'url',
         'status',
         'valid_until',
         'expires_after',
@@ -36,6 +36,14 @@ class Access extends Model
         'valid_until' => 'datetime',
         'expires_after' => 'integer',
     ];
+
+    // return URL::temporarySignedRoute(
+    //     'access.verify',
+    //     now()->addMinutes($attributes['expires_after']),
+    //     [
+    //         'uuid' => sha1($attributes['uuid']),
+    //     ]
+    // );
 
     /**
      * Get the driver for the access.

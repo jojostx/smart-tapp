@@ -17,8 +17,6 @@ return new class extends Migration
         Schema::create('accesses', function (Blueprint $table) {
             $table->id();
             $table->string('uuid')->unique();
-            
-            $table->string('url')->unique();
 
             $table->string('status')->default(AccessStatus::INACTIVE->value);
             $table->integer('expires_after')->default(30);

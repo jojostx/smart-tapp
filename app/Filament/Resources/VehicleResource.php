@@ -79,9 +79,9 @@ class VehicleResource extends Resource
     {
         return $table
             ->columns([
-                Tables\Columns\TextColumn::make('plate_number')->label('Plate Number'),
-                Tables\Columns\TextColumn::make('brand'),
-                Tables\Columns\TextColumn::make('model'),
+                Tables\Columns\TextColumn::make('plate_number')->label('Plate Number')->searchable(),
+                Tables\Columns\TextColumn::make('brand')->searchable(),
+                Tables\Columns\TextColumn::make('model')->searchable(),
                 Tables\Columns\TextColumn::make('color'),
                 Tables\Columns\TextColumn::make('updated_at')->label('Modified at')->date(config('filament.date_format'))->sortable(),
                 Tables\Columns\TextColumn::make('created_at')->date(config('filament.date_format'))->sortable(),
@@ -108,7 +108,6 @@ class VehicleResource extends Resource
     {
         return [
             'index' => Pages\ListVehicles::route('/'),
-            'create' => Pages\CreateVehicle::route('/create'),
             'edit' => Pages\EditVehicle::route('/{record}/edit'),
         ];
     }

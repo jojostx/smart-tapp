@@ -25,6 +25,8 @@ class AccessResource extends Resource
 
     protected static ?string $navigationGroup = 'Parking';
 
+    protected static ?string $recordTitleAttribute = 'vehicle.name';
+
     protected static ?int $navigationSort = 1;
 
     public static function form(Form $form): Form
@@ -70,12 +72,12 @@ class AccessResource extends Resource
                             ->maxDate(now()->addDays(3)),
 
                         RangeSlider::make('expires_after')
-                        ->label('Activation Timeout')
-                        ->max(120)
-                        ->min(30)
-                        ->step(10)
-                        ->hint('Time in minutes (min)')
-                        ->helperText('<span class="text-xs"><span class="text-sm">&#9432;</span> The Access will be deactivated if it is not used by the client after the timeout.</span>'),
+                            ->label('Activation Timeout')
+                            ->max(120)
+                            ->min(30)
+                            ->step(10)
+                            ->hint('Time in minutes (min)')
+                            ->helperText('<span class="text-xs"><span class="text-sm">&#9432;</span> The Access will be deactivated if it is not used by the client after the timeout.</span>'),
 
                         Forms\Components\Radio::make('status')
                             ->options(AccessStatus::toArray())->default(AccessStatus::ISSUED)
@@ -107,8 +109,6 @@ class AccessResource extends Resource
     {
         return $table
             ->columns([
-                Tables\Columns\TextColumn::make('url')
-                    ->limit(25),
                 Tables\Columns\BadgeColumn::make('status')
                     ->enum([AccessStatus::cases()])
                     ->colors([
@@ -139,9 +139,15 @@ class AccessResource extends Resource
             ])
             ->actions([
                 Tables\Actions\EditAction::make(),
+                Tables\Actions\DeleteAction::make()
+                    ->requiresConfirmation()
+                    ->modalHeading(fn (): string => 'Delete Access')
+                    ->modalWidth('md')
+                    ->modalSubheading(fn (Access $record): string => "Are you sure you want to delete the Access for the Vehicle [{$record->vehicle->plate_number}] with Driver [{$record->driver->name} - {$record->driver->phone_number}]?"),
             ])
             ->bulkActions([
-                Tables\Actions\DeleteBulkAction::make(),
+                Tables\Actions\DeleteBulkAction::make()
+                    ->requiresConfirmation(),
             ]);
     }
 
