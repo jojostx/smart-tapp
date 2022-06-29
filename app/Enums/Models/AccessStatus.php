@@ -18,9 +18,9 @@ enum AccessStatus: string
   public static function toDescriptionArray(): array
   {
     return [
-        self::INACTIVE->value => 'The access will be deactivated and cannot be used by the customer',   
-        self::ISSUED->value => 'The access will be capable of being activated by the customer',   
-        self::ACTIVE->value => 'The access will be activated and can be used by the user',
+        self::INACTIVE->value => 'The Access will be deactivated and cannot be used by the customer.',   
+        self::ISSUED->value => "The Access will be sent to the customer's phone and can be activated.",   
+        self::ACTIVE->value => "The Access will be activated and sent to the customer's phone.",
     ];
   }
 }

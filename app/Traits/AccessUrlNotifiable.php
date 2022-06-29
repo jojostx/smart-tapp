@@ -1,6 +1,6 @@
 <?php
 
-namespace App\Models\Traits;
+namespace App\Traits;
 
 use App\Notifications\Tenant\Driver\SendAccessUrlSMS;
 use NotificationChannels\AfricasTalking\Exceptions\CouldNotSendNotification;

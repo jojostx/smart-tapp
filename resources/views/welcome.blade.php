@@ -160,7 +160,7 @@
 </section>
 
 <section class="py-16 bg-white sm:py-24">
-    <div class="container px-4 mx-auto sm:px-6 lg:px-8">
+    <div class="container px-4 mx-auto sm:px-6 md:px-12">
         <div class="grid grid-cols-1 lg:grid-cols-2 lg:h-screen">
             <div class="relative z-10 lg:py-16">
                 <div class="relative h-64 overflow-hidden rounded-2xl sm:h-80 lg:h-full">
@@ -194,9 +194,8 @@
     </div>
 </section>
 
-
 <section class="py-16 sm:py-24 bg-gray-50">
-    <div class="container px-4 m-auto space-y-8 text-gray-500 md:px-12">
+    <div class="container px-4 m-auto space-y-8 text-gray-500 sm:px-6 md:px-12">
         <div>
             <span class="px-2 py-1 text-lg font-semibold rounded-full text-primary-600 bg-primary-200">Main features</span>
             <h2 class="max-w-lg mt-4 text-2xl font-bold text-gray-900 md:text-4xl">A Technology-Powered Approach to Parking Control</h2>
@@ -263,7 +262,7 @@
 </section>
 
 <section class="relative py-16 text-white bg-gray-900 sm:py-24">
-    <div class="container px-4 mx-auto sm:px-6 lg:px-8">
+    <div class="container px-4 mx-auto sm:px-6 md:px-12">
         <div class="max-w-xl mx-auto text-center">
             <h2 class="text-4xl font-bold tracking-tight sm:text-5xl">
                 Start for free. Pay as you grow. Switch at any time.
@@ -429,7 +428,7 @@
 </section>
 
 <section class="relative py-16 sm:py-24 bg-gray-50">
-    <div class="container px-4 mx-auto sm:px-6 lg:px-8">
+    <div class="container px-4 mx-auto sm:px-6 md:px-12">
         <div class="max-w-[38rem] mx-auto text-center">
             <h2 class="text-4xl font-bold tracking-tight sm:text-5xl">
                 Most innovative businesses choose us
@@ -514,7 +513,7 @@
 </section>
 
 <section class="py-16 overflow-hidden md:py-24 md:pt-0 bg-gray-50">
-    <div class="container px-4 m-auto space-y-8 md:px-12">
+    <div class="container px-4 m-auto space-y-8 sm:px-6 md:px-12">
         <div class="flex flex-col items-center justify-between px-8 py-16 overflow-hidden bg-primary-600 md:px-12 md:flex-row rounded-xl">
             <div class="mb-6 md:mb-0">
                 <h2 class="text-3xl font-bold text-center text-white md:text-left md:text-4xl">Ready to get started?</h2>
@@ -636,8 +635,8 @@
 
                     <nav class="flex flex-col mt-4 space-y-2 text-sm text-gray-300">
                         <a class="hover:opacity-75" href=""> Privacy Policy </a>
+                        <a class="hover:opacity-75" href=""> Cookie Policy </a>
                         <a class="hover:opacity-75" href=""> Terms & Conditions </a>
-                        <a class="hover:opacity-75" href=""> Returns Policy </a>
                         <a class="hover:opacity-75" href=""> Accessibility </a>
                     </nav>
                 </div>

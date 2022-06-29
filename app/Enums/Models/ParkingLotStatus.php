@@ -18,7 +18,7 @@ enum ParkingLotStatus: string
   {
     return [
         self::OPEN->value => 'Access for the parking lot can be created',   
-        self::CLOSED->value => 'Access for the parking lot can not be created',   
+        self::CLOSED->value => 'New and existing Accesses for the Parking Lot will be deactivated.',   
     ];
   }
 }

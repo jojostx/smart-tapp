@@ -25,7 +25,7 @@ class AccessResource extends Resource
 
     protected static ?string $navigationGroup = 'Parking';
 
-    protected static ?string $recordTitleAttribute = 'vehicle.name';
+    protected static ?string $recordTitleAttribute = 'name';
 
     protected static ?int $navigationSort = 1;
 

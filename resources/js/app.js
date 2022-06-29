@@ -1,7 +1,6 @@
 require('./bootstrap');
 
 import Alpine from 'alpinejs';
-
 import Tooltip from "@ryangjchandler/alpine-tooltip";
 import mask from '@alpinejs/mask';
 import focus from '@alpinejs/focus';

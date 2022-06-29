@@ -3,6 +3,7 @@
 namespace App\Filament\Resources;
 
 use App\Enums\Models\ParkingLotStatus;
+use App\Filament\Forms\Components\Qrcode;
 use App\Filament\Resources\ParkingLotResource\Pages;
 use App\Filament\Resources\ParkingLotResource\RelationManagers;
 use App\Models\Tenant\ParkingLot;
@@ -13,6 +14,7 @@ use Filament\Resources\Table;
 use Filament\Tables;
 use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\SoftDeletingScope;
+use Illuminate\Support\HtmlString;
 
 class ParkingLotResource extends Resource
 {
@@ -41,20 +43,44 @@ class ParkingLotResource extends Resource
                             ->options(ParkingLotStatus::toArray())->default(ParkingLotStatus::OPEN)
                             ->descriptions(ParkingLotStatus::toDescriptionArray())->columnSpan('full')
                             ->required(),
-                    ])->columnSpan(1),
+                    ])->columnSpan([
+                        'sm' => 1,
+                        'md' => 2,
+                        'lg' => 3,
+                    ]),
 
                 Forms\Components\Card::make()
                     ->schema([
-                        Forms\Components\Placeholder::make('updated_at')
-                            ->label('Last modified at')
-                            ->content(fn (?ParkingLot $record): string => $record ? $record->updated_at->diffForHumans() : '-'),
-                        Forms\Components\Placeholder::make('created_at')
-                            ->label('Created at')
-                            ->content(fn (?ParkingLot $record): string => $record ? $record->created_at->diffForHumans() : '-')
-                    ])
-                    ->columnSpan(1),
+                        Forms\Components\Fieldset::make('Qrcode')
+                            ->schema([
+                                Qrcode::make('qrcode')
+                                    ->disableLabel()
+                                    ->helperText('<span class="text-xs"><span class="text-sm">&#9432;</span> The Qrcode will have dimensions: [500 X 500] pixels.</span>')
+                                    ->columnSpan('full')
+                                    ->content(fn (?ParkingLot $record) => $record ? $record->qrcode : '-')
+                                    ->downloadName(fn (?ParkingLot $record) => $record ? $record->name : ''),
+                            ])
+                            ->columnSpan(1)
+                            ->hiddenOn(Pages\CreateParkingLot::class),
+                        Forms\Components\Grid::make()
+                            ->schema([
+                                Forms\Components\Placeholder::make('updated_at')
+                                    ->label('Modified at')
+                                    ->content(fn (?ParkingLot $record): string => $record ? $record->updated_at->diffForHumans() : '-'),
+                                Forms\Components\Placeholder::make('created_at')
+                                    ->label('Created at')
+                                    ->content(fn (?ParkingLot $record): string => $record ? $record->created_at->diffForHumans() : '-'),
+                            ])->columnSpan(1)->columns(1)
+                    ])->columns(2)
+                    ->columnSpan([
+                        'sm' => 1,
+                        'md' => 3,
+                        'lg' => 4,
+                    ]),
             ])->columns([
                 'sm' => 1,
+                'md' => 5,
+                'lg' => 7,
             ]);
     }
 
@@ -98,6 +124,7 @@ class ParkingLotResource extends Resource
     {
         return [
             'index' => Pages\ListParkingLots::route('/'),
+            'create' => Pages\CreateParkingLot::route('/create'),
             'edit' => Pages\EditParkingLot::route('/{record}/edit'),
         ];
     }

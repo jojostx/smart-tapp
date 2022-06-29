@@ -8,7 +8,7 @@ use Illuminate\Support\Arr;
 
 class RangeSlider extends Field
 {
-    protected string $view = 'filament::forms\components\range-slider';
+    protected string $view = 'filament::forms.components.range-slider';
 
     protected int|Closure| null $min = null;
     protected int|Closure| null $max = null;

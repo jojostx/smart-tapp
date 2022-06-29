@@ -17,6 +17,8 @@
         "laravel/tinker": "^2.7",
         "livewire/livewire": "^2.5",
         "mattkingshott/axiom": "^3.2",
+        "propaganistas/laravel-phone": "^4.3",
+        "simplesoftwareio/simple-qrcode": "~4",
         "spatie/laravel-cookie-consent": "^3.2",
         "stancl/tenancy": "^3.5",
         "tzsk/otp": "^6.0"
@@ -45,7 +47,8 @@
             "Tests\\": "tests/"
         },
         "files": [
-            "helpers/auth.php"
+            "helpers/auth.php",
+            "helpers/base.php"
         ]
     },
     "scripts": {

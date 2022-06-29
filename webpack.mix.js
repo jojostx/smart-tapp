@@ -29,7 +29,10 @@ mix.js('resources/js/app.js', 'public/js')
         require('autoprefixer'),
     ])
     .sass("resources/sass/app.scss", "public/css/app.css")
-    .sourceMaps().version();
+    .sourceMaps();
+
+mix.js('resources/js/filament/forms/phoneinput', 'public/js/phoneinput.js')
+    .sourceMaps();
 
 if (mix.inProduction()) {
     mix.version();

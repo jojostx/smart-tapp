@@ -2,6 +2,7 @@
 
 namespace App\Filament\Resources;
 
+use App\Filament\Forms\Components\PhoneNumberInput;
 use App\Filament\Resources\DriverResource\Pages;
 use App\Filament\Resources\DriverResource\RelationManagers;
 use App\Models\Tenant\Driver;
@@ -22,7 +23,7 @@ class DriverResource extends Resource
 
     protected static ?string $navigationGroup = 'Parking';
 
-    protected static ?string $recordTitleAttribute = 'phone_number';
+    protected static ?string $recordTitleAttribute = 'identifierforfilament';
 
     protected static ?int $navigationSort = 4;
 
@@ -35,7 +36,8 @@ class DriverResource extends Resource
                         Forms\Components\Grid::make()
                             ->schema([
                                 Forms\Components\TextInput::make('email')->email()->required(),
-                                Forms\Components\TextInput::make('phone_number')->required()->reactive(),
+                                // Forms\Components\TextInput::make('phone_number')->required()->tel()->reactive(),
+                                PhoneNumberInput::make('phone_number')->required()->reactive(),
                                 Forms\Components\Placeholder::make('location')->label('Location')->content('Nigeria (NGN)'),
                             ]),
                     ])
@@ -89,7 +91,8 @@ class DriverResource extends Resource
                 Tables\Actions\EditAction::make(),
             ])
             ->bulkActions([
-                Tables\Actions\DeleteBulkAction::make(),
+                Tables\Actions\DeleteBulkAction::make()
+                    ->requiresConfirmation(),
             ]);
     }
 

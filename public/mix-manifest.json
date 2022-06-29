@@ -1,5 +1,6 @@
 {
-    "/js/app.js": "/js/app.js?id=9747989bd4f03379cb12af60df0a23ff",
-    "/css/filament.css": "/css/filament.css?id=ddf7c5ffd52989b53c37662c73ad40c6",
-    "/css/app.css": "/css/app.css?id=15a865bafd9bfaf617ccffdff2fcca0a"
+    "/js/app.js": "/js/app.js",
+    "/js/phoneinput.js": "/js/phoneinput.js",
+    "/css/filament.css": "/css/filament.css",
+    "/css/app.css": "/css/app.css"
 }

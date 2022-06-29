@@ -9,6 +9,7 @@ use Illuminate\Database\Eloquent\Casts\Attribute;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
+use Illuminate\Support\Facades\DB;
 
 class Access extends Model
 {
@@ -44,6 +45,22 @@ class Access extends Model
     //         'uuid' => sha1($attributes['uuid']),
     //     ]
     // );
+
+    /**
+     * Get the name for the access.
+     *
+     * @return \Illuminate\Database\Eloquent\Casts\Attribute
+     */
+    protected function name(): Attribute
+    {
+        return Attribute::make(
+            get: function ($value, $attributes) {
+                $plate_number = DB::table('vehicles')->find($attributes['vehicle_id'])?->plate_number; 
+
+                return $plate_number ? 'Access_' . $plate_number : "Access_{$attributes['id']}";
+            },
+        )->shouldCache();
+    }
 
     /**
      * Get the driver for the access.

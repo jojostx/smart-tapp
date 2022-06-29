@@ -22,6 +22,8 @@ class VehicleResource extends Resource
 
     protected static ?string $navigationGroup = 'Parking';
 
+    protected static ?string $recordTitleAttribute = 'name';
+
     protected static ?int $navigationSort = 3;
 
     public static function form(Form $form): Form
@@ -93,7 +95,8 @@ class VehicleResource extends Resource
                 Tables\Actions\EditAction::make(),
             ])
             ->bulkActions([
-                Tables\Actions\DeleteBulkAction::make(),
+                Tables\Actions\DeleteBulkAction::make()
+                    ->requiresConfirmation(),
             ]);
     }
 
