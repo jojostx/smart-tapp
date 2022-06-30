@@ -12,6 +12,7 @@ use Filament\Resources\Form;
 use Filament\Resources\Resource;
 use Filament\Resources\Table;
 use Filament\Tables;
+use Filament\Tables\Filters\SelectFilter;
 use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\SoftDeletingScope;
 use Illuminate\Support\HtmlString;
@@ -90,7 +91,7 @@ class ParkingLotResource extends Resource
             ->columns([
                 Tables\Columns\TextColumn::make('name')->searchable(),
                 Tables\Columns\BadgeColumn::make('status')
-                    ->enum([ParkingLotStatus::cases()])
+                    ->enum(ParkingLotStatus::toArray())
                     ->colors([
                         'warning' => fn ($state): bool => $state === ParkingLotStatus::CLOSED->value,
                         'success' => fn ($state): bool => $state === ParkingLotStatus::OPEN->value,
@@ -99,7 +100,8 @@ class ParkingLotResource extends Resource
                 Tables\Columns\TextColumn::make('created_at')->date(config('filament.date_format'))->sortable(),
             ])
             ->filters([
-                //
+                SelectFilter::make('status')
+                    ->options(ParkingLotStatus::toArray())
             ])
             ->actions([
                 Tables\Actions\EditAction::make(),

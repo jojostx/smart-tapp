@@ -11,6 +11,7 @@ use Filament\Resources\Form;
 use Filament\Resources\Resource;
 use Filament\Resources\Table;
 use Filament\Tables;
+use Filament\Tables\Filters\TernaryFilter;
 use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\SoftDeletingScope;
 use Illuminate\Support\Str;
@@ -85,7 +86,10 @@ class DriverResource extends Resource
                     ->sortable(),
             ])
             ->filters([
-                //
+                TernaryFilter::make('email_verified_at')
+                    ->nullable(),
+                TernaryFilter::make('phone_verified_at')
+                    ->nullable(),
             ])
             ->actions([
                 Tables\Actions\EditAction::make(),

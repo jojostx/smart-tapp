@@ -13,6 +13,7 @@ use Filament\Resources\Form;
 use Filament\Resources\Resource;
 use Filament\Resources\Table;
 use Filament\Tables;
+use Filament\Tables\Filters\SelectFilter;
 use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\SoftDeletingScope;
@@ -110,7 +111,7 @@ class AccessResource extends Resource
         return $table
             ->columns([
                 Tables\Columns\BadgeColumn::make('status')
-                    ->enum([AccessStatus::cases()])
+                    ->enum(AccessStatus::toArray())
                     ->colors([
                         'warning' => fn ($state): bool => $state === AccessStatus::INACTIVE->value,
                         'danger' => fn ($state): bool => $state === AccessStatus::ISSUED->value,
@@ -135,7 +136,8 @@ class AccessResource extends Resource
                     ->sortable(),
             ])
             ->filters([
-                //
+                SelectFilter::make('status')
+                    ->options(AccessStatus::toArray())
             ])
             ->actions([
                 Tables\Actions\EditAction::make(),
