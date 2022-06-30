@@ -96,7 +96,13 @@ class VehicleResource extends Resource
             ])
             ->bulkActions([
                 Tables\Actions\DeleteBulkAction::make()
-                    ->requiresConfirmation(),
+                    ->requiresConfirmation()
+                    ->form([
+                        Forms\Components\TextInput::make("current_password")
+                            ->required()
+                            ->password()
+                            ->rule("current_password"),
+                    ]),
             ]);
     }
 

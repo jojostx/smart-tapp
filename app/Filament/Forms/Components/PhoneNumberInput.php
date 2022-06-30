@@ -19,7 +19,7 @@ class PhoneNumberInput extends Field
 
     protected string $view = 'filament::forms.components.phone-number-input';
 
-    protected array | Arrayable | Closure | null $allowedCountries = ['NG', 'US'];
+    protected array | Arrayable | Closure | null $allowedCountries = [];
 
     protected function setUp(): void
     {

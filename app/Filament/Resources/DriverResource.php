@@ -37,7 +37,7 @@ class DriverResource extends Resource
                             ->schema([
                                 Forms\Components\TextInput::make('email')->email()->required(),
                                 // Forms\Components\TextInput::make('phone_number')->required()->tel()->reactive(),
-                                PhoneNumberInput::make('phone_number')->required()->reactive(),
+                                PhoneNumberInput::make('phone_number')->required()->reactive()->allowedCountries(['NG']),
                                 Forms\Components\Placeholder::make('location')->label('Location')->content('Nigeria (NGN)'),
                             ]),
                     ])
@@ -92,7 +92,13 @@ class DriverResource extends Resource
             ])
             ->bulkActions([
                 Tables\Actions\DeleteBulkAction::make()
-                    ->requiresConfirmation(),
+                    ->requiresConfirmation()
+                    ->form([
+                        Forms\Components\TextInput::make("current_password")
+                            ->required()
+                            ->password()
+                            ->rule("current_password"),
+                    ]),
             ]);
     }
 

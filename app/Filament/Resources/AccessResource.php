@@ -143,11 +143,23 @@ class AccessResource extends Resource
                     ->requiresConfirmation()
                     ->modalHeading(fn (): string => 'Delete Access')
                     ->modalWidth('md')
-                    ->modalSubheading(fn (Access $record): string => "Are you sure you want to delete the Access for the Vehicle [{$record->vehicle->plate_number}] with Driver [{$record->driver->name} - {$record->driver->phone_number}]?"),
+                    ->modalSubheading(fn (Access $record): string => "Are you sure you want to delete the Access for the Vehicle [{$record->vehicle->plate_number}] with Driver [{$record->driver->name} - {$record->driver->phone_number}]?")
+                    ->form([
+                        Forms\Components\TextInput::make("current_password")
+                            ->required()
+                            ->password()
+                            ->rule("current_password"),
+                    ]),
             ])
             ->bulkActions([
                 Tables\Actions\DeleteBulkAction::make()
-                    ->requiresConfirmation(),
+                    ->requiresConfirmation()
+                    ->form([
+                        Forms\Components\TextInput::make("current_password")
+                            ->required()
+                            ->password()
+                            ->rule("current_password"),
+                    ]),
             ]);
     }
 

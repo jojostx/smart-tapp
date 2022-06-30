@@ -42,7 +42,6 @@
                                     utilsScript: 'https://cdnjs.cloudflare.com/ajax/libs/intl-tel-input/17.0.16/js/utils.js',
                                     initialCountry: 'NG',
                                     onlyCountries: allowedCountries,
-                                    preferredCountries: allowedCountries ? allowedCountries[0] : ['ng'],
                                     customPlaceholder: function(selectedCountryPlaceholder, selectedCountryData) {
                                         return 'e.g. ' + selectedCountryPlaceholder;
                                     }

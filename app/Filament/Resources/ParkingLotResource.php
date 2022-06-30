@@ -105,11 +105,23 @@ class ParkingLotResource extends Resource
                 Tables\Actions\EditAction::make(),
                 Tables\Actions\ViewAction::make(),
                 Tables\Actions\DeleteAction::make()
-                    ->requiresConfirmation(),
+                    ->requiresConfirmation()
+                    ->form([
+                        Forms\Components\TextInput::make("current_password")
+                            ->required()
+                            ->password()
+                            ->rule("current_password"),
+                    ]),
             ])
             ->bulkActions([
                 Tables\Actions\DeleteBulkAction::make()
-                    ->requiresConfirmation(),
+                    ->requiresConfirmation()
+                    ->form([
+                        Forms\Components\TextInput::make("current_password")
+                            ->required()
+                            ->password()
+                            ->rule("current_password"),
+                    ]),
             ]);
     }
 
