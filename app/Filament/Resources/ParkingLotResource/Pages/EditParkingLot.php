@@ -21,10 +21,11 @@ class EditParkingLot extends EditRecord
                 ->modalWidth('md')
                 ->modalSubheading(fn (ParkingLot $record): string => "Are you sure you want to delete the Parking Lot [{$record->name}]? Doing so will delete all Accesses assigned to it.")
                 ->form([
-                    TextInput::make("current_password")
+                    \Phpsa\FilamentPasswordReveal\Password::make("current_password")
                         ->required()
                         ->password()
-                        ->rule("current_password"),
+                        ->rule("current_password")
+                        ->disableAutocomplete(),
                 ]),
         ];
     }

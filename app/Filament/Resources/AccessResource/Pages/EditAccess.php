@@ -17,10 +17,11 @@ class EditAccess extends EditRecord
             Actions\DeleteAction::make()
                 ->requiresConfirmation()
                 ->form([
-                    TextInput::make("current_password")
+                    \Phpsa\FilamentPasswordReveal\Password::make("current_password")
                         ->required()
                         ->password()
-                        ->rule("current_password"),
+                        ->rule("current_password")
+                        ->disableAutocomplete(),
                 ]),
         ];
     }

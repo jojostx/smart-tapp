@@ -98,10 +98,11 @@ class VehicleResource extends Resource
                 Tables\Actions\DeleteBulkAction::make()
                     ->requiresConfirmation()
                     ->form([
-                        Forms\Components\TextInput::make("current_password")
+                        \Phpsa\FilamentPasswordReveal\Password::make("current_password")
                             ->required()
                             ->password()
-                            ->rule("current_password"),
+                            ->rule("current_password")
+                            ->disableAutocomplete(),
                     ]),
             ]);
     }
