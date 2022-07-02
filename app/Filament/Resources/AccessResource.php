@@ -8,13 +8,13 @@ use App\Filament\Resources\AccessResource\Pages;
 use App\Filament\Resources\AccessResource\RelationManagers;
 use App\Models\Tenant\Access;
 use Filament\Forms;
-use Filament\Forms\Components\DatePicker;
 use Filament\Resources\Form;
 use Filament\Resources\Resource;
 use Filament\Resources\Table;
 use Filament\Tables;
 use Filament\Tables\Filters\SelectFilter;
 use Illuminate\Database\Eloquent\Builder;
+use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\SoftDeletingScope;
 
 class AccessResource extends Resource
@@ -32,6 +32,19 @@ class AccessResource extends Resource
     public static function getGloballySearchableAttributes(): array
     {
         return ['driver.phone_number', 'vehicle.plate_number'];
+    }
+
+    public static function getGlobalSearchResultDetails(Model $record): array
+    {
+        return [
+            'Driver' => $record->driver->phone_number,
+            'Vehicle' => $record->vehicle->plate_number,
+        ];
+    }
+
+    protected static function getGlobalSearchEloquentQuery(): Builder
+    {
+        return parent::getGlobalSearchEloquentQuery()->with(['driver', 'vehicle']);
     }
 
     public static function form(Form $form): Form

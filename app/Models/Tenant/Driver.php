@@ -43,7 +43,7 @@ class Driver extends Model
     {
         return Attribute::make(
             get: function ($value, $attributes) {
-                return str("Driver-{$attributes['phone_number']}")->kebab();
+                return str("Driver-{$attributes['phone_number']}")->kebab()->ucfirst();
             },
         )->shouldCache();
     }

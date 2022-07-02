@@ -13,6 +13,7 @@ use Filament\Resources\Resource;
 use Filament\Resources\Table;
 use Filament\Tables;
 use Illuminate\Database\Eloquent\Builder;
+use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\SoftDeletingScope;
 
 class VehicleResource extends Resource
@@ -30,6 +31,14 @@ class VehicleResource extends Resource
     public static function getGloballySearchableAttributes(): array
     {
         return ['plate_number', 'brand', 'model'];
+    }
+
+    public static function getGlobalSearchResultDetails(Model $record): array
+    {
+        return [
+            'Plate Number' => $record->plate_number,
+            'Model' => $record->model ?? '-',
+        ];
     }
 
     public static function form(Form $form): Form

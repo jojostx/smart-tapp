@@ -12,6 +12,7 @@ use Filament\Resources\Resource;
 use Filament\Resources\Table;
 use Filament\Tables;
 use Filament\Tables\Filters\TernaryFilter;
+use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\SoftDeletingScope;
 use Illuminate\Support\Str;
 
@@ -30,6 +31,14 @@ class DriverResource extends Resource
     public static function getGloballySearchableAttributes(): array
     {
         return ['phone_number', 'name', 'email'];
+    }
+
+    public static function getGlobalSearchResultDetails(Model $record): array
+    {
+        return [
+            'Name' => $record->name,
+            'Phone Number' => $record->phone_number,
+        ];
     }
 
     public static function form(Form $form): Form
