@@ -7,6 +7,8 @@ use App\Filament\Forms\Components\RangeSlider;
 use App\Filament\Resources\AccessResource\Pages;
 use App\Filament\Resources\AccessResource\RelationManagers;
 use App\Models\Tenant\Access;
+use App\Models\Tenant\Driver;
+use App\Models\Tenant\Vehicle;
 use Filament\Forms;
 use Filament\Resources\Form;
 use Filament\Resources\Resource;
@@ -53,28 +55,89 @@ class AccessResource extends Resource
             ->schema([
                 Forms\Components\Card::make()
                     ->schema([
-                        Forms\Components\Fieldset::make('Driver')
-                            ->relationship('driver')
-                            ->schema([
-                                Forms\Components\TextInput::make('name')->required(),
-                                Forms\Components\TextInput::make('phone_number')
-                                    ->required(),
-                                Forms\Components\TextInput::make('email')
-                            ]),
+                        Forms\Components\Select::make('vehicle_id')
+                            ->relationship('vehicle', 'plate_number')
+                            ->reactive()
+                            ->placeholder("Type in the Vehicle's Plate Number to select a Vehicle or add a new vehicle by clicking the (+) button")
+                            ->searchable()
+                            ->getSearchResultsUsing(fn (string $search) => Vehicle::where('plate_number', 'like', "%{$search}%")->limit(50)->pluck('plate_number', 'id'))
+                            ->getOptionLabelUsing(fn ($value): ?string => Vehicle::find($value)?->plate_number)
+                            ->createOptionForm(function () {
+                                return Form::make()
+                                    ->schema([
+                                        Forms\Components\TextInput::make('plate_number')->required(),
+                                        Forms\Components\TextInput::make('brand')->required(),
+                                        Forms\Components\TextInput::make('model')->required(),
+                                        Forms\Components\TextInput::make('color'),
+                                    ])
+                                    ->columns([
+                                        'sm' => 1,
+                                        'md' => 2
+                                    ])
+                                    ->getSchema();
+                            })
+                            ->visibleOn(Pages\CreateAccess::class),
+
+                        Forms\Components\Select::make('driver_id')
+                            ->relationship('driver', 'phone_number')
+                            ->placeholder("Type in the Driver's Phone Number to select a Driver or add a new driver by clicking the (+) button")
+                            ->searchable()
+                            ->getSearchResultsUsing(function (string $search, callable $get) {
+                                if ($get('vehicle_id')) {
+                                    return Vehicle::firstWhere('id', $get('vehicle_id'))
+                                        ->drivers()
+                                        ->where('phone_number', 'like', "%{$search}%")
+                                        ->limit(50)
+                                        ->pluck('phone_number', 'drivers.id');
+                                }
+
+                                return Driver::where('phone_number', 'like', "%{$search}%")->limit(50)->pluck('phone_number', 'id');
+                            })
+                            ->getOptionLabelUsing(fn ($value): ?string => Driver::find($value)?->phone_number)
+                            ->createOptionForm(function () {
+                                return Form::make()
+                                    ->schema([
+                                        Forms\Components\TextInput::make('name')->required(),
+                                        Forms\Components\TextInput::make('phone_number')->required()->unique('drivers', 'phone_number'),
+                                        Forms\Components\TextInput::make('email')->required()->unique('drivers', 'email')
+                                    ])
+                                    ->columns([
+                                        'sm' => 1,
+                                        'md' => 2
+                                    ])
+                                    ->getSchema();
+                            })
+                            ->visibleOn(Pages\CreateAccess::class),
+
                         Forms\Components\Fieldset::make('Vehicle')
                             ->relationship('vehicle')
                             ->schema([
                                 Forms\Components\TextInput::make('plate_number')
-                                    ->required(),
-
-                                Forms\Components\TextInput::make('brand')
-                                    ->required(),
-
-                                Forms\Components\TextInput::make('model')
-                                    ->required(),
-
+                                    ->reactive()
+                                    ->afterStateUpdated(function ($state, callable $set) {
+                                        if ($vehicle = Vehicle::firstWhere('plate_number', '=', trim($state))) {
+                                            $set('brand', $vehicle->brand);
+                                            $set('model', $vehicle->model);
+                                            $set('color', $vehicle->color);
+                                        }
+                                    })
+                                    ->required()
+                                    ->unique('vehicles', 'plate_number'),
+                                Forms\Components\TextInput::make('brand')->required(),
+                                Forms\Components\TextInput::make('model')->required(),
                                 Forms\Components\TextInput::make('color'),
-                            ]),
+
+                            ])
+                            ->hiddenOn(Pages\CreateAccess::class),
+
+                        Forms\Components\Fieldset::make('Driver')
+                            ->relationship('driver')
+                            ->schema([
+                                Forms\Components\TextInput::make('name')->required(),
+                                Forms\Components\TextInput::make('phone_number')->required()->unique('drivers', 'phone_number'),
+                                Forms\Components\TextInput::make('email')->required()->unique('drivers', 'email')
+                            ])
+                            ->hiddenOn(Pages\CreateAccess::class),
 
                         Forms\Components\Fieldset::make('Parking Lot')
                             ->schema([

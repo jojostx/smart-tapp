@@ -55,7 +55,7 @@ class Access extends Model
     {
         return Attribute::make(
             get: function ($value, $attributes) {
-                $plate_number = DB::table('vehicles')->find($attributes['vehicle_id'])?->plate_number; 
+                $plate_number = DB::table('vehicles')->find($attributes['vehicle_id'])?->plate_number;
 
                 return $plate_number ? 'Access_' . $plate_number : "Access_{$attributes['id']}";
             },
