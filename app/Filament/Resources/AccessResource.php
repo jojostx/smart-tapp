@@ -9,6 +9,7 @@ use App\Filament\Resources\AccessResource\RelationManagers;
 use App\Models\Tenant\Access;
 use App\Models\Tenant\Driver;
 use App\Models\Tenant\Vehicle;
+use Closure;
 use Filament\Forms;
 use Filament\Resources\Form;
 use Filament\Resources\Resource;
@@ -18,6 +19,9 @@ use Filament\Tables\Filters\SelectFilter;
 use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\SoftDeletingScope;
+use Illuminate\Support\Collection;
+use Illuminate\Support\Facades\Cache;
+use Livewire\Livewire;
 
 class AccessResource extends Resource
 {
@@ -30,6 +34,8 @@ class AccessResource extends Resource
     protected static ?string $recordTitleAttribute = 'name';
 
     protected static ?int $navigationSort = 1;
+
+    protected $rules = [];
 
     public static function getGloballySearchableAttributes(): array
     {
@@ -57,7 +63,6 @@ class AccessResource extends Resource
                     ->schema([
                         Forms\Components\Select::make('vehicle_id')
                             ->relationship('vehicle', 'plate_number')
-                            ->reactive()
                             ->placeholder("Type in the Vehicle's Plate Number to select a Vehicle or add a new vehicle by clicking the (+) button")
                             ->searchable()
                             ->getSearchResultsUsing(fn (string $search) => Vehicle::where('plate_number', 'like', "%{$search}%")->limit(50)->pluck('plate_number', 'id'))
@@ -83,17 +88,21 @@ class AccessResource extends Resource
                             ->placeholder("Type in the Driver's Phone Number to select a Driver or add a new driver by clicking the (+) button")
                             ->searchable()
                             ->getSearchResultsUsing(function (string $search, callable $get) {
-                                if ($get('vehicle_id')) {
-                                    return Vehicle::firstWhere('id', $get('vehicle_id'))
-                                        ->drivers()
-                                        ->where('phone_number', 'like', "%{$search}%")
-                                        ->limit(50)
-                                        ->pluck('phone_number', 'drivers.id');
-                                }
+                                return collect($get('driver'))
+                                    ->filter(function ($driver, $key) use ($search, $get) {
+                                        if (blank($driver)) {
+                                            return false;
+                                        }
 
-                                return Driver::where('phone_number', 'like', "%{$search}%")->limit(50)->pluck('phone_number', 'id');
+                                        \dd(collect($get('driver')), $driver, $key);
+
+                                        return str_contains($driver['phone_number'], $search);
+                                    })
+                                    ->flatMap(function ($item) {
+                                        return [$item['uuid'] => $item['phone_number']];
+                                    })
+                                    ->concat(Driver::where('phone_number', 'like', "%{$search}%")->limit(50)->pluck('phone_number', 'id'));
                             })
-                            ->getOptionLabelUsing(fn ($value): ?string => Driver::find($value)?->phone_number)
                             ->createOptionForm(function () {
                                 return Form::make()
                                     ->schema([
@@ -106,6 +115,13 @@ class AccessResource extends Resource
                                         'md' => 2
                                     ])
                                     ->getSchema();
+                            })
+                            ->createOptionUsing(function ($data, callable $get, callable $set) {
+                                $data['uuid'] = \fake()->uuid();
+
+                                $driver = (new Driver())->forceFill($data)->updateTimestamps()->syncOriginal();
+
+                                $set('driver', $driver);
                             })
                             ->visibleOn(Pages\CreateAccess::class),
 

@@ -14,7 +14,9 @@ class CreateAccess extends CreateRecord
     protected function handleRecordCreation(array $data): Model
     {
         if (method_exists(static::getModel(), 'driver') && method_exists(static::getModel(), 'vehicle')) {
-            \dd('hm',  $this->form->getLivewire()->data, auth()->id(), $data);
+
+            \dd('hm',  $this->form->getLivewire()->data, $data);
+
             $vehicleData =  $this->form->getLivewire()->data['vehicle'];
             $driverData =  $this->form->getLivewire()->data['driver'];
 
@@ -35,8 +37,17 @@ class CreateAccess extends CreateRecord
         return static::getModel()::create($data);
     }
 
-    // protected function afterCreate(): void
-    // {
-    //     \dd('afterCreate', $this->form->getLivewire()->data);
-    // }
+    protected function beforeValidate(): void
+    {
+        $data = $this->form->getRawState();
+
+        $data['driver_id'] = null;
+
+        dd('beforeValidate', $this->form->fill($data), $this->form->getRawState());
+    }
+
+    protected function afterValidate(): void
+    {
+        dd('afterValidate', $this->form->getLivewire()->data, $this->getRules());
+    }
 }

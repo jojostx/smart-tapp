@@ -1,0 +1,32 @@
+
+    public static function cacheableDatabaseQuery(?bool $use_auth_id = true): static
+    {
+        dd(static::query());
+
+        if (Cache::has(static::cacheKey($use_auth_id))) {
+            // check cache first
+            // is value present?
+            // Yes: retrieve from cache
+            // No: retrieve from database
+            return Cache::remember(static::cacheKey($use_auth_id), 15, function () {
+                return static::query();
+            });
+        }
+
+        return static::query();
+    }
+
+    public function cacheKey(?bool $use_auth_id = true): string
+    {
+        // if auth_id is passed in use it else try to resolve using auth()->id else set to empty string
+        $auth_id = $use_auth_id ? auth()?->id() : '';
+
+        // if auth_id has a value return eg: accesses/{auth_id}/1515650910
+        // else return eg: accesses/1515650910
+        return sprintf(
+            "%s/%s%s",
+            $this->getTable(),
+            $auth_id . '/',
+            $this->updated_at->timestamp
+        );
+    }
