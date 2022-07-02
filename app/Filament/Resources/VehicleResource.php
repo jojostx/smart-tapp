@@ -2,8 +2,10 @@
 
 namespace App\Filament\Resources;
 
+use App\Filament\Actions\PasswordRequiredDeleteBulkAction;
 use App\Filament\Resources\VehicleResource\Pages;
 use App\Filament\Resources\VehicleResource\RelationManagers;
+use App\Filament\Resources\VehicleResource\RelationManagers\DriversRelationManager;
 use App\Models\Tenant\Vehicle;
 use Filament\Forms;
 use Filament\Resources\Form;
@@ -11,7 +13,6 @@ use Filament\Resources\Resource;
 use Filament\Resources\Table;
 use Filament\Tables;
 use Illuminate\Database\Eloquent\Builder;
-use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\SoftDeletingScope;
 
 class VehicleResource extends Resource
@@ -44,18 +45,6 @@ class VehicleResource extends Resource
                                     ->required(),
                                 Forms\Components\TextInput::make('color')
                                     ->maxValue(20),
-                                Forms\Components\MultiSelect::make('driver_id')
-                                    ->relationship('drivers', 'phone_number')
-                                    ->label('Driver')
-                                    ->createOptionForm([
-                                        Forms\Components\TextInput::make('name')
-                                            ->required(),
-                                        Forms\Components\TextInput::make('phone_number')
-                                            ->required(),
-                                        Forms\Components\TextInput::make('email')
-                                            ->email(),
-                                    ])
-                                    ->getOptionLabelFromRecordUsing(fn (Model $record) => "{$record->phone_number} {$record->name}"),
                             ]),
                     ])
                     ->columnSpan([
@@ -110,7 +99,7 @@ class VehicleResource extends Resource
     public static function getRelations(): array
     {
         return [
-            //
+            DriversRelationManager::class,
         ];
     }
 
