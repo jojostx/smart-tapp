@@ -12,7 +12,6 @@ use Filament\Resources\Resource;
 use Filament\Resources\Table;
 use Filament\Tables;
 use Filament\Tables\Filters\TernaryFilter;
-use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\SoftDeletingScope;
 use Illuminate\Support\Str;
 
@@ -27,6 +26,11 @@ class DriverResource extends Resource
     protected static ?string $recordTitleAttribute = 'identifierforfilament';
 
     protected static ?int $navigationSort = 4;
+
+    public static function getGloballySearchableAttributes(): array
+    {
+        return ['phone_number', 'name', 'email'];
+    }
 
     public static function form(Form $form): Form
     {
