@@ -87,7 +87,7 @@ class VehicleResource extends Resource
                 Tables\Columns\TextColumn::make('plate_number')->label('Plate Number')->searchable(),
                 Tables\Columns\TextColumn::make('brand')->searchable(),
                 Tables\Columns\TextColumn::make('model')->searchable(),
-                Tables\Columns\TextColumn::make('color'),
+                Tables\Columns\TextColumn::make('color')->toggleable()->toggledHiddenByDefault(),
                 Tables\Columns\TextColumn::make('updated_at')->label('Modified at')->date(config('filament.date_format'))->sortable(),
                 Tables\Columns\TextColumn::make('created_at')->date(config('filament.date_format'))->sortable(),
             ])
