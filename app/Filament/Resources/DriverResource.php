@@ -62,10 +62,10 @@ class DriverResource extends Resource
                     ->schema([
                         Forms\Components\Placeholder::make('phone_verified_at')
                             ->label('Phone Number verified at')
-                            ->content(fn (?Driver $record): string => $record ? $record->phone_verified_at->diffForHumans() : '-'),
+                            ->content(fn (?Driver $record): string => $record ? ($record->phone_verified_at?->diffForHumans() ?? '-') : '-'),
                         Forms\Components\Placeholder::make('email_verified_at')
                             ->label('Email verified at')
-                            ->content(fn (?Driver $record): string => $record ? $record->phone_verified_at->diffForHumans() : '-'),
+                            ->content(fn (?Driver $record): string => $record ? ($record->email_verified_at?->diffForHumans() ?? '-') : '-'),
                         Forms\Components\Placeholder::make('created_at')
                             ->label('Created at')
                             ->content(fn (?Driver $record): string => $record ? $record->created_at->diffForHumans() : '-'),

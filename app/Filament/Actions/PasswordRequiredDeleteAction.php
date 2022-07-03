@@ -14,7 +14,7 @@ class PasswordRequiredDeleteAction extends DeleteAction
     $this->requiresConfirmation()
       ->modalHeading("Confirm password")
       ->modalSubheading(
-        "Please confirm your password to complete this item."
+        "Please confirm your password to complete this action."
       )
       ->form([
         Forms\Components\TextInput::make("current_password")
