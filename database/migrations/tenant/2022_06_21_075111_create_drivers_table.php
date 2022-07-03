@@ -18,7 +18,7 @@ return new class extends Migration
             $table->string('uuid')->unique();
             $table->string('name', 225);
             $table->string('phone_number');
-            $table->string('phone_number_e164');
+            $table->string('phone_number_e164')->nullable();
             $table->timestamp('phone_verified_at')->nullable();
             $table->string('email')->nullable()->unique();
             $table->timestamp('email_verified_at')->nullable();

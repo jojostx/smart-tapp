@@ -8,6 +8,7 @@ use Illuminate\Database\Eloquent\Casts\Attribute;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsToMany;
+use Illuminate\Database\Eloquent\Relations\HasMany;
 
 class Driver extends Model
 {
@@ -51,5 +52,10 @@ class Driver extends Model
     public function vehicles(): BelongsToMany
     {
         return $this->belongsToMany(Vehicle::class, 'accesses');
+    }
+
+    public function accesses(): HasMany
+    {
+        return $this->HasMany(Access::class);
     }
 }

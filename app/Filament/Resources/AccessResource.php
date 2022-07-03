@@ -6,11 +6,12 @@ use App\Enums\Models\AccessStatus;
 use App\Filament\Forms\Components\RangeSlider;
 use App\Filament\Resources\AccessResource\Pages;
 use App\Filament\Resources\AccessResource\RelationManagers;
+use App\Filament\Traits\canCleanupStaleRecords;
 use App\Models\Tenant\Access;
 use App\Models\Tenant\Driver;
 use App\Models\Tenant\Vehicle;
-use Closure;
 use Filament\Forms;
+use Filament\Forms\Components\Select;
 use Filament\Resources\Form;
 use Filament\Resources\Resource;
 use Filament\Resources\Table;
@@ -19,12 +20,11 @@ use Filament\Tables\Filters\SelectFilter;
 use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\SoftDeletingScope;
-use Illuminate\Support\Collection;
-use Illuminate\Support\Facades\Cache;
-use Livewire\Livewire;
 
 class AccessResource extends Resource
 {
+    use canCleanupStaleRecords;
+
     protected static ?string $model = Access::class;
 
     protected static ?string $navigationIcon = 'heroicon-o-qrcode';
@@ -81,28 +81,31 @@ class AccessResource extends Resource
                                     ])
                                     ->getSchema();
                             })
+                            ->createOptionUsing(function (Select $component, array $data, callable $set, callable $get) {
+                                // delete previously created model before creating another one,
+                                if ($get('vehicle_id')) {
+                                    Driver::where('id', '=', $get('vehicle_id'))->delete() && $set('vehicle_id', null);
+                                }
+
+                                $record = $component->getRelationship()->getRelated();
+                                // also check if there are dangling vehicle records [vehicle's with no related access and drivers]
+                                // Vehicle::doesntHave('drivers')->whereDoesntHave('accesses', function (Builder $query) {
+                                //     $query->where('created_at', '<', now()->subDay());
+                                // })->delete();
+                                static::cleanupstaleRecords($record, ['drivers'], 2);
+
+                                $record->fill($data);
+                                $record->save();
+
+                                return $record->getKey();
+                            })
                             ->visibleOn(Pages\CreateAccess::class),
 
                         Forms\Components\Select::make('driver_id')
                             ->relationship('driver', 'phone_number')
                             ->placeholder("Type in the Driver's Phone Number to select a Driver or add a new driver by clicking the (+) button")
                             ->searchable()
-                            ->getSearchResultsUsing(function (string $search, callable $get) {
-                                return collect($get('driver'))
-                                    ->filter(function ($driver, $key) use ($search, $get) {
-                                        if (blank($driver)) {
-                                            return false;
-                                        }
-
-                                        \dd(collect($get('driver')), $driver, $key);
-
-                                        return str_contains($driver['phone_number'], $search);
-                                    })
-                                    ->flatMap(function ($item) {
-                                        return [$item['uuid'] => $item['phone_number']];
-                                    })
-                                    ->concat(Driver::where('phone_number', 'like', "%{$search}%")->limit(50)->pluck('phone_number', 'id'));
-                            })
+                            ->getSearchResultsUsing(fn (string $search) => Driver::where('phone_number', 'like', "%{$search}%")->limit(50)->pluck('phone_number', 'id'))
                             ->createOptionForm(function () {
                                 return Form::make()
                                     ->schema([
@@ -116,29 +119,31 @@ class AccessResource extends Resource
                                     ])
                                     ->getSchema();
                             })
-                            ->createOptionUsing(function ($data, callable $get, callable $set) {
-                                $data['uuid'] = \fake()->uuid();
+                            ->createOptionUsing(function (Select $component, array $data, callable $set, callable $get) {
+                                // delete previously created model before creating another one,
+                                if ($get('driver_id')) {
+                                    Driver::where('id', '=', $get('driver_id'))->delete() && $set('driver_id', null);
+                                }
 
-                                $driver = (new Driver())->forceFill($data)->updateTimestamps()->syncOriginal();
+                                $record = $component->getRelationship()->getRelated();
 
-                                $set('driver', $driver);
+                                // also check if there are dangling driver records [driver's with no related access and vehicles]
+                                // Driver::doesntHave('vehicles')->whereDoesntHave('accesses', function (Builder $query) {
+                                //     $query->where('created_at', '<', now()->subDay());
+                                // })->delete();
+                                static::cleanupstaleRecords($record, ['vehicles'], 2);
+
+                                $record->fill($data);
+                                $record->save();
+
+                                return $record->getKey();
                             })
                             ->visibleOn(Pages\CreateAccess::class),
 
                         Forms\Components\Fieldset::make('Vehicle')
                             ->relationship('vehicle')
                             ->schema([
-                                Forms\Components\TextInput::make('plate_number')
-                                    ->reactive()
-                                    ->afterStateUpdated(function ($state, callable $set) {
-                                        if ($vehicle = Vehicle::firstWhere('plate_number', '=', trim($state))) {
-                                            $set('brand', $vehicle->brand);
-                                            $set('model', $vehicle->model);
-                                            $set('color', $vehicle->color);
-                                        }
-                                    })
-                                    ->required()
-                                    ->unique('vehicles', 'plate_number'),
+                                Forms\Components\TextInput::make('plate_number')->required()->unique('vehicles', 'plate_number'),
                                 Forms\Components\TextInput::make('brand')->required(),
                                 Forms\Components\TextInput::make('model')->required(),
                                 Forms\Components\TextInput::make('color'),
@@ -157,9 +162,10 @@ class AccessResource extends Resource
 
                         Forms\Components\Fieldset::make('Parking Lot')
                             ->schema([
-                                Forms\Components\Select::make('parking_lot')
+                                Forms\Components\Select::make('parking_lot_id')
                                     ->label('Name')
-                                    ->relationship('parkingLot', 'name')->columnSpan('full'),
+                                    ->relationship('parkingLot', 'name')
+                                    ->columnSpan('full'),
                             ]),
 
                         Forms\Components\DatePicker::make('valid_until')
