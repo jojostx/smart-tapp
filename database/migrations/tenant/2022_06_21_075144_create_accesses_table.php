@@ -22,7 +22,7 @@ return new class extends Migration
             $table->integer('expires_after')->default(30);
             $table->timestamp('valid_until')->nullable();
 
-            $table->foreignId('driver_id')->nullable()->constrained()->nullOnDelete();
+            $table->foreignId('driver_id')->nullable()->constrained()->cascadeOnDelete();
             $table->foreignId('vehicle_id')->constrained()->cascadeOnDelete();
             
             $table->foreignId('parking_lot_id')->constrained('parking_lots')->cascadeOnDelete();

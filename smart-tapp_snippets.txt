@@ -30,3 +30,7 @@
             $this->updated_at->timestamp
         );
     }
+
+    if (method_exists(static::getModel(), 'driver') && method_exists(static::getModel(), 'vehicle')) {
+        dd('hm',  $this->form->getLivewire()->data, $data);
+    }

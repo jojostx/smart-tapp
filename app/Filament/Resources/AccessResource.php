@@ -11,6 +11,7 @@ use App\Models\Tenant\Access;
 use App\Models\Tenant\Driver;
 use App\Models\Tenant\Vehicle;
 use Filament\Forms;
+use Filament\Forms\Components\Field;
 use Filament\Forms\Components\Select;
 use Filament\Resources\Form;
 use Filament\Resources\Resource;
@@ -20,6 +21,7 @@ use Filament\Tables\Filters\SelectFilter;
 use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\SoftDeletingScope;
+use Illuminate\Validation\Rules\Unique;
 
 class AccessResource extends Resource
 {
@@ -70,7 +72,9 @@ class AccessResource extends Resource
                             ->createOptionForm(function () {
                                 return Form::make()
                                     ->schema([
-                                        Forms\Components\TextInput::make('plate_number')->required(),
+                                        Forms\Components\TextInput::make('plate_number')
+                                            ->required()
+                                            ->unique('vehicles', 'plate_number'),
                                         Forms\Components\TextInput::make('brand')->required(),
                                         Forms\Components\TextInput::make('model')->required(),
                                         Forms\Components\TextInput::make('color'),
@@ -98,6 +102,9 @@ class AccessResource extends Resource
                                 $record->save();
 
                                 return $record->getKey();
+                            })
+                            ->unique(table: 'accesses', column: 'vehicle_id', callback: function (Unique $rule, callable $get) {
+                                return $rule->where('driver_id',  $get('driver_id'));
                             })
                             ->visibleOn(Pages\CreateAccess::class),
 
@@ -137,6 +144,9 @@ class AccessResource extends Resource
                                 $record->save();
 
                                 return $record->getKey();
+                            })
+                            ->unique(table: 'accesses', column: 'driver_id', callback: function (Unique $rule, callable $get) {
+                                return $rule->where('vehicle_id',  $get('vehicle_id'));
                             })
                             ->visibleOn(Pages\CreateAccess::class),
 
