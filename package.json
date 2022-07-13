@@ -29,6 +29,7 @@
         "@alpinejs/focus": "^3.10.2",
         "@alpinejs/mask": "^3.10.2",
         "@ryangjchandler/alpine-tooltip": "^1.2.0",
-        "intl-tel-input": "^17.0.16"
+        "intl-tel-input": "^17.0.16",
+        "qr-scanner": "^1.4.1"
     }
 }

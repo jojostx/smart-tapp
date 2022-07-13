@@ -1,5 +1,6 @@
 <?php
 
+use App\Filament\Widgets\RefreshListPageTableWidget;
 use Filament\Http\Middleware\Authenticate;
 use Filament\Http\Middleware\DispatchServingFilamentEvent;
 use Filament\Http\Middleware\MirrorConfigToSubpackages;

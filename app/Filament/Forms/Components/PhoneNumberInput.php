@@ -59,9 +59,4 @@ class PhoneNumberInput extends Field
 
         return $options;
     }
-
-    public function getType(): string
-    {
-        return 'tel';
-    }
 }

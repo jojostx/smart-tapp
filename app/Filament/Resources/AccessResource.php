@@ -11,7 +11,6 @@ use App\Models\Tenant\Access;
 use App\Models\Tenant\Driver;
 use App\Models\Tenant\Vehicle;
 use Filament\Forms;
-use Filament\Forms\Components\Field;
 use Filament\Forms\Components\Select;
 use Filament\Resources\Form;
 use Filament\Resources\Resource;
@@ -73,11 +72,18 @@ class AccessResource extends Resource
                                 return Form::make()
                                     ->schema([
                                         Forms\Components\TextInput::make('plate_number')
+                                            ->placeholder('ex: ABG-VFF32')
+                                            ->hint("The Vehicle's plate number")
                                             ->required()
                                             ->unique('vehicles', 'plate_number'),
-                                        Forms\Components\TextInput::make('brand')->required(),
-                                        Forms\Components\TextInput::make('model')->required(),
-                                        Forms\Components\TextInput::make('color'),
+                                        Forms\Components\TextInput::make('brand')
+                                            ->placeholder('ex: Toyota')
+                                            ->required(),
+                                        Forms\Components\TextInput::make('model')
+                                            ->placeholder('ex: Camry')
+                                            ->required(),
+                                        Forms\Components\TextInput::make('color')
+                                            ->placeholder('ex: Blue'),
                                     ])
                                     ->columns([
                                         'sm' => 1,
@@ -85,6 +91,7 @@ class AccessResource extends Resource
                                     ])
                                     ->getSchema();
                             })
+                            ->createOptionAction(fn ($action) => $action->modalHeading(__('Register A New Vehicle')))
                             ->createOptionUsing(function (Select $component, array $data, callable $set, callable $get) {
                                 // delete previously created model before creating another one,
                                 if ($get('vehicle_id')) {
@@ -116,9 +123,18 @@ class AccessResource extends Resource
                             ->createOptionForm(function () {
                                 return Form::make()
                                     ->schema([
-                                        Forms\Components\TextInput::make('name')->required(),
-                                        Forms\Components\TextInput::make('phone_number')->required()->unique('drivers', 'phone_number'),
-                                        Forms\Components\TextInput::make('email')->required()->unique('drivers', 'email')
+                                        Forms\Components\TextInput::make('name')
+                                            ->placeholder('ex: John Doe')
+                                            ->required(),
+                                        Forms\Components\TextInput::make('phone_number')
+                                            ->placeholder('ex: +234 8034 062 460')
+                                            ->hint("The Driver's phone number")
+                                            ->required()
+                                            ->unique('drivers', 'phone_number'),
+                                        Forms\Components\TextInput::make('email')
+                                            ->placeholder('ex: JohnDoe@gmail.com')
+                                            ->hint("The Driver's email (optional)")
+                                            ->unique('drivers', 'email')
                                     ])
                                     ->columns([
                                         'sm' => 1,
@@ -126,6 +142,7 @@ class AccessResource extends Resource
                                     ])
                                     ->getSchema();
                             })
+                            ->createOptionAction(fn ($action) => $action->modalHeading(__('Register A New Driver')))
                             ->createOptionUsing(function (Select $component, array $data, callable $set, callable $get) {
                                 // delete previously created model before creating another one,
                                 if ($get('driver_id')) {
@@ -189,8 +206,8 @@ class AccessResource extends Resource
                             ->max(120)
                             ->min(30)
                             ->step(10)
-                            ->hint('Time in minutes (min)')
-                            ->helperText('<span class="text-xs"><span class="text-sm">&#9432;</span> The Access will be deactivated if it is not used by the client after the timeout.</span>'),
+                            ->hint('<span>&#9432;</span> Time in minutes (min)')
+                            ->helperText('<span class="text-xs"><span>&#9432;</span> The Access will be deactivated if it is not used by the customer after the timeout.</span>'),
 
                         Forms\Components\Radio::make('status')
                             ->options(AccessStatus::toArray())->default(AccessStatus::ISSUED)

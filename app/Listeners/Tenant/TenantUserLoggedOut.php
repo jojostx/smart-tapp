@@ -27,13 +27,11 @@ class TenantUserLoggedOut
      */
     public function handle(Logout $event)
     {
-        if ($event->user->tenant_id) {
+        if ($event->user?->tenant_id) {
             $sessionModel = SessionModel::where([
                 'tenant_id' => $event->user->tenant_id,
                 'user_id' => $event->user->id,
             ]);
-
-            \logger($sessionModel);
         }
     }
 }

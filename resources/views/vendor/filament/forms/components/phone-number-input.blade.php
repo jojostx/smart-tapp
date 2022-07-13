@@ -56,14 +56,13 @@
                     allowedCountries: {{ json_encode($getAllowedCountries()) }}
                 }"
                 x-model.lazy="state"
-                {!! ($type = $getType()) ? "type=\"{$type}\"" : 'tel' !!}
+                type='tel'
                 {{ $getExtraAlpineAttributeBag() }}
                 dusk="filament.forms.{{ $getStatePath() }}"
                 {!! ($autocomplete = $getAutocomplete()) ? "autocomplete=\"{$autocomplete}\"" : null !!}
                 {!! $isAutofocused() ? 'autofocus' : null !!}
                 {!! $isDisabled() ? 'disabled' : null !!}
                 id="{{ $getId() }}"
-                {!! "inputmode=\"{$getType()}\"" !!}
                 {!! ($placeholder = $getPlaceholder()) ? "placeholder=\"{$placeholder}\"" : null !!}
                 {!! $isRequired() ? 'required' : null !!}
                 {{ $getExtraInputAttributeBag()->class([

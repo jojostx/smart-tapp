@@ -2,6 +2,7 @@
 
 declare(strict_types=1);
 
+use App\Filament\Livewire\Tenant\Components\QrcodeScanner;
 use App\Http\Middleware\InitializeTenancyByDomain as MiddlewareInitializeTenancyByDomain;
 use Illuminate\Support\Facades\Route;
 use Stancl\Tenancy\Features\UserImpersonation;
@@ -25,10 +26,8 @@ Route::middleware([
     MiddlewareInitializeTenancyByDomain::class,
     PreventAccessFromCentralDomains::class,
 ])->group(function () {
-    Route::get('/', function () {
-        dd(\App\Models\Tenant\User::all());
-        return 'This is your multi-tenant application. The id of the current tenant is ' . tenant('id');
-    })->middleware('guest');
+    // /{tenant_id}/{parking_lot_id}
+    Route::get('/', QrcodeScanner::class)->middleware('guest');
 
     Route::get('/impersonate/{token}', function ($token) {
         $redirectResponse = UserImpersonation::makeResponse($token);
@@ -39,10 +38,4 @@ Route::middleware([
 
         return $redirectResponse;
     });
-
-    // Route::post('/filament/logout', function ($token) {
-    //     dd('ok');
-
-    //     return '';
-    // })->name('filament.auth.logout');
 });

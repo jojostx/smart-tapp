@@ -1,6 +1,7 @@
 {
-    "/js/app.js": "/js/app.js",
-    "/js/phoneinput.js": "/js/phoneinput.js",
-    "/css/filament.css": "/css/filament.css",
-    "/css/app.css": "/css/app.css"
+    "/js/app.js": "/js/app.js?id=ada3fd8cc5651ca67dc8247ab42fdc27",
+    "/js/phoneinput.js": "/js/phoneinput.js?id=55092c3e388a6c8fcb700a35a1aacd8c",
+    "/js/qr-scanner.js": "/js/qr-scanner.js?id=2ef7bb4e076b21e83e48bbd15623c5e9",
+    "/css/filament.css": "/css/filament.css?id=aa9b165ead015aa2f3df6155f52ef3f9",
+    "/css/app.css": "/css/app.css?id=269503acda4bb5667c903002d613f99d"
 }

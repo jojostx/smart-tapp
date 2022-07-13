@@ -87,12 +87,17 @@ class DriverResource extends Resource
                 Tables\Columns\TextColumn::make('name'),
                 Tables\Columns\TextColumn::make('email')->searchable(),
                 Tables\Columns\TextColumn::make('phone_number')->searchable(),
-                Tables\Columns\TextColumn::make('phone_verified_at')->date(config('filament.date_format'))
+                Tables\Columns\BooleanColumn::make('phone_verified_at')
+                    ->label('Phone verified')
+                    ->default(false)
                     ->toggleable()
                     ->sortable(),
-                Tables\Columns\TextColumn::make('email_verified_at')->date(config('filament.date_format'))
+                Tables\Columns\BooleanColumn::make('email_verified_at')
+                    ->label('Email verified')
+                    ->default(false)
                     ->toggleable()
-                    ->sortable(),
+                    ->sortable()
+                    ->toggledHiddenByDefault(),
                 Tables\Columns\TextColumn::make('created_at')->date(config('filament.date_format'))
                     ->toggleable()
                     ->toggledHiddenByDefault()

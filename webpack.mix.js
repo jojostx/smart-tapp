@@ -19,19 +19,24 @@ require("laravel-mix-tailwind");
 //     .tailwind("./tailwind.config.js")
 //     .sourceMaps();
 
-mix.js('resources/js/app.js', 'public/js')
-    .postCss('resources/css/app.css', 'public/css', [
-        require('postcss-import'),
-        require('tailwindcss'),
-        require('autoprefixer'),
-    ]).postCss('resources/css/filament.css', 'public/css', [
-        require('tailwindcss'),
-        require('autoprefixer'),
+mix.js("resources/js/app.js", "public/js")
+    .postCss("resources/css/app.css", "public/css", [
+        require("postcss-import"),
+        require("tailwindcss"),
+        require("autoprefixer"),
+    ])
+    .postCss("resources/css/filament.css", "public/css", [
+        require("tailwindcss"),
+        require("autoprefixer"),
     ])
     .sourceMaps();
 
-mix.js('resources/js/filament/forms/phoneinput', 'public/js/phoneinput.js')
-    .sourceMaps();
+mix.js(
+    "resources/js/filament/forms/phoneinput",
+    "public/js/phoneinput.js"
+).sourceMaps();
+
+mix.js("resources/js/qr-scanner.js", "public/js").version().sourceMaps();
 
 if (mix.inProduction()) {
     mix.version();
