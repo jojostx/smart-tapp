@@ -1,21 +1,33 @@
 import QrScanner from "qr-scanner";
 
 document.addEventListener("alpine:init", () => {
-    Alpine.data("qrcodeScanner", () => {
+    Alpine.data("qrcodeScanner", (state) => {
         return {
+            state,
             /**
              * @type {(QrScanner|null)} scanner
              */
             scanner: null,
-            isScanning: false,
+
+            canUseFlash: false,
+            
             error: null,
+
             errorTimerId: null,
+
+            isScanning: false,
+
+            isProcessing: false,
 
             get hasError() {
                 return Boolean(this.error);
             },
 
-            async init() {
+            get isFlashOn() {
+                return this.scanner?.isFlashOn() ?? false;
+            },
+
+            init: async function () {
                 this.initScanner();
 
                 this.$watch("isScanning", (n, o) => {
@@ -23,13 +35,15 @@ document.addEventListener("alpine:init", () => {
 
                     if (n && !o) {
                         this.errorTimerId = setTimeout(() => {
-                            this.displayError('Unable to detect QR code, please make sure to focus on the QR code to complete the scan');
+                            this.displayError(
+                                "Unable to detect QR code, please make sure to focus on the QR code to complete the scan"
+                            );
                         }, 30000);
                     }
                 });
             },
 
-            async initScanner() {
+            initScanner: async function () {
                 if (this.scanner && this.scanner?.destroy()) {
                     this.scanner = null;
                 }
@@ -57,7 +71,7 @@ document.addEventListener("alpine:init", () => {
                 this.scanner.setInversionMode("both");
             },
 
-            async startScanning() {
+            startScanning: async function () {
                 if (Boolean(this.scanner) == false) {
                     return;
                 }
@@ -65,9 +79,11 @@ document.addEventListener("alpine:init", () => {
                 await this.scanner.start();
 
                 this.isScanning = true;
+                this.isProcessing = false;
+                this.canUseFlash =  await this.scanner.hasFlash();
             },
 
-            stopScanning() {
+            stopScanning: function () {
                 if (Boolean(this.scanner) == false) {
                     this.isScanning = false;
                     return;
@@ -78,24 +94,23 @@ document.addEventListener("alpine:init", () => {
                 this.error = null;
             },
 
-            async toggleFlash() {
-                if (Boolean(this.scanner) == false || !this.isScanning) {
-                    return;
-                }
+            processResult: function (result) {
+                console.log(result);
+                // stop scanning
+                this.stopScanning();
+                // start processing
+                this.isProcessing = true;
+                // do something with the result, eg: pass to lw comp for validation
+                this.state = result;
+            },
 
-                if (await this.scanner.hasFlash()) {
+            toggleFlash: async function () {
+                if (this.canUseFlash) {
                     await this.scanner.toggleFlash();
                 }
             },
 
-            processResult: function (result) {
-                // do something with the result, eg: pass to lw comp for validation
-                console.log(result);
-                // stop scanning
-                this.stopScanning();
-            },
-
-            displayError(error) {
+            displayError: function (error) {
                 this.$dispatch("open-alert", {
                     color: "danger",
                     message: error,

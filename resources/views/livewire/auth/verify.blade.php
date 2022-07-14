@@ -77,8 +77,8 @@
     </div>
 
     @if ($isCreatingAccount)
-    <div x-data="{ show: true }" wire:poll.5s="redirectIfSubdomainIsCreated" class="absolute inset-0 z-10 flex flex-col items-center justify-center bg-gray-50">
-        <div x-trap.inert.noscroll="show" x-show="show" class="p-12 text-center bg-white border shadow-md rounded-xl">
+    <div x-data="{ show: true }" x-show="show" wire:poll.5s="redirectIfSubdomainIsCreated" class="fixed inset-0 z-10 flex flex-col items-center justify-center bg-gray-50">
+        <div x-trap.inert.noscroll="show" class="p-12 text-center bg-white border shadow-md rounded-xl">
             <div>
                 <svg class="w-20 h-20 m-auto" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" viewBox="0 0 100 100" preserveAspectRatio="xMidYMid">
                     <circle cx="50" cy="50" r="0" fill="none" class="stroke-primary-400" stroke-width="3">
