@@ -14,6 +14,10 @@ class Authenticate extends Middleware
      */
     protected function redirectTo($request)
     {
+        if ($request->route()->named('access.dashboard')) {
+            return route('access.scan');
+        }
+
         if (! $request->expectsJson()) {
             return route('login');
         }
