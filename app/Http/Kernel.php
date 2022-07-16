@@ -65,6 +65,7 @@ class Kernel extends HttpKernel
         'landlord.guest' => \App\Http\Middleware\RedirectIfLandlord::class,
         // 'landlord.verified' => \App\Http\Middleware\EnsureLandlordEmailIsVerified::class,
         // 'landlord.password.confirm' => \App\Http\Middleware\RequireLandlordPassword::class,
+        'access.valid' => \App\Http\Middleware\EnsureAccessIsValid::class,
         
         // defaults
         'auth' => \App\Http\Middleware\Authenticate::class,
