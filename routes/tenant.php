@@ -3,10 +3,9 @@
 declare(strict_types=1);
 
 use App\Filament\Livewire\Tenant\Components\QrcodeScanner;
-use App\Http\Middleware\InitializeTenancyByDomain as MiddlewareInitializeTenancyByDomain;
+use App\Http\Middleware\InitializeTenancyByDomain;
 use Illuminate\Support\Facades\Route;
 use Stancl\Tenancy\Features\UserImpersonation;
-use Stancl\Tenancy\Middleware\InitializeTenancyByDomain;
 use Stancl\Tenancy\Middleware\PreventAccessFromCentralDomains;
 
 /*
@@ -21,13 +20,28 @@ use Stancl\Tenancy\Middleware\PreventAccessFromCentralDomains;
 |
 */
 
+// logout and redirect after access timeout
+
 Route::middleware([
     'web',
-    MiddlewareInitializeTenancyByDomain::class,
+    InitializeTenancyByDomain::class,
     PreventAccessFromCentralDomains::class,
 ])->group(function () {
-    // /{tenant_id}/{parking_lot_id}
-    Route::get('/', QrcodeScanner::class)->middleware('guest');
+    Route::get('/', function (Request $request) {
+        dd($request);
+    })->middleware('guest')->name('access.home');
+
+    // /access/{access}
+    Route::middleware(['access.valid'])->group(function ()
+    {
+        Route::get('/access/{access}/scan', QrcodeScanner::class)
+            ->middleware('guest')
+            ->name('access.scan');
+    
+        Route::get('/access/{access}/', function (Request $request) {
+            dd($request);
+        })->middleware('auth:driver')->name('access.dashboard');
+    });
 
     Route::get('/impersonate/{token}', function ($token) {
         $redirectResponse = UserImpersonation::makeResponse($token);
