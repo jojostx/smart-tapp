@@ -1,7 +1,7 @@
 import QrScanner from "qr-scanner";
 
 document.addEventListener("alpine:init", () => {
-    Alpine.data("qrcodeScanner", (state) => {
+    Alpine.data("qrcodeScanner", ({ state }) => {
         return {
             state,
             /**
@@ -10,7 +10,7 @@ document.addEventListener("alpine:init", () => {
             scanner: null,
 
             canUseFlash: false,
-            
+
             error: null,
 
             errorTimerId: null,
@@ -80,7 +80,7 @@ document.addEventListener("alpine:init", () => {
 
                 this.isScanning = true;
                 this.isProcessing = false;
-                this.canUseFlash =  await this.scanner.hasFlash();
+                this.canUseFlash = await this.scanner.hasFlash();
             },
 
             stopScanning: function () {
