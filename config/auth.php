@@ -36,6 +36,11 @@ return [
     */
 
     'guards' => [
+        'driver' => [
+            'driver' => 'session',
+            'provider' => 'drivers',
+        ],
+
         'landlord' => [
             'driver' => 'session',
             'provider' => 'landlords',
@@ -65,6 +70,11 @@ return [
     */
 
     'providers' => [
+        'drivers' => [
+            'driver' => 'eloquent',
+            'model' => App\Models\Tenant\Driver::class,
+        ],
+
         'landlords' => [
             'driver' => 'eloquent',
             'model' => App\Models\Landlord::class,
