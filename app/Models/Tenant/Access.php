@@ -47,11 +47,31 @@ class Access extends Model
     // );
 
     /**
+     * checks if the access is expired.
+     *
+     * @return bool
+     */
+    public function isValid(): bool
+    {
+        return ! blank($this->valid_until) && now()->lte($this->valid_until);
+    }
+
+    /**
+     * sets the access status to active.
+     *
+     * @return void
+     */
+    public function activate(): void
+    {
+        $this->status = AccessStatus::ACTIVE;
+    }
+
+    /**
      * Get the name for the access.
      *
      * @return \Illuminate\Database\Eloquent\Casts\Attribute
      */
-    protected function name(): Attribute
+    public function name(): Attribute
     {
         return Attribute::make(
             get: function ($value, $attributes) {
