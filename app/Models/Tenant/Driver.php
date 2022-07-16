@@ -2,17 +2,18 @@
 
 namespace App\Models\Tenant;
 
+use App\Traits\MustVerifyPhoneNumber;
 use Dyrynda\Database\Support\BindsOnUuid;
 use Dyrynda\Database\Support\GeneratesUuid;
 use Illuminate\Database\Eloquent\Casts\Attribute;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
-use Illuminate\Database\Eloquent\Model;
+use Illuminate\Foundation\Auth\User as Authenticatable;
 use Illuminate\Database\Eloquent\Relations\BelongsToMany;
 use Illuminate\Database\Eloquent\Relations\HasMany;
 
-class Driver extends Model
+class Driver extends Authenticatable
 {
-    use HasFactory, GeneratesUuid, BindsOnUuid;
+    use HasFactory, GeneratesUuid, BindsOnUuid, MustVerifyPhoneNumber;
 
     /**
      * The attributes that are mass assignable.
