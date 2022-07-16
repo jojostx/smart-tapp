@@ -1,6 +1,6 @@
 <?php
 
-namespace App\Filament\Livewire\Tenant\Components;
+namespace App\Filament\Livewire\Tenant\Driver;
 
 use Auth;
 use App\Models\Tenant\Access;
@@ -64,6 +64,6 @@ class QrcodeScanner extends Component
 
     public function render()
     {
-        return view('livewire.tenant.components.qrcode-scanner')->extends('layouts.auth');
+        return view('livewire.tenant.driver.qrcode-scanner')->extends('layouts.auth');
     }
 }

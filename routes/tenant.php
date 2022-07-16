@@ -2,7 +2,7 @@
 
 declare(strict_types=1);
 
-use App\Filament\Livewire\Tenant\Components\QrcodeScanner;
+use App\Filament\Livewire\Tenant\Driver\QrcodeScanner;
 use App\Http\Middleware\InitializeTenancyByDomain;
 use Illuminate\Support\Facades\Route;
 use Stancl\Tenancy\Features\UserImpersonation;
