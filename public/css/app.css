@@ -2380,9 +2380,6 @@ select {
   border-top-width: calc(1px * calc(1 - var(--tw-divide-y-reverse)));
   border-bottom-width: calc(1px * var(--tw-divide-y-reverse));
 }
-.divide-solid > :not([hidden]) ~ :not([hidden]) {
-  border-style: solid;
-}
 .divide-gray-300 > :not([hidden]) ~ :not([hidden]) {
   --tw-divide-opacity: 1;
   border-color: rgb(209 213 219 / var(--tw-divide-opacity));
@@ -4786,10 +4783,6 @@ select {
     margin-left: 1.5rem;
   }
 
-  .sm\:mr-2 {
-    margin-right: 0.5rem;
-  }
-
   .sm\:block {
     display: block;
   }
@@ -4927,10 +4920,6 @@ select {
 
   .sm\:grid-cols-12 {
     grid-template-columns: repeat(12, minmax(0, 1fr));
-  }
-
-  .sm\:flex-row {
-    flex-direction: row;
   }
 
   .sm\:flex-col {

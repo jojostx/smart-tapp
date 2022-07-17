@@ -25,7 +25,7 @@ class QrcodeScanner extends Component
     public function mount(Access $access)
     {
         $this->access = $access;
-        if (! $this->access->driver->hasVerifiedPhoneNumber()) {
+        if (!$this->access->driver->hasVerifiedPhoneNumber()) {
             $this->access->driver->markPhoneNumberAsVerified();
         }
     }
@@ -43,13 +43,13 @@ class QrcodeScanner extends Component
 
     public function authenticate()
     {
-        if ($this->access->parkingLot()->whereUuid($this->parking_lot)->doesntExist()) {
+        if ($this->access->parkingLot()->whereUuid(json_decode($this->parking_lot))->doesntExist()) {
             $this->addError('parking_lot', 'You are at the Wrong Parking lot');
 
             $this->dispatchBrowserEvent('open-alert', [
                 'color' => "danger",
                 'message' => 'The Parking Lot does not match the one assigned to you.',
-                'timeout' => 30000
+                'timeout' => 50000
             ]);
 
             return;
@@ -59,7 +59,7 @@ class QrcodeScanner extends Component
 
         Auth::guard('driver')->login($this->access->driver);
 
-        return redirect()->route('access.dashboard');
+        return redirect()->route('access.dashboard', ['access' => $this->access]);
     }
 
     public function render()

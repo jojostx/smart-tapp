@@ -95,13 +95,13 @@ document.addEventListener("alpine:init", () => {
             },
 
             processResult: function (result) {
-                console.log(result);
+                console.log(result, result.data);
                 // stop scanning
                 this.stopScanning();
                 // start processing
                 this.isProcessing = true;
                 // do something with the result, eg: pass to lw comp for validation
-                this.state = result;
+                this.state = result.data;
             },
 
             toggleFlash: async function () {

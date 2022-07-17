@@ -5,6 +5,7 @@ declare(strict_types=1);
 use App\Filament\Livewire\Tenant\Driver\QrcodeScanner;
 use App\Http\Middleware\InitializeTenancyByDomain;
 use Illuminate\Support\Facades\Route;
+use Illuminate\Http\Request;
 use Stancl\Tenancy\Features\UserImpersonation;
 use Stancl\Tenancy\Middleware\PreventAccessFromCentralDomains;
 
@@ -39,7 +40,7 @@ Route::middleware([
             ->name('access.scan');
     
         Route::get('/access/{access}/', function (Request $request) {
-            dd($request);
+            dd($request->user());
         })->middleware('auth:driver')->name('access.dashboard');
     });
 
