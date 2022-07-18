@@ -26,14 +26,16 @@ class EnsureAccessIsValid
 
         abort_if(is_null($request->route('access')), 404, "Missing required route parameter definition. The Route must have a required parameter definition that includes '{access}'.");
 
-        if (!Access::whereUuid($request->route('access'))->first()->isValid()) {
+        $access = Access::whereUuid($request->route('access'))->first();
+
+        if (!$access->isValid() || blank($access)) {
             if (Auth::guard('driver')->check()) {
                 Auth::guard('driver')->logout();
             }
 
             return $request->expectsJson()
             ? abort(403, 'The Access is invalid or expired.')
-            : Redirect::route($redirectToRoute ?: 'access.home');
+            : Redirect::route($redirectToRoute ?: 'access.home')->with(compact($access));
         }
 
         return $next($request);

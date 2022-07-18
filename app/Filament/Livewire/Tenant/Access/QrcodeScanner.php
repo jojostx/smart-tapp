@@ -1,6 +1,6 @@
 <?php
 
-namespace App\Filament\Livewire\Tenant\Driver;
+namespace App\Filament\Livewire\Tenant\Access;
 
 use Auth;
 use App\Models\Tenant\Access;
@@ -25,6 +25,11 @@ class QrcodeScanner extends Component
     public function mount(Access $access)
     {
         $this->access = $access;
+
+        if (auth('driver')->check()) {
+            return redirect()->route('access.dashboard', ['access' => $this->access]);
+        }
+
         if (!$this->access->driver->hasVerifiedPhoneNumber()) {
             $this->access->driver->markPhoneNumberAsVerified();
         }
@@ -57,13 +62,15 @@ class QrcodeScanner extends Component
 
         $this->access->activate();
 
-        Auth::guard('driver')->login($this->access->driver);
+        if (!auth('driver')->check()) {
+            Auth::guard('driver')->login($this->access->driver);
+        }
 
         return redirect()->route('access.dashboard', ['access' => $this->access]);
     }
 
     public function render()
     {
-        return view('livewire.tenant.driver.qrcode-scanner')->extends('layouts.auth');
+        return view('livewire.tenant.access.qrcode-scanner')->extends('layouts.auth');
     }
 }

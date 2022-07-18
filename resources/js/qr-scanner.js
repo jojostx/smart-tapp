@@ -95,7 +95,6 @@ document.addEventListener("alpine:init", () => {
             },
 
             processResult: function (result) {
-                console.log(result, result.data);
                 // stop scanning
                 this.stopScanning();
                 // start processing

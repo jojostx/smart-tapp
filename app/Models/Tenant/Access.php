@@ -63,7 +63,20 @@ class Access extends Model
      */
     public function activate(): void
     {
-        $this->status = AccessStatus::ACTIVE;
+        // deactivate every other accesses with the same vehicle.
+        Access::where('vehicle_id', $this->vehicle->id)->update(['status' => AccessStatus::INACTIVE]);
+        
+        $this->save(['status' => AccessStatus::ACTIVE]);
+    }
+
+    /**
+     * deactivate the access.
+     *
+     * @return void
+     */
+    public function deactivate(): void
+    {
+        $this->save(['status' => AccessStatus::INACTIVE]);
     }
 
     /**

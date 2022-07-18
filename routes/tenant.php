@@ -2,7 +2,8 @@
 
 declare(strict_types=1);
 
-use App\Filament\Livewire\Tenant\Driver\QrcodeScanner;
+use App\Filament\Livewire\Tenant\Access\Dashboard;
+use App\Filament\Livewire\Tenant\Access\QrcodeScanner;
 use App\Http\Middleware\InitializeTenancyByDomain;
 use Illuminate\Support\Facades\Route;
 use Illuminate\Http\Request;
@@ -30,18 +31,14 @@ Route::middleware([
 ])->group(function () {
     Route::get('/', function (Request $request) {
         dd($request);
-    })->middleware('guest')->name('access.home');
+    })->name('access.home');
 
     // /access/{access}
-    Route::middleware(['access.valid'])->group(function ()
-    {
+    Route::middleware(['access.valid'])->group(function () {
         Route::get('/access/{access}/scan', QrcodeScanner::class)
-            ->middleware('guest')
             ->name('access.scan');
-    
-        Route::get('/access/{access}/', function (Request $request) {
-            dd($request->user());
-        })->middleware('auth:driver')->name('access.dashboard');
+
+        Route::get('/access/{access}/dashboard', Dashboard::class)->middleware('auth:driver')->name('access.dashboard');
     });
 
     Route::get('/impersonate/{token}', function ($token) {
