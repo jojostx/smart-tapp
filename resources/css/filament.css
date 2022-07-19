@@ -7,6 +7,11 @@
 html {
     font-family: "JetBrains Mono", monospace !important;
 }
+.iti {
+    position: relative;
+    display: inline-block;
+    width: 100%;
+}
 
 @layer components {
     .filament-forms-range-component {

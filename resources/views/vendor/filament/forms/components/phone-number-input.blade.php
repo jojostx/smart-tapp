@@ -51,7 +51,7 @@
                             }
                     });"
                 x-data="{ 
-                    state: $wire.{{ $applyStateBindingModifiers('entangle(\'' . $getStatePath() . '\')') }}.defer,
+                    state: $wire.{{ $applyStateBindingModifiers('entangle(\'' . $getStatePath() . '\')') }},
                     itl: null,
                     allowedCountries: {{ json_encode($getAllowedCountries()) }}
                 }"

@@ -72,9 +72,9 @@ class UserResource extends Resource
             ->columns([
                 Tables\Columns\TagsColumn::make('roles.name')
                     ->searchable(),
-                    // ->getStateUsing(function (User $record) {
-                    //     return implode(',', $record->rolesArray);
-                    // })->separator(','),
+                // ->getStateUsing(function (User $record) {
+                //     return implode(',', $record->rolesArray);
+                // })->separator(','),
                 Tables\Columns\TextColumn::make('name'),
                 Tables\Columns\TextColumn::make('email')->searchable(),
                 Tables\Columns\BooleanColumn::make('email_verified_at')
@@ -138,14 +138,21 @@ class UserResource extends Resource
             ->schema([
                 Forms\Components\TextInput::make('Name')
                     ->label(__('Name'))
+                    ->placeholder('ex: John Doe')
                     ->validationAttribute(__('Name'))
                     ->required(),
                 Forms\Components\TextInput::make('email')
                     ->label(__('Email'))
+                    ->placeholder('ex: example@gmail.com')
                     ->validationAttribute(__('Email'))
                     ->unique(table: User::class, ignorable: fn (?User $record): ?User => $record)
                     ->required()
                     ->email(),
+                Forms\Components\TextInput::make('phone_number')
+                    ->label('Phone')
+                    ->placeholder('ex: +234 8034 062 460')
+                    ->required()
+                    ->unique(),
                 RoleSelect::make('role')
                     ->label(__('Role'))
                     ->validationAttribute(__('Role')),
