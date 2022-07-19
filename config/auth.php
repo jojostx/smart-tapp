@@ -36,6 +36,11 @@ return [
     */
 
     'guards' => [
+        'web' => [
+            'driver' => 'session',
+            'provider' => 'users',
+        ],
+
         'driver' => [
             'driver' => 'session',
             'provider' => 'drivers',
@@ -44,11 +49,6 @@ return [
         'landlord' => [
             'driver' => 'session',
             'provider' => 'landlords',
-        ],
-
-        'web' => [
-            'driver' => 'session',
-            'provider' => 'users',
         ],
     ],
 

@@ -30,7 +30,7 @@ Route::middleware([
     PreventAccessFromCentralDomains::class,
 ])->group(function () {
     Route::get('/', function (Request $request) {
-        dd($request);
+        dd('ok');
     })->name('access.home');
 
     // /access/{access}
