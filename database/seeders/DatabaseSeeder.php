@@ -2,6 +2,7 @@
 
 namespace Database\Seeders;
 
+use App\Enums\Roles\UserRole;
 use App\Models\Tenant\Access;
 use App\Models\Tenant\Driver;
 use App\Models\Tenant\ParkingLot;
@@ -9,9 +10,12 @@ use App\Models\Tenant\User;
 use App\Models\Tenant\Vehicle;
 use Illuminate\Database\Console\Seeds\WithoutModelEvents;
 use Illuminate\Database\Seeder;
+use Spatie\Permission\Models\Role;
 
 class DatabaseSeeder extends Seeder
 {
+    protected static array $roles = [UserRole::SUPER_ADMIN];
+
     /**
      * Seed the application's database.
      *
@@ -20,6 +24,14 @@ class DatabaseSeeder extends Seeder
     public function run()
     {
         $user = User::find(1);
+
+        foreach (self::$roles as $role) {
+            /** @var Role $role */
+            $role = Role::create([
+                'name' => $role,
+                'guard_name' => 'web',
+            ]);
+        }
 
         Access::factory()
             ->for(ParkingLot::factory()->create())
