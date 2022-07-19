@@ -4,10 +4,7 @@ namespace App\Filament\Livewire\Auth;
 
 use App\Events\Tenant\TenantVerified;
 use App\Models\Tenant;
-use Illuminate\Support\Facades\Password;
 use Livewire\Component;
-use Log;
-use Otp;
 
 class Verify extends Component
 {
