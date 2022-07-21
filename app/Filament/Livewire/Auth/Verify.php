@@ -4,10 +4,13 @@ namespace App\Filament\Livewire\Auth;
 
 use App\Events\Tenant\TenantVerified;
 use App\Models\Tenant;
+use DanHarrin\LivewireRateLimiting\WithRateLimiting;
 use Livewire\Component;
 
 class Verify extends Component
 {
+    use WithRateLimiting;
+    
     public string $email = '';
 
     public string $otp = '';
@@ -18,7 +21,7 @@ class Verify extends Component
 
     public bool $isCreatingAccount = false;
 
-    public function mount($id = null)
+    public function mount(?string $id = null)
     {
         if (!blank($id)) {
             $this->tenant = Tenant::findOrFail($id);
@@ -34,7 +37,7 @@ class Verify extends Component
     public function sendVerificationNotification()
     {
         // validate credentials
-        $this->validateOnly('email', ['required', 'string', 'email', 'exists:tenants:email']);
+        $this->validateOnly('email', ['required', 'string', 'email', 'exists:tenants,email']);
 
         // retrieve tenant from database
         $this->tenant = Tenant::where(['email' => $this->email])->firstOrFail();
