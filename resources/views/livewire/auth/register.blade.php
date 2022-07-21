@@ -25,7 +25,7 @@
             <form wire:submit.prevent="register">
                 <!-- Organization Name -->
                 <div>
-                    <x-label for="organization" :value="__('Organization')" />
+                    <x-label for="organization" :value="__('Organization')" :required="true" />
 
                     <x-input name="organization" wire:model.lazy="organization" id="organization" type="text" required autofocus class="block w-full mt-1 appearance-none" placeholder="(Ex. Google)" :value="old('organization')" />
 
@@ -39,7 +39,7 @@
 
                 <!-- Name -->
                 <div class="mt-4">
-                    <x-label for="name" :value="__('Full name')" />
+                    <x-label for="name" :value="__('Full name')" :required="true" />
 
                     <x-input name="name" wire:model.lazy="name" id="name" class="block w-full mt-1" placeholder="John Doe" type="text" :value="old('name')" required />
 
@@ -50,7 +50,7 @@
 
                 <!-- Email Address -->
                 <div class="mt-4">
-                    <x-label for="email" :value="__('Email address')" />
+                    <x-label for="email" :value="__('Email address')" :required="true" />
 
                     <x-input wire:model.lazy="email" id="email" class="block w-full mt-1" placeholder="name@company.com" type="email" name="email" :value="old('email')" required />
 
@@ -61,7 +61,7 @@
 
                 <!-- Password -->
                 <div class="mt-4">
-                    <x-label for="password" :value="__('Password')" />
+                    <x-label for="password" :value="__('Password')" :required="true" />
 
                     <x-input-password wire:model.lazy="password" id="password" placeholder="••••••••" class="block w-full mt-1" name="password" required autocomplete="new-password" />
 
@@ -72,7 +72,7 @@
 
                 <!-- Confirm Password -->
                 <div class="mt-4">
-                    <x-label for="password_confirmation" :value="__('Confirm Password')" />
+                    <x-label for="password_confirmation" :value="__('Confirm Password')" :required="true" />
 
                     <x-input-password wire:model.lazy="passwordConfirmation" id="password_confirmation" placeholder="••••••••" class="block w-full mt-1" name="password_confirmation" required autocomplete="new-password" />
                 </div>
@@ -82,7 +82,10 @@
                     <label class="flex items-center text-sm font-medium text-gray-700">
                         <x-checkbox wire:model.lazy="terms" name="terms" id="terms" required class="w-4 h-4 mr-2" />
 
-                        {{ __('I agree with the') }}&nbsp;<a target="_blank" href="{{ $terms_route ?? '#' }}" class="text-blue-600 hover:underline">{{ __('Terms of Service') }}</a>.
+                        {{ __('I agree with the') }}&nbsp;
+                        <a href="#" class="font-medium transition duration-150 ease-in-out text-primary-600 hover:text-primary-500 focus:outline-none focus:underline">
+                            {{ __('Terms of Service') }}
+                        </a>.
                     </label>
 
                     @error('terms')
@@ -90,13 +93,9 @@
                     @enderror
                 </div>
 
-                <div class="mt-4">
-                    <span class="block w-full rounded-md shadow-sm">
-                        <button type="submit" class="flex justify-center w-full px-4 py-2 text-sm font-medium text-white transition duration-150 ease-in-out border border-transparent rounded-md bg-primary-600 hover:bg-primary-500 focus:outline-none focus:border-primary-700 focus:ring-primary active:bg-primary-700">
-                            Register
-                        </button>
-                    </span>
-                </div>
+                <x-filament::button type="submit" form="submit" class="w-full mt-6">
+                    {{ __('Create Account') }}
+                </x-filament::button>
             </form>
         </div>
         <x-form-footer />
