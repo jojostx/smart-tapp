@@ -24,14 +24,14 @@
     <div class="mt-8 sm:mx-auto sm:w-full sm:max-w-md">
         <div class="px-4 py-8 bg-white shadow sm:rounded-lg sm:px-10">
             <form wire:submit.prevent="authenticate">
-                @if (blank($this->currentTenant))                    
-                    <!-- Domain -->
-                    <x-domain-input/>
+                @if (blank($this->currentTenant))
+                <!-- Domain -->
+                <x-domain-input />
                 @endif
 
                 <!-- Email Address -->
                 <div class="mt-4">
-                    <x-label for="email" :value="__('Email')" />
+                    <x-label for="email" :value="__('Email')" :required="true" />
 
                     <x-input wire:model.lazy="email" id="email" class="block w-full mt-1" placeholder="name@company.com" type="email" name="email" :value="old('email')" required />
 
@@ -42,7 +42,7 @@
 
                 <!-- Password -->
                 <div class="mt-4">
-                    <x-label for="password" :value="__('Password')" />
+                    <x-label for="password" :value="__('Password')" :required="true" />
 
                     <x-input-password wire:model.lazy="password" id="password" placeholder="••••••••" class="block w-full mt-1" name="password" required autocomplete="new-password" />
 
@@ -55,28 +55,24 @@
                     <div class="flex items-center">
                         <x-checkbox wire:model.lazy="remember" id="remember" name="remember" class="w-4 h-4 mr-2" />
 
-                        <label for="remember" class="block ml-2 text-sm leading-5 text-gray-900">
+                        <label for="remember" class="block ml-1 text-sm leading-5 text-gray-900">
                             Remember
                         </label>
                     </div>
 
                     <div class="text-sm leading-5">
-                        <a href="#" class="font-medium transition duration-150 ease-in-out text-primary-600 hover:text-primary-500 focus:outline-none focus:underline">
+                        <a href="{{ route('password.request') }}" class="font-medium transition duration-150 ease-in-out text-primary-600 hover:text-primary-500 focus:outline-none focus:underline">
                             Forgot your password?
                         </a>
                     </div>
                 </div>
 
-                <div class="mt-6">
-                    <span class="block w-full rounded-md shadow-sm">
-                        <button type="submit" class="flex justify-center w-full px-4 py-2 text-sm font-medium text-white transition duration-150 ease-in-out border border-transparent rounded-md bg-primary-600 hover:bg-primary-500 focus:outline-none focus:border-primary-700 focus:ring-primary active:bg-primary-700">
-                            Sign in
-                        </button>
-                    </span>
-                </div>
+                <x-filament::button type="submit" form="submit" class="w-full mt-6">
+                    {{ __('Sign in') }}
+                </x-filament::button>
             </form>
         </div>
 
-        <x-form-footer/>
+        <x-form-footer />
     </div>
 </div>

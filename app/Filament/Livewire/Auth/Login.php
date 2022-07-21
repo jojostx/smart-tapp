@@ -2,6 +2,7 @@
 
 namespace App\Filament\Livewire\Auth;
 
+use App\Filament\Traits\WithDomainValidation;
 use App\Models\Tenant\User;
 use DanHarrin\LivewireRateLimiting\WithRateLimiting;
 use Illuminate\Support\Facades\Hash;
@@ -10,6 +11,7 @@ use Livewire\Component;
 class Login extends Component
 {
     use WithRateLimiting;
+    use WithDomainValidation;
 
     /** @var string */
     protected $redirectUrl = '/admin';
@@ -31,7 +33,6 @@ class Login extends Component
         return [
             'email' => ['required', 'email'],
             'password' => ['required'],
-            'domain' => ['required', 'exists:' . config('database.connections.mysql.driver') . '.domains,domain']
         ];
     }
 
@@ -40,19 +41,6 @@ class Login extends Component
         $this->fill([
             'domain' => $this->currentTenant?->domain ?? '',
         ]);
-    }
-
-    protected function prepareForValidation($attributes): array
-    {
-        if ($this->domain === $this->currentTenant?->domain) {
-            return $attributes;
-        }
-
-        if (filled($this->domain) && \is_string($this->domain)) {
-            $attributes['domain'] = strtolower($this->domain) . '.' . config('tenancy.central_domains')[0];
-        }
-
-        return $attributes;
     }
 
     public function authenticate()
@@ -89,11 +77,6 @@ class Login extends Component
         $domain = $tenant->domain;
 
         return redirect("https://$domain/impersonate/{$token->token}");
-    }
-
-    public function getCurrentTenantProperty()
-    {
-        return \tenant();
     }
 
     public function render()
