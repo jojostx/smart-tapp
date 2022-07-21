@@ -7,7 +7,7 @@
         <x-logo class="w-auto mr-3 text-primary-600 h-9" alt="{{ config('app.name') }} Logo" />
         <span class="self-center hidden text-xl font-semibold whitespace-nowrap md:inline">{{ config('app.name') }}</span>
     </a>
-    <div class="w-full col-span-4 md:col-span-5">
+    <div class="flex items-center justify-center w-full col-span-4 md:col-span-5">
         <ul class="items-center justify-center hidden w-full md:flex">
             <li class="mx-3">
                 <a href="features">Features</a>
