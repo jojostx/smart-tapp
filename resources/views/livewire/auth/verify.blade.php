@@ -22,7 +22,7 @@
 
                 <div class="mt-2">
                     <p class="text-sm font-medium leading-5 text-green-800">
-                        A One Time Passcode has been sent to <span class="font-semibold">{{ $tenant?->email ?? 'ikuskid&@gmail.com' }}</span>
+                        A One Time Passcode has been sent to <span class="font-semibold">{{ $email }}</span>
                     </p>
                 </div>
 
@@ -35,7 +35,7 @@
             </div>
             <form wire:submit.prevent="verifyEmail" class="mt-4">
                 <div>
-                    <x-label for="otp" :value="__('OTP code')" />
+                    <x-label for="otp" :value="__('OTP code')" :required="true" />
 
                     <x-input wire:model.lazy="otp" id="otp" name="otp" type="text" required autofocus class="block w-full mt-1 appearance-none" />
 
@@ -58,7 +58,7 @@
                     {{ __('Just let us know your Email Address and we will email you an OTP (one-time passcode).') }}
                 </div>
                 <div>
-                    <x-label for="email" :value="__('Email Address')" />
+                    <x-label for="email" :value="__('Email Address')" :required="true" />
 
                     <x-input wire:model.lazy="email" id="email" class="block w-full mt-1" placeholder="name@company.com" type="email" name="email" :value="old('email')" required />
 
@@ -67,13 +67,13 @@
                     @enderror
                 </div>
 
-                <div class="mt-6">
-                    <x-button class="flex justify-center w-full text-sm font-medium text-white capitalize" type="submit">Send Verification Mail</x-button>
-                </div>
+                <x-filament::button type="submit" form="submit" class="w-full mt-6">
+                    {{ __('Send Verification Mail') }}
+                </x-filament::button>
             </form>
             @endif
         </div>
-        <x-form-footer/>
+        <x-form-footer />
     </div>
 
     @if ($isCreatingAccount)

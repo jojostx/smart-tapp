@@ -50,7 +50,7 @@ class RoleSelect extends Select
         ->where('guard_name', 'web')
         ->whereNot('name', UserRole::SUPER_ADMIN)
         ->pluck('name', 'id')
-        ->map(fn (string $name) => __($name))
+        ->map(fn (string $name) => str(__($name))->ucfirst())
         ->all(),
     );
 
