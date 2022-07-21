@@ -166,3 +166,9 @@ class Profile extends Page
         // $this->notify('success', strval(__('filament::resources/pages/edit-record.messages.saved')));
     }
 }
+
+// navigation items //
+// billing
+//  plans
+//  subscriptions
+//  payment methods
