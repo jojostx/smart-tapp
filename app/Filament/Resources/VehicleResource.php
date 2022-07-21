@@ -84,7 +84,10 @@ class VehicleResource extends Resource
     {
         return $table
             ->columns([
-                Tables\Columns\TextColumn::make('plate_number')->label('Plate Number')->searchable(),
+                Tables\Columns\TextColumn::make('plate_number')
+                    ->label('Plate Number')
+                    ->formatStateUsing(fn ($state) => str($state)->upper())
+                    ->searchable(),
                 Tables\Columns\TextColumn::make('brand')->searchable(),
                 Tables\Columns\TextColumn::make('model')->searchable(),
                 Tables\Columns\TextColumn::make('color')->toggleable()->toggledHiddenByDefault(),
