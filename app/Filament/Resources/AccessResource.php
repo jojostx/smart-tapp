@@ -187,13 +187,9 @@ class AccessResource extends Resource
                             ])
                             ->hiddenOn(Pages\CreateAccess::class),
 
-                        Forms\Components\Fieldset::make('Parking Lot')
-                            ->schema([
-                                Forms\Components\Select::make('parking_lot_id')
-                                    ->label('Name')
-                                    ->relationship('parkingLot', 'name')
-                                    ->columnSpan('full'),
-                            ]),
+                        Forms\Components\Select::make('parking_lot_id')
+                            ->label('Parking Lot')
+                            ->relationship('parkingLot', 'name'),
 
                         Forms\Components\DatePicker::make('valid_until')
                             ->label('Valid Until')

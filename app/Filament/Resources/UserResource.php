@@ -38,11 +38,7 @@ class UserResource extends Resource
     {
         return $form
             ->schema([
-                Grid::make()
-                    ->schema([
-                        self::detailsSection(),
-                    ])
-                    ->columns(1)
+                self::detailsSection()
                     ->columnSpan([
                         'sm' => 2,
                     ]),
@@ -58,6 +54,7 @@ class UserResource extends Resource
                             ->label('Last modified at')
                             ->content(fn (?User $record): string => $record ? $record->updated_at->diffForHumans() : '-'),
                     ])
+                    ->extraAttributes(['class' => 'hidden sm:block'])
                     ->columns(2)
                     ->columnSpan(2),
             ])->columns([
@@ -72,9 +69,6 @@ class UserResource extends Resource
             ->columns([
                 Tables\Columns\TagsColumn::make('roles.name')
                     ->searchable(),
-                // ->getStateUsing(function (User $record) {
-                //     return implode(',', $record->rolesArray);
-                // })->separator(','),
                 Tables\Columns\TextColumn::make('name'),
                 Tables\Columns\TextColumn::make('email')->searchable(),
                 Tables\Columns\BooleanColumn::make('email_verified_at')

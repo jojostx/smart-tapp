@@ -65,7 +65,7 @@ class Profile extends Page
     {
         return [
             Grid::make()->schema([
-                Card::make()
+                Grid::make()
                     ->schema([
                         Section::make('General Information')
                             ->columns(1)
@@ -81,11 +81,6 @@ class Profile extends Page
                                     ->required()
                                     ->reactive()
                                     ->allowedCountries(['NG']),
-                                // TextInput::make('phone_number')
-                                //     ->label('Phone')
-                                //     ->placeholder('ex: +234 8034 062 460')
-                                //     ->required()
-                                //     ->unique(),
                             ]),
                         Section::make('Password Information')
                             ->columns(1)
@@ -139,7 +134,7 @@ class Profile extends Page
                     ->columnSpan(2),
             ])->columns([
                 'sm' => 4,
-                'lg' => null,
+                'lg' => 4,
             ]),
 
         ];
