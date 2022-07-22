@@ -1568,11 +1568,11 @@ select {
 .z-40 {
   z-index: 40;
 }
-.col-span-2 {
-  grid-column: span 2 / span 2;
-}
 .col-span-4 {
   grid-column: span 4 / span 4;
+}
+.col-span-3 {
+  grid-column: span 3 / span 3;
 }
 .col-span-1 {
   grid-column: span 1 / span 1;
@@ -1580,8 +1580,8 @@ select {
 .col-span-11 {
   grid-column: span 11 / span 11;
 }
-.col-span-3 {
-  grid-column: span 3 / span 3;
+.col-span-2 {
+  grid-column: span 2 / span 2;
 }
 .col-span-5 {
   grid-column: span 5 / span 5;
@@ -3143,6 +3143,10 @@ select {
   --tw-text-opacity: 1;
   color: rgb(127 29 29 / var(--tw-text-opacity));
 }
+.text-danger-600 {
+  --tw-text-opacity: 1;
+  color: rgb(225 29 72 / var(--tw-text-opacity));
+}
 .text-primary-700 {
   --tw-text-opacity: 1;
   color: rgb(67 56 202 / var(--tw-text-opacity));
@@ -3174,10 +3178,6 @@ select {
 .text-danger-400 {
   --tw-text-opacity: 1;
   color: rgb(251 113 133 / var(--tw-text-opacity));
-}
-.text-danger-600 {
-  --tw-text-opacity: 1;
-  color: rgb(225 29 72 / var(--tw-text-opacity));
 }
 .text-success-600 {
   --tw-text-opacity: 1;
@@ -5113,10 +5113,6 @@ select {
     top: auto;
   }
 
-  .md\:col-span-5 {
-    grid-column: span 5 / span 5;
-  }
-
   .md\:col-span-2 {
     grid-column: span 2 / span 2;
   }
@@ -5131,6 +5127,10 @@ select {
 
   .md\:col-span-4 {
     grid-column: span 4 / span 4;
+  }
+
+  .md\:col-span-5 {
+    grid-column: span 5 / span 5;
   }
 
   .md\:col-span-6 {
@@ -5412,6 +5412,10 @@ select {
     z-index: 0;
   }
 
+  .lg\:col-span-5 {
+    grid-column: span 5 / span 5;
+  }
+
   .lg\:col-span-2 {
     grid-column: span 2 / span 2;
   }
@@ -5426,10 +5430,6 @@ select {
 
   .lg\:col-span-4 {
     grid-column: span 4 / span 4;
-  }
-
-  .lg\:col-span-5 {
-    grid-column: span 5 / span 5;
   }
 
   .lg\:col-span-6 {

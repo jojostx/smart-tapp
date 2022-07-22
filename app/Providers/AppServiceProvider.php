@@ -28,10 +28,10 @@ class AppServiceProvider extends ServiceProvider
      */
     public function boot()
     {
-        app()->bind(
-            LogoutResponse::class,
-            AuthLogoutResponse::class
-        );
+        // app()->bind(
+        //     LogoutResponse::class,
+        //     AuthLogoutResponse::class
+        // );
 
         Event::listen(TenancyBootstrapped::class, function (TenancyBootstrapped $event) {
             \Spatie\Permission\PermissionRegistrar::$cacheKey = 'spatie.permission.cache.tenant.' . $event->tenancy->tenant->id;

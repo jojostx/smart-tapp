@@ -21,7 +21,7 @@
         </ul>
     </div>
     @guest
-    <div class="col-span-2 ml-auto sm:ml-0">
+    <div class="flex justify-end col-span-2 ml-auto sm:ml-0">
         <a href="{{ route('login') }}" class="hidden md:inline-flex mr-2 text-white transition duration-150 ease-in-out bg-primary-600 sm:w-max hover:bg-primary-500 focus:outline-none focus:ring-primary-300 active:bg-primary-700 rounded-lg text-sm px-5 py-2.5 text-center items-center">
             Login
         </a>
@@ -285,8 +285,8 @@
 
                 <div class="mt-4 text-white">
                     <span class="text-[2rem] font-bold">$</span>
-                    <span class="font-bold text-[2.625rem]">49</span>
-                    <span class="text-gray-400">/month</span>
+                    <span class="font-bold text-[2.625rem]">29</span>
+                    <span class="text-gray-400">per month</span>
                 </div>
 
                 <p class="mt-1 text-gray-300">
@@ -304,7 +304,7 @@
                         <svg class="w-3 h-3 mr-3 fill-current text-primary-400 shrink-0" viewBox="0 0 12 12" xmlns="http://www.w3.org/2000/svg">
                             <path d="M10.28 2.28L3.989 8.575 1.695 6.28A1 1 0 00.28 7.695l3 3a1 1 0 001.414 0l7-7A1 1 0 0010.28 2.28z"></path>
                         </svg>
-                        <span>Up to 1 parking lots</span>
+                        <span>Up to 2 parking lots</span>
                     </li>
                     <li class="flex items-center mb-2">
                         <svg class="w-3 h-3 mr-3 fill-current text-primary-400 shrink-0" viewBox="0 0 12 12" xmlns="http://www.w3.org/2000/svg">
@@ -332,12 +332,12 @@
 
                 <div class="mt-4 text-white">
                     <span class="text-[2rem] font-bold">$</span>
-                    <span class="font-bold text-[2.625rem]">99</span>
-                    <span class="text-gray-400">/month</span>
+                    <span class="font-bold text-[2.625rem]">49</span>
+                    <span class="text-gray-400">per month</span>
                 </div>
 
                 <p class="mt-1 text-gray-300">
-                    For larger organizations that need to reliable, and scalable solutions.
+                    For larger organizations that need reliable and scalable solutions.
                 </p>
 
                 <ul class="mt-4 -mb-2 text-gray-400 grow">
@@ -379,8 +379,8 @@
 
                 <div class="mt-4 text-white">
                     <span class="text-[2rem] font-bold">$</span>
-                    <span class="font-bold text-[2.625rem]">199</span>
-                    <span class="text-gray-400">/month</span>
+                    <span class="font-bold text-[2.625rem]">99</span>
+                    <span class="text-gray-400">per month</span>
                 </div>
 
                 <p class="mt-1 text-gray-300">

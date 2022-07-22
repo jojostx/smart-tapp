@@ -58,6 +58,11 @@ class RouteServiceProvider extends ServiceProvider
                     ->domain($domain)
                     ->namespace($this->namespace)
                     ->group(base_path('routes/web.php'));
+
+                Route::domain(config('filament.domain'))
+                    ->middleware(config('filament.middleware.base'))
+                    ->prefix(config('filament.path'))
+                    ->group(base_path('routes/filament-auth.php'));
             }
         }
     }
