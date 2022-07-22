@@ -28,7 +28,7 @@ class RedirectIfAuthenticated
                     return redirect(RouteServiceProvider::HOME);
                 }
 
-                if (request()->routeIs('filament.auth.*')) {
+                if (request()->routeIs('filament.auth.login')) {
                     return redirect()->route('filament.pages.dashboard');
                 }
             }
