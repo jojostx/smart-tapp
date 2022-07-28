@@ -8,6 +8,7 @@ use Dyrynda\Database\Support\GeneratesUuid;
 use Illuminate\Database\Eloquent\Casts\Attribute;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
+use Illuminate\Database\Eloquent\Relations\BelongsToMany;
 use Illuminate\Database\Eloquent\Relations\HasMany;
 use SimpleSoftwareIO\QrCode\Facades\QrCode;
 
@@ -59,8 +60,16 @@ class ParkingLot extends Model
     /**
      * The users that belong to the role.
      */
-    public function vehicles()
+    public function vehicles(): BelongsToMany
     {
         return $this->belongsToMany(Vehicle::class, 'accesses');
+    }
+
+    /**
+     * The admin users assigned to supervise the parking lot.
+     */
+    public function administrators(): BelongsToMany
+    {
+        return $this->belongsToMany(User::class)->withTimestamps();
     }
 }

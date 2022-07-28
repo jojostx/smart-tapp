@@ -2,8 +2,8 @@
 
 namespace App\Filament\Resources\DriverResource\Pages;
 
+use App\Filament\Forms\Components\Password;
 use App\Filament\Resources\DriverResource;
-use Filament\Forms\Components\TextInput;
 use Filament\Pages\Actions;
 use Filament\Resources\Pages\EditRecord;
 
@@ -17,12 +17,13 @@ class EditDriver extends EditRecord
             Actions\DeleteAction::make()
                 ->requiresConfirmation()
                 ->form([
-                    \Phpsa\FilamentPasswordReveal\Password::make("current_password")
+                    Password::make("current_password")
                         ->required()
                         ->password()
                         ->rule("current_password")
+                        ->placeholder('••••••••')
                         ->disableAutocomplete(),
-                ]),
+                ])->modalWidth('md'),
         ];
     }
 }

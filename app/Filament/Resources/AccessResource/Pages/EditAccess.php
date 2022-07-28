@@ -2,8 +2,9 @@
 
 namespace App\Filament\Resources\AccessResource\Pages;
 
+use App\Filament\Forms\Components\Password;
 use App\Filament\Resources\AccessResource;
-use Filament\Forms\Components\TextInput;
+use Filament\Forms\Components\Checkbox;
 use Filament\Pages\Actions;
 use Filament\Resources\Pages\EditRecord;
 
@@ -17,12 +18,14 @@ class EditAccess extends EditRecord
             Actions\DeleteAction::make()
                 ->requiresConfirmation()
                 ->form([
-                    \Phpsa\FilamentPasswordReveal\Password::make("current_password")
+                    Password::make("current_password")
                         ->required()
                         ->password()
                         ->rule("current_password")
+                        ->placeholder('••••••••')
                         ->disableAutocomplete(),
-                ]),
+                ])
+                ->modalWidth('md'),
         ];
     }
 }
