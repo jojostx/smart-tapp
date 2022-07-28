@@ -1,6 +1,7 @@
 <?php
 
-use App\Filament\Widgets\RefreshListPageTableWidget;
+use App\Http\Middleware\EnsureAccountIsNotDeactivated;
+use App\Http\Middleware\RedirectIfAuthenticated;
 use Filament\Http\Middleware\Authenticate;
 use Filament\Http\Middleware\DispatchServingFilamentEvent;
 use Filament\Http\Middleware\MirrorConfigToSubpackages;
@@ -291,6 +292,7 @@ return [
     'middleware' => [
         'auth' => [
             Authenticate::class,
+            EnsureAccountIsNotDeactivated::class,
         ],
         'base' => [
             EncryptCookies::class,
@@ -300,11 +302,11 @@ return [
             ShareErrorsFromSession::class,
             VerifyCsrfToken::class,
             SubstituteBindings::class,
-            \App\Http\Middleware\RedirectIfAuthenticated::class,
             DispatchServingFilamentEvent::class,
             MirrorConfigToSubpackages::class,
-
+            
             // custom middleware & middleware from third party packages
+            RedirectIfAuthenticated::class,
             'universal',
             PreventAccessFromCentralDomains::class,
             App\Http\Middleware\InitializeTenancyByDomain::class

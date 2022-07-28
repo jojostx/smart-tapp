@@ -1,5 +1,6 @@
 <?php
 
+use App\Filament\Livewire\Auth\AccountDeactivated;
 use Illuminate\Support\Facades\Route;
 use App\Filament\Livewire\Auth\PasswordRequest;
 use App\Filament\Livewire\Auth\PasswordReset;
@@ -15,8 +16,6 @@ use App\Filament\Livewire\Auth\PasswordReset;
 |
 */
 
-// dd(config('filament.domain'), config('filament.middleware.base'), config('filament.path'));
-
 Route::name('filament.')
   ->group(function (): void {
     Route::get('password/request', PasswordRequest::class)
@@ -24,4 +23,7 @@ Route::name('filament.')
 
     Route::get('password/reset/{token?}', PasswordReset::class)
       ->name('auth.password.reset');
+
+    Route::get('account-deactivated', AccountDeactivated::class)
+      ->name('auth.account.deactivated');
   });

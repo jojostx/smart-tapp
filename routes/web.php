@@ -5,6 +5,7 @@ use App\Filament\Livewire\Auth\PasswordRequest;
 use App\Filament\Livewire\Auth\Register;
 use App\Filament\Livewire\Auth\PasswordReset;
 use App\Filament\Livewire\Auth\Verify;
+use Filament\Http\Middleware\Authenticate;
 use Illuminate\Support\Facades\Route;
 
 /*
@@ -20,7 +21,7 @@ use Illuminate\Support\Facades\Route;
 
 Route::view('/', 'welcome')->name('home');
 
-Route::middleware(['web', 'guest', 'landlord.guest'])
+Route::middleware(['web', 'guest'])
     ->withoutMiddleware('cookie_consent')
     ->group(function () {
         Route::get('register', Register::class)
