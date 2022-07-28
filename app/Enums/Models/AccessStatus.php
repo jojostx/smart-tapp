@@ -10,7 +10,7 @@ enum AccessStatus: string
 
   public static function toArray(): array
   {
-    return collect(self::cases())->flatMap(function (AccessStatus $status) {
+    return collect(self::cases())->flatMap(function ($status) {
       return [$status->value => ucfirst($status->value)];
     })->toArray();
   }

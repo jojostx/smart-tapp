@@ -10,7 +10,7 @@ enum ParkingLotStatus: string
 
   public static function toArray(): array
   {
-    return collect(self::cases())->flatMap(function (ParkingLotStatus $status) {
+    return collect(self::cases())->flatMap(function ($status) {
       return [$status->value => ucfirst($status->value)];
     })->toArray();
   }

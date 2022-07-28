@@ -2,6 +2,7 @@
 
 namespace App\Filament\Resources\UserResource\Pages;
 
+use App\Enums\Models\UserAccountStatus;
 use App\Filament\Resources\UserResource;
 use App\Models\Tenant\User;
 use App\Notifications\Tenant\User\SetPassword;
@@ -37,6 +38,7 @@ class CreateUser extends CreateRecord
     protected function mutateFormDataBeforeCreate(array $data): array
     {
         $data['password'] = Str::random(40);
+        $data['status'] = UserAccountStatus::INACTIVE;
 
         return $data;
     }

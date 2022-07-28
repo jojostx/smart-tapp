@@ -4,14 +4,22 @@ declare(strict_types=1);
 
 namespace App\Filament\Forms\Components;
 
-use App\Enums\Roles\UserRole;
 use Filament\Forms\Components\Select;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsToMany;
-use Spatie\Permission\Models\Role;
+use Illuminate\Validation\Rule;
+use Illuminate\Validation\Rules\Exists;
 
-class RoleSelect extends Select
+class SingleOptionMultiSelect extends Select
 {
+  public function relationshipName($relationshipName, $titleColumnName): static
+  {
+    $this->relationship = $relationshipName;
+    $this->relationshipTitleColumnName = $titleColumnName;
+
+    return $this;
+  }
+
   public function getRelationship(): BelongsToMany
   {
     $model = $this->getModelInstance();
@@ -21,7 +29,9 @@ class RoleSelect extends Select
       $model = new $class;
     }
 
-    return $model->roles();
+    $relationship = $this->getRelationshipName();
+
+    return $model->{$relationship}();
   }
 
   public function saveRelationships(): void
@@ -36,22 +46,20 @@ class RoleSelect extends Select
     $this->afterStateHydrated(function (self $component): void {
       $relationship = $component->getRelationship();
 
-      $role = $relationship->first();
+      $model = $relationship->first();
 
-      if (!$role) {
+      if (!$model) {
         return;
       }
 
-      $component->state($role->id);
+      $component->state($model->id);
     });
 
-    $this->options(
-      fn () => Role::query()
-        ->where('guard_name', 'web')
-        ->whereNot('name', UserRole::SUPER_ADMIN)
-        ->pluck('name', 'id')
-        ->map(fn (string $name) => str(__($name))->ucfirst())
-        ->all(),
+    $this->rule(
+      static fn (Select $component): Exists => Rule::exists(
+        $component->getRelationship()->getModel()::class,
+        $component->getRelationship()->getRelatedKeyName(),
+      )
     );
 
     $this->dehydrated(false);

@@ -2,6 +2,7 @@
 
 namespace App\Jobs\Tenant;
 
+use App\Enums\Models\UserAccountStatus;
 use App\Models\Tenant;
 use App\Models\Tenant\User;
 use Illuminate\Bus\Queueable;
@@ -42,6 +43,7 @@ class CreateTenantAdminUser implements ShouldQueue
                 'name' => $tenant->name,
                 'email' => $tenant->email,
                 'password' => $tenant->password,
+                'status' => UserAccountStatus::ACTIVE,
             ]);
 
             $user->forceFill([
