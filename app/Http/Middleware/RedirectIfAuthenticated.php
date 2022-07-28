@@ -6,7 +6,6 @@ use App\Providers\RouteServiceProvider;
 use Closure;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
-use Stancl\Tenancy\Middleware\ScopeSessions;
 
 class RedirectIfAuthenticated
 {
@@ -28,7 +27,10 @@ class RedirectIfAuthenticated
                     return redirect(RouteServiceProvider::HOME);
                 }
 
-                if (request()->routeIs('filament.auth.login')) {
+                if (
+                    request()->routeIs('filament.auth.login') ||
+                    !request()->routeIs('filament.pages.*', 'filament.resources.*', 'auth.logout', 'asset')
+                ) {
                     return redirect()->route('filament.pages.dashboard');
                 }
             }
