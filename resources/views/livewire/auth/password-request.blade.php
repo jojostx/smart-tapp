@@ -1,4 +1,5 @@
-@section('title', 'Reset Password')
+@section('title', $title)
+
 <div>
   <x-filament::notification-manager />
   @unless ($emailSent && $tenant)

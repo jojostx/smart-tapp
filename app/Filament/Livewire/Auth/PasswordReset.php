@@ -97,6 +97,6 @@ class PasswordReset extends Component implements HasForms
 
   public function render(): View
   {
-    return view('livewire.auth.password-reset')->extends('layouts.auth');
+    return view('livewire.auth.password-reset', ['title' => 'Create New Password'])->extends('layouts.auth');
   }
 }

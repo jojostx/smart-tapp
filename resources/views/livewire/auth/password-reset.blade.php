@@ -1,4 +1,5 @@
-@section('title', 'Create New Password')
+@section('title', $title)
+
 <div>
   <x-filament::notification-manager />
   <div class="sm:mx-auto sm:w-full sm:max-w-md">

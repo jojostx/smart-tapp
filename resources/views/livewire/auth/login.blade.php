@@ -1,4 +1,4 @@
-@section('title', 'Sign in to your account')
+@section('title', $title)
 
 <div>
     <div class="sm:mx-auto sm:w-full sm:max-w-md">
@@ -10,14 +10,14 @@
             Sign in to your account
         </h2>
         @unless (tenant())
-            @if (Route::has('register'))
-            <p class="mt-2 text-sm leading-5 text-center text-gray-600 max-w">
-                Or
-                <a href="{{ route('register') }}" class="font-medium transition duration-150 ease-in-out text-primary-600 hover:text-primary-500 focus:outline-none focus:underline">
-                    create a new account
-                </a>
-            </p>
-            @endif
+        @if (Route::has('register'))
+        <p class="mt-2 text-sm leading-5 text-center text-gray-600 max-w">
+            Or
+            <a href="{{ route('register') }}" class="font-medium transition duration-150 ease-in-out text-primary-600 hover:text-primary-500 focus:outline-none focus:underline">
+                create a new account
+            </a>
+        </p>
+        @endif
         @endunless
     </div>
 
@@ -61,9 +61,15 @@
                     </div>
 
                     <div class="text-sm leading-5">
+                        @if ($this->currentTenant && Route::has('filament.auth.password.request'))
+                        <a href="{{ route('filament.auth.password.request') }}" class="font-medium transition duration-150 ease-in-out text-primary-600 hover:text-primary-500 focus:outline-none focus:underline">
+                            Forgot your password?
+                        </a>
+                        @elseif (Route::has('password.request'))
                         <a href="{{ route('password.request') }}" class="font-medium transition duration-150 ease-in-out text-primary-600 hover:text-primary-500 focus:outline-none focus:underline">
                             Forgot your password?
                         </a>
+                        @endunless
                     </div>
                 </div>
 

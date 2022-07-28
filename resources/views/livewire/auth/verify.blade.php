@@ -1,4 +1,5 @@
-@section('title', 'Verify your email address')
+@section('title', $title)
+
 <div>
     <div class="sm:mx-auto sm:w-full sm:max-w-md">
         <a href="{{ route('home') }}">

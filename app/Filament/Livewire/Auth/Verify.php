@@ -95,6 +95,6 @@ class Verify extends Component
 
     public function render()
     {
-        return view('livewire.auth.verify')->extends('layouts.auth');
+        return view('livewire.auth.verify', ['title' => 'Verify your email address'])->extends('layouts.auth');
     }
 }

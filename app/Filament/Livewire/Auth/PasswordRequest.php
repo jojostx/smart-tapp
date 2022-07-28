@@ -62,6 +62,6 @@ class PasswordRequest extends Component
 
   public function render(): View
   {
-    return view('livewire.auth.password-request')->extends('layouts.auth');
+    return view('livewire.auth.password-request', ['title' => 'Reset Password'])->extends('layouts.auth');
   }
 }
