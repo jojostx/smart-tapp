@@ -135,6 +135,7 @@ class AccessResource extends Resource
                                             ->placeholder('ex: JohnDoe@gmail.com')
                                             ->hint("The Driver's email (optional)")
                                             ->unique('drivers', 'email')
+                                            ->dehydrateStateUsing(fn ($state) => str($state)->lower())
                                     ])
                                     ->columns([
                                         'sm' => 1,

@@ -14,7 +14,6 @@ use Filament\Tables;
 use Filament\Tables\Filters\TernaryFilter;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\SoftDeletingScope;
-use Illuminate\Support\Str;
 
 class DriverResource extends Resource
 {
@@ -26,7 +25,7 @@ class DriverResource extends Resource
 
     protected static ?string $recordTitleAttribute = 'identifierforfilament';
 
-    protected static ?int $navigationSort = 4;
+    protected static ?int $navigationSort = 3;
 
     public static function getGloballySearchableAttributes(): array
     {
@@ -98,7 +97,8 @@ class DriverResource extends Resource
                     ->toggleable()
                     ->sortable()
                     ->toggledHiddenByDefault(),
-                Tables\Columns\TextColumn::make('created_at')->date(config('filament.date_format'))
+                Tables\Columns\TextColumn::make('created_at')
+                    ->date(config('filament.date_format'))
                     ->toggleable()
                     ->toggledHiddenByDefault()
                     ->sortable(),
@@ -111,6 +111,19 @@ class DriverResource extends Resource
             ])
             ->actions([
                 Tables\Actions\EditAction::make(),
+                Tables\Actions\DeleteAction::make('delete')
+                    ->requiresConfirmation()
+                    ->modalHeading(fn (): string => 'Delete Driver')
+                    ->modalSubheading('Are you sure you would like to do this? Deleting the driver will delete all associated Acessess.')
+                    ->modalWidth('md')
+                    ->form([
+                        \Phpsa\FilamentPasswordReveal\Password::make("current_password")
+                            ->required()
+                            ->password()
+                            ->placeholder('••••••••')
+                            ->rule("current_password")
+                            ->disableAutocomplete(),
+                    ]),
             ])
             ->bulkActions([
                 Tables\Actions\DeleteBulkAction::make()
