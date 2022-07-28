@@ -2,10 +2,14 @@
 
 namespace App\Models\Tenant;
 
+use App\Enums\Models\UserAccountStatus;
 use App\Enums\Roles\UserRole;
+use Dyrynda\Database\Support\BindsOnUuid;
+use Dyrynda\Database\Support\GeneratesUuid;
 use Illuminate\Contracts\Auth\MustVerifyEmail;
 use Illuminate\Database\Eloquent\Casts\Attribute;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
+use Illuminate\Database\Eloquent\Relations\BelongsToMany;
 use Illuminate\Foundation\Auth\User as Authenticatable;
 use Illuminate\Notifications\Notifiable;
 use Laravel\Sanctum\HasApiTokens;
@@ -16,7 +20,7 @@ use Spatie\Permission\Traits\HasRoles;
  */
 class User extends Authenticatable
 {
-    use HasApiTokens, HasFactory, Notifiable, HasRoles;
+    use HasApiTokens, HasFactory,  GeneratesUuid, BindsOnUuid, Notifiable, HasRoles;
 
     /**
      * The attributes that are mass assignable.
@@ -27,6 +31,7 @@ class User extends Authenticatable
         'tenant_id',
         'name',
         'email',
+        'status',
         'phone_number',
         'password',
     ];
@@ -47,6 +52,7 @@ class User extends Authenticatable
      * @var array<string, string>
      */
     protected $casts = [
+        'status' => UserAccountStatus::class,
         'email_verified_at' => 'datetime',
         'phone_verified_at' => 'datetime',
     ];
@@ -58,12 +64,23 @@ class User extends Authenticatable
      */
     protected static function booted()
     {
-        static::creating(function ($user)
-        {
+        static::creating(function (User $user) {
             if (tenant()) {
                 $user->tenant_id = tenant('id');
             }
+
+            if (filled($user->phone_number)) {
+                $user->phone_number_e164 = phone($user->phone_number, 'NG')->formatE164();
+            }
         });
+    }
+
+    /**
+     * Check whether the user can access the filament dashboard.
+     */
+    public function canAccessFilament(): bool
+    {
+        return $this->isActive();
     }
 
     /**
@@ -85,7 +102,7 @@ class User extends Authenticatable
     }
 
     /**
-     * Check whether the user is a super admin.
+     * Check if the user is a super admin.
      */
     public function isSuperAdmin(): bool
     {
@@ -93,15 +110,54 @@ class User extends Authenticatable
     }
 
     /**
-     * Check whether the user is a admin.
+     * Check if the user is an admin.
      */
     public function isAdmin(): bool
     {
         return $this->hasRole(UserRole::ADMIN->value);
     }
 
-    public function canAccessFilament(): bool
+    /**
+     * Check if the user's account status is 'inactive'.
+     */
+    public function isInactive(): bool
     {
-        return true;
+        return $this->status == UserAccountStatus::INACTIVE;
+    }
+
+    /**
+     * Check if the user's account status is 'active'.
+     */
+    public function isActive(): bool
+    {
+        return $this->status == UserAccountStatus::ACTIVE;
+    }
+
+    /**
+     * Check if the user's account status is 'deactivated'.
+     */
+    public function isDeactivated(): bool
+    {
+        return $this->status == UserAccountStatus::DEACTIVATED;
+    }
+
+    /**
+     * checks if the parking lot is assigned to the admin user.
+     * 
+     * @param \App\Models\Tenant\ParkingLot $parkingLot
+     * 
+     * @return bool
+     */
+    public function administersParkingLot(ParkingLot $parkingLot): bool
+    {
+        return $this->parkingLots()->where('parking_lots.id', $parkingLot->getKey())->exists();
+    }
+
+    /**
+     * The parking lots assigned to the admin user.
+     */
+    public function parkingLots(): BelongsToMany
+    {
+        return $this->belongsToMany(ParkingLot::class)->withTimestamps();
     }
 }
