@@ -15,7 +15,7 @@ html {
 
 @layer components {
     .filament-forms-field-wrapper-label {
-        @apply opacity-70;
+        @apply opacity-100 font-medium;
     }
     .filament-forms-range-component {
         width: calc(100% - (75px));
