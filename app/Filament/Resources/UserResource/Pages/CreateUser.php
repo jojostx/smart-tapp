@@ -26,7 +26,7 @@ class CreateUser extends CreateRecord
         /**
          * @var \Illuminate\Auth\Passwords\PasswordBroker $broker
          */
-        $broker = Password::broker('filament');
+        $broker = Password::broker();
 
         $token = $broker->createToken($user);
         

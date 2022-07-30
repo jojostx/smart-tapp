@@ -29,7 +29,7 @@ class RedirectIfAuthenticated
 
                 if (
                     request()->routeIs('filament.auth.login') ||
-                    !request()->routeIs('filament.pages.*', 'filament.resources.*', 'auth.logout', 'asset')
+                    !request()->routeIs('filament.pages.*', 'filament.resources.*', 'filament.auth.logout', 'filament.asset')
                 ) {
                     return redirect()->route('filament.pages.dashboard');
                 }
