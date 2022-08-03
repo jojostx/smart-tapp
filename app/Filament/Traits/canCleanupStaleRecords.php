@@ -5,23 +5,20 @@ namespace App\Filament\Traits;
 use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\Model;
 
-trait canCleanupStaleRecords
+trait CanCleanupStaleRecords
 {
   /**
    * cleans up records in the database that have no related models.
    *
-   * @param Illuminate\Database\Eloquent\Model $model
+   * @param \Illuminate\Database\Eloquent\Model $model
    * @param array $related
+   * @param int|false $timeToConsiderStale
    *  
    * @return bool
    */
-  public static function cleanupstaleRecords(Model $model, array $related, int $timeToConsiderStale = 1)
+  public static function cleanupstaleRecords(Model $model, array $related = [], int|false $timeToConsiderStale = 1)
   {
     if (blank($related)) {
-      return false;
-    }
-
-    if ($timeToConsiderStale <= 0) {
       return false;
     }
 
@@ -33,10 +30,14 @@ trait canCleanupStaleRecords
       }
     }
 
-    $result = $query->whereDoesntHave('accesses', function (Builder $query) use ($timeToConsiderStale) {
-      $query->where('created_at', '<', now()->subDays($timeToConsiderStale));
-    })->delete();
+    if (intval($timeToConsiderStale) > 0) {
+      $query = $query->whereDoesntHave('accesses', function (Builder $query) use ($timeToConsiderStale) {
+        $query->where('created_at', '<', now()->subDays($timeToConsiderStale));
+      });
+    } else {
+      $query = $query->doesntHave('accesses');
+    }
 
-    return boolval($result);
+    return boolval($query->delete());
   }
 }
