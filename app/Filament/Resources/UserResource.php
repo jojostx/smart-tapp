@@ -17,6 +17,7 @@ use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Builder;
 use Filament\Tables\Filters\TernaryFilter;
 use App\Filament\Forms\Components\HelpCard;
+use App\Filament\Forms\Components\PhoneNumberInput;
 use App\Filament\Resources\UserResource\Pages;
 use App\Filament\Resources\UserResource\Pages\EditUser;
 use App\Filament\Resources\UserResource\Pages\CreateUser;
@@ -135,6 +136,11 @@ class UserResource extends Resource
             ])
             ->actions([
                 Tables\Actions\EditAction::make(),
+                Tables\Actions\Action::make('toggle_status')
+                    ->label(fn (User $record) => $record->isActive() ? 'Deactivate' : 'Activate')
+                    ->button()
+                    ->action(fn (User $record) => $record->isActive() ? $record->deactivateAccount() : $record->activateAccount())
+                    ->color(fn (User $record) => $record->isActive() ? 'danger' : 'primary'),
             ])
             ->bulkActions([]);
     }
@@ -191,12 +197,11 @@ class UserResource extends Resource
                     ->unique(table: User::class, ignorable: fn (?User $record): ?User => $record)
                     ->required()
                     ->email(),
-                Forms\Components\TextInput::make('phone_number')
+                PhoneNumberInput::make('phone_number')
                     ->label('Phone')
-                    ->placeholder('ex: +234 8034 062 460')
-                    ->maxLength(14)
                     ->required()
-                    ->unique(),
+                    ->reactive()
+                    ->allowedCountries(['NG']),
                 SingleOptionMultiSelect::make('role')
                     ->relationshipName('roles', 'name')
                     ->label(__('Role'))
