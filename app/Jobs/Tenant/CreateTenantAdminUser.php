@@ -43,11 +43,11 @@ class CreateTenantAdminUser implements ShouldQueue
                 'name' => $tenant->name,
                 'email' => $tenant->email,
                 'password' => $tenant->password,
-                'status' => UserAccountStatus::ACTIVE,
             ]);
 
             $user->forceFill([
                 'email_verified_at' => $tenant->email_verified_at,
+                'status' => UserAccountStatus::ACTIVE,
             ])->save();
         });
     }

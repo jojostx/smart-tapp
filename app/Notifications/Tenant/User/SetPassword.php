@@ -1,4 +1,6 @@
-<?php declare(strict_types=1);
+<?php
+
+declare(strict_types=1);
 
 namespace App\Notifications\Tenant\User;
 
@@ -13,7 +15,8 @@ class SetPassword extends Notification implements ShouldQueue
 
     public function __construct(
         protected string $token,
-    ) {}
+    ) {
+    }
 
     /**
      * Get the notification's delivery channels.
@@ -36,10 +39,36 @@ class SetPassword extends Notification implements ShouldQueue
      */
     protected function resetUrl(mixed $notifiable): string
     {
-        return url(route('filament.password.reset', [
+        if (tenant()) {
+            return tenant_route(
+                tenant()->domain,
+                'filament.auth.password.reset',
+                [
+                    'token' => $this->token,
+                    'email' => $notifiable->getEmailForPasswordReset(),
+                ],
+            );
+        }
+
+        return url(route('password.reset', [
             'token' => $this->token,
             'email' => $notifiable->getEmailForPasswordReset(),
         ], false));
+    }
+
+    /**
+     * Get the reset URL for the given notifiable.
+     */
+    protected function requestUrl(): string
+    {
+        if (tenant()) {
+            return tenant_route(
+                tenant()->domain,
+                'filament.auth.password.request'
+            );
+        }
+
+        return '';
     }
 
     /**
@@ -47,15 +76,16 @@ class SetPassword extends Notification implements ShouldQueue
      */
     protected function buildMailMessage(string $url): MailMessage
     {
-        $host = parse_url(url()->to('/'))['host'];
+        $host = parse_url($this->requestUrl())['host'];
 
         return (new MailMessage)
-            ->subject(__('filament-access-control::default.notifications.password_set.title', [
-                'host' => $host,
+            ->subject(__('passwords.notifications.password_set.title', [
+                'tenant' => $host,
             ]))
-            ->markdown('filament-access-control::emails.password-set', [
+            ->markdown('emails.password-set', [
                 'url' => $url,
-                'host' => $host,
+                'tenant' => $host,
+                'request_link' => $this->requestUrl(),
             ]);
     }
 }

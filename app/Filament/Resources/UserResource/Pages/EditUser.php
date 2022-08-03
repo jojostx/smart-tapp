@@ -20,27 +20,24 @@ class EditUser extends EditRecord
             Actions\DeleteAction::make(),
         ];
 
-        if ($this->record instanceof User && $this->record->isInactive()) {
+        $user = $this->record;
+
+        if ($user instanceof User && $user->isInactive()) {
             $actions = array_merge(
                 [
-                    $this->resendAccountActivationEmailAction()
+                    Action::make('resend')
+                        ->label('Send Activation Email')
+                        ->action(function () use ($user) {
+                            $user->sendCreateNewPasswordNotification();
+
+                            app(PermissionRegistrar::class)->forgetCachedPermissions();
+                        })
                 ],
                 $actions
             );
         }
 
         return $actions;
-    }
-
-    public function resendAccountActivationEmailAction()
-    {
-        $action = Action::make('resend')
-            ->label('Send Activation Email')
-            ->action(function () {
-                dd('resent');
-            });
-
-        return $action;
     }
 
     public function afterSave(): void

@@ -5,11 +5,10 @@ namespace App\Filament\Resources\UserResource\Pages;
 use App\Enums\Models\UserAccountStatus;
 use App\Filament\Resources\UserResource;
 use App\Models\Tenant\User;
-use App\Notifications\Tenant\User\SetPassword;
 use Filament\Pages\Actions;
 use Filament\Resources\Pages\CreateRecord;
-use Illuminate\Support\Facades\Password;
 use Illuminate\Support\Str;
+use Spatie\Permission\PermissionRegistrar;
 
 class CreateUser extends CreateRecord
 {
@@ -17,22 +16,11 @@ class CreateUser extends CreateRecord
 
     public function afterCreate(): void
     {
-        $user = $this->record;
+        if ($this->record instanceof User) {
+            $this->record->sendCreateNewPasswordNotification();
 
-        if (! $user instanceof User) {
-            return;
+            app(PermissionRegistrar::class)->forgetCachedPermissions();
         }
-
-        /**
-         * @var \Illuminate\Auth\Passwords\PasswordBroker $broker
-         */
-        $broker = Password::broker();
-
-        $token = $broker->createToken($user);
-        
-        $user->notify(new SetPassword($token));
-
-        app(PermissionRegistrar::class)->forgetCachedPermissions();
     }
 
     protected function mutateFormDataBeforeCreate(array $data): array

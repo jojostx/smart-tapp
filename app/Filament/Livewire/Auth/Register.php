@@ -76,7 +76,7 @@ class Register extends Component
         $result = $this->validate();
 
         // create temporary unverified tenant
-        $Tenant = Tenant::create([
+        $tenant = Tenant::create([
             'name' => $result['name'],
             'email' => $result['email'],
             'password' => Hash::make($result['password']),
@@ -85,7 +85,7 @@ class Register extends Component
         ]);
 
         // redirect to email verification page
-        return redirect()->intended(route('verification.notice', ['id' => $Tenant->getKey()]));
+        return redirect()->intended(route('verification.notice', ['id' => $tenant->getKey()]));
     }
 
     public function render()

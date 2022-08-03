@@ -81,6 +81,14 @@ class PasswordReset extends Component implements HasForms
     $response = Password::broker('users')->reset(
       $credentials,
       function (User $user, string $password): void {
+        if (!$user->hasVerifiedEmail()) {
+          $user->forceFill(['email_verified_at' => $this->freshTimestamp()]);
+        }
+
+        if ($user->isInactive()) {
+          $user->activateAccount(false);
+        }
+
         $user->forceFill([
           'password' => Hash::make($password),
           'remember_token' => Str::random(60),

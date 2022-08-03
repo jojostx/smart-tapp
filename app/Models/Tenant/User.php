@@ -5,6 +5,7 @@ namespace App\Models\Tenant;
 use App\Enums\Models\UserAccountStatus;
 use App\Enums\Roles\UserRole;
 use App\Notifications\Tenant\User\ResetPassword;
+use App\Notifications\Tenant\User\SetPassword;
 use Dyrynda\Database\Support\BindsOnUuid;
 use Dyrynda\Database\Support\GeneratesUuid;
 use Illuminate\Contracts\Auth\MustVerifyEmail;
@@ -13,6 +14,7 @@ use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Relations\BelongsToMany;
 use Illuminate\Foundation\Auth\User as Authenticatable;
 use Illuminate\Notifications\Notifiable;
+use Illuminate\Support\Facades\Password;
 use Laravel\Sanctum\HasApiTokens;
 use Spatie\Permission\Traits\HasRoles;
 
@@ -88,6 +90,23 @@ class User extends Authenticatable
     }
 
     /**
+     * Send the set new password notification.
+     *
+     * @return void
+     */
+    public function sendCreateNewPasswordNotification()
+    {
+        /**
+         * @var \Illuminate\Auth\Passwords\PasswordBroker $broker
+         */
+        $broker = Password::broker('users');
+
+        $token = $broker->createToken($this);
+
+        $this->notify(new SetPassword($token));
+    }
+
+    /**
      * Check whether the user can access the filament dashboard.
      */
     public function canAccessFilament(): bool
@@ -151,6 +170,46 @@ class User extends Authenticatable
     public function isDeactivated(): bool
     {
         return $this->status == UserAccountStatus::DEACTIVATED;
+    }
+
+    /**
+     * Check if the user's account status is 'deactivated'.
+     * 
+     * @param bool $saveAfterFill
+     * 
+     * @return bool
+     */
+    public function activateAccount(bool $saveAfterFill = true): bool
+    {
+        if ($this->isActive()) {
+            return false;
+        }
+
+        $this->forceFill([
+            'status' => UserAccountStatus::ACTIVE,
+        ]);
+
+        return $saveAfterFill ? $this->save() : true;
+    }
+
+    /**
+     * Check if the user's account status is 'deactivated'.
+     *
+     * @param bool $saveAfterFill
+     * 
+     * @return bool
+     */
+    public function deactivateAccount(bool $saveAfterFill = true): bool
+    {
+        if ($this->isDeactivated()) {
+            return false;
+        }
+
+        $this->forceFill([
+            'status' => UserAccountStatus::DEACTIVATED,
+        ]);
+
+        return $saveAfterFill ? $this->save() : true;
     }
 
     /**
