@@ -82,7 +82,7 @@ class PasswordReset extends Component implements HasForms
       $credentials,
       function (User $user, string $password): void {
         if (!$user->hasVerifiedEmail()) {
-          $user->forceFill(['email_verified_at' => $this->freshTimestamp()]);
+          $user->forceFill(['email_verified_at' => $user->freshTimestamp()]);
         }
 
         if ($user->isInactive()) {
