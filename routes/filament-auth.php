@@ -21,7 +21,7 @@ Route::name('filament.')
     Route::get('password/request', PasswordRequest::class)
       ->name('auth.password.request');
 
-    Route::get('password/reset/{token?}', PasswordReset::class)
+    Route::get('password/reset/{token}', PasswordReset::class)
       ->name('auth.password.reset');
 
     Route::get('account-deactivated', AccountDeactivated::class)

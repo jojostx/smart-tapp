@@ -4,6 +4,7 @@ namespace App\Models\Tenant;
 
 use App\Enums\Models\UserAccountStatus;
 use App\Enums\Roles\UserRole;
+use App\Notifications\Tenant\User\ResetPassword;
 use Dyrynda\Database\Support\BindsOnUuid;
 use Dyrynda\Database\Support\GeneratesUuid;
 use Illuminate\Contracts\Auth\MustVerifyEmail;
@@ -73,6 +74,17 @@ class User extends Authenticatable
                 $user->phone_number_e164 = phone($user->phone_number, 'NG')->formatE164();
             }
         });
+    }
+
+    /**
+     * Send the password reset notification.
+     *
+     * @param  string  $token
+     * @return void
+     */
+    public function sendPasswordResetNotification($token)
+    {
+        $this->notify(new ResetPassword($token));
     }
 
     /**

@@ -8,14 +8,13 @@ use App\Filament\Traits\WithDomainValidation;
 use App\Models\Tenant;
 use DanHarrin\LivewireRateLimiting\WithRateLimiting;
 use Filament\Facades\Filament;
-use Filament\Http\Livewire\Concerns\CanNotify;
+use Filament\Notifications\Notification;
 use Illuminate\Contracts\View\View;
 use Illuminate\Support\Facades\Password;
 use Livewire\Component;
 
 class PasswordRequest extends Component
 {
-  use CanNotify;
   use WithRateLimiting;
   use WithDomainValidation;
 
@@ -29,7 +28,7 @@ class PasswordRequest extends Component
   public bool $emailSent = false;
 
   protected array $rules = [
-    'email' => ['required', 'string', 'email', 'exists:email'],
+    'email' => ['required', 'email'],
   ];
 
   public function mount()
@@ -47,12 +46,21 @@ class PasswordRequest extends Component
   {
     $data = $this->validate();
 
-    $response = Password::broker('filament')->sendResetLink([
+    if (blank($this->currentTenant)) {
+      $tenant = tenancy()->query()->firstWhere("domain", $data['domain']);
+
+      tenancy()->initialize($tenant);
+    }
+
+    $response = Password::broker('users')->sendResetLink([
       'email' => $data['email'],
     ]);
 
     if ($response === Password::RESET_LINK_SENT) {
-      $this->notify('success', __('passwords.sent'));
+      Notification::make('success')
+        ->title(__('passwords.sent'))
+        ->success()
+        ->send();
 
       $this->emailSent = true;
     } else {

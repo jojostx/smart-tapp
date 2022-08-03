@@ -10,7 +10,7 @@ use DanHarrin\LivewireRateLimiting\WithRateLimiting;
 use Filament\Facades\Filament;
 use Filament\Forms\Concerns\InteractsWithForms;
 use Filament\Forms\Contracts\HasForms;
-use Filament\Http\Livewire\Concerns\CanNotify;
+use Filament\Notifications\Notification;
 use Illuminate\Auth\Events\PasswordReset as PasswordReset_;
 use Illuminate\Contracts\View\View;
 use Illuminate\Support\Facades\Hash;
@@ -24,7 +24,6 @@ use Livewire\Component;
  */
 class PasswordReset extends Component implements HasForms
 {
-  use CanNotify;
   use InteractsWithForms;
   use WithRateLimiting;
 
@@ -40,7 +39,11 @@ class PasswordReset extends Component implements HasForms
     }
 
     $this->email = request()->query('email', '');
+
     $this->token = $token;
+
+    abort_if((blank($this->email) || blank($this->email)), 404);
+
     $this->form->fill();
   }
 
@@ -69,29 +72,35 @@ class PasswordReset extends Component implements HasForms
     $data = $this->form->getState();
 
     $credentials = [
-      'token' => $this->token,
       'email' => $this->email,
       'password' => $data['password'],
+      'password_confirmation' => $data['password_confirmation'],
+      'token' => $this->token,
     ];
 
-    $response = Password::broker('filament')->reset(
+    $response = Password::broker('users')->reset(
       $credentials,
       function (User $user, string $password): void {
-        $user->password = Hash::make($password);
-        $user->setRememberToken(Str::random(60));
-        $user->save();
+        $user->forceFill([
+          'password' => Hash::make($password),
+          'remember_token' => Str::random(60),
+        ])->save();
+
         event(new PasswordReset_($user));
       },
     );
 
     if ($response === Password::PASSWORD_RESET) {
-      $this->notify('success', __('passwords.reset'), true);
+      Notification::make('success')
+        ->title(__('passwords.reset'))
+        ->success()
+        ->send();
 
       return redirect(route('filament.auth.login', [
         'email' => $this->email,
       ]));
     }
-    
+
     $this->addError('password', __($response));
   }
 

@@ -3,9 +3,7 @@
 use App\Filament\Livewire\Auth\Login;
 use App\Filament\Livewire\Auth\PasswordRequest;
 use App\Filament\Livewire\Auth\Register;
-use App\Filament\Livewire\Auth\PasswordReset;
 use App\Filament\Livewire\Auth\Verify;
-use Filament\Http\Middleware\Authenticate;
 use Illuminate\Support\Facades\Route;
 
 /*

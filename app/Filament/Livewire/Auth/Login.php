@@ -38,6 +38,8 @@ class Login extends Component
 
     public function mount()
     {
+        $this->email = request()->query('email', '');
+        
         $this->fill([
             'domain' => $this->currentTenant?->domain ?? '',
         ]);

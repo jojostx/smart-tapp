@@ -2,7 +2,7 @@
 
 <div>
   <x-filament::notification-manager />
-  @unless ($emailSent && $tenant)
+  @unless ($emailSent)
   <div>
     <div class="sm:mx-auto sm:w-full sm:max-w-md">
       <a href="{{ route('home') }}">
@@ -35,7 +35,7 @@
 
     <div class="mt-6 sm:mx-auto sm:w-full sm:max-w-md">
       <div class="px-4 py-8 bg-white shadow sm:rounded-lg sm:px-10">
-        <form wire:submit.prevent="sendVerificationNotification">
+        <form wire:submit.prevent="send">
           <div class="mb-4 text-sm text-gray-600">
             @if (blank($this->currentTenant))
             {{ __("Enter the email address and subdomain associated with your account below and we'll send you an email with instructions to reset your password.") }}
@@ -90,7 +90,7 @@
       <div class="mt-8">
         <p class="text-sm leading-5 text-gray-600">
           Did not see the email in your inbox? Check your SPAM folder,
-          or <button type="button" class="font-medium transition duration-150 ease-in-out text-primary-600 hover:text-primary-500 focus:outline-none focus:underline"> try another email address</button>
+          or <a href="javascript:location.reload();" class="font-medium transition duration-150 ease-in-out text-primary-600 hover:text-primary-500 focus:outline-none focus:underline">try another email address</a>
         </p>
       </div>
     </div>
