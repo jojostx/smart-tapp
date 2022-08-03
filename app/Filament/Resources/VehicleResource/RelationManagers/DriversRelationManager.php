@@ -52,10 +52,10 @@ class DriversRelationManager extends RelationManager
             ->headerActions([
             ])
             ->actions([
-                PasswordRequiredDeleteAction::make(),
+                // PasswordRequiredDeleteAction::make(),
             ])
             ->bulkActions([
-                PasswordRequiredDeleteBulkAction::make(),
+                // PasswordRequiredDeleteBulkAction::make(),
             ]);
     }
 }

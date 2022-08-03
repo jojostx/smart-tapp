@@ -7,6 +7,7 @@ use App\Filament\Resources\DriverResource\Pages;
 use App\Filament\Resources\DriverResource\RelationManagers;
 use App\Models\Tenant\Driver;
 use Filament\Forms;
+use Filament\Forms\Components\Section;
 use Filament\Resources\Form;
 use Filament\Resources\Resource;
 use Filament\Resources\Table;
@@ -44,19 +45,11 @@ class DriverResource extends Resource
     {
         return $form
             ->schema([
-                Forms\Components\Card::make()
-                    ->schema([
-                        Forms\Components\Grid::make()
-                            ->schema([
-                                Forms\Components\TextInput::make('email')->email()->required(),
-                                // Forms\Components\TextInput::make('phone_number')->required()->tel()->reactive(),
-                                PhoneNumberInput::make('phone_number')->required()->reactive()->allowedCountries(['NG']),
-                                Forms\Components\Placeholder::make('location')->label('Location')->content('Nigeria (NGN)'),
-                            ]),
-                    ])
+                self::detailsSection()
                     ->columnSpan([
                         'sm' => 2,
                     ]),
+
                 Forms\Components\Card::make()
                     ->schema([
                         Forms\Components\Placeholder::make('phone_verified_at')
@@ -72,9 +65,11 @@ class DriverResource extends Resource
                             ->label('Last modified at')
                             ->content(fn (?Driver $record): string => $record ? $record->updated_at->diffForHumans() : '-'),
                     ])
-                    ->columnSpan(1),
+                    ->extraAttributes(['class' => 'hidden sm:block'])
+                    ->columns(2)
+                    ->columnSpan(2),
             ])->columns([
-                'sm' => 3,
+                'sm' => 4,
                 'lg' => null,
             ]);
     }
@@ -151,5 +146,15 @@ class DriverResource extends Resource
             'index' => Pages\ListDrivers::route('/'),
             'edit' => Pages\EditDriver::route('/{record}/edit'),
         ];
+    }
+
+    protected static function detailsSection(): Section
+    {
+        return Section::make(__('Driver Details'))
+            ->schema([
+                Forms\Components\TextInput::make('email')->email()->required(),
+                PhoneNumberInput::make('phone_number')->required()->reactive()->allowedCountries(['NG']),
+                Forms\Components\Placeholder::make('location')->label('Location')->content('Nigeria (NGN)'),
+            ]);
     }
 }

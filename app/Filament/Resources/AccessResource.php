@@ -3,10 +3,11 @@
 namespace App\Filament\Resources;
 
 use App\Enums\Models\AccessStatus;
+use App\Filament\Forms\Components\Password;
 use App\Filament\Forms\Components\RangeSlider;
 use App\Filament\Resources\AccessResource\Pages;
 use App\Filament\Resources\AccessResource\RelationManagers;
-use App\Filament\Traits\canCleanupStaleRecords;
+use App\Filament\Traits\CanCleanupStaleRecords;
 use App\Models\Tenant\Access;
 use App\Models\Tenant\Driver;
 use App\Models\Tenant\Vehicle;
@@ -24,7 +25,7 @@ use Illuminate\Validation\Rules\Unique;
 
 class AccessResource extends Resource
 {
-    use canCleanupStaleRecords;
+    use CanCleanupStaleRecords;
 
     protected static ?string $model = Access::class;
 
@@ -35,8 +36,6 @@ class AccessResource extends Resource
     protected static ?string $recordTitleAttribute = 'name';
 
     protected static ?int $navigationSort = 1;
-
-    protected $rules = [];
 
     public static function getGloballySearchableAttributes(): array
     {
@@ -273,7 +272,7 @@ class AccessResource extends Resource
                     ->modalWidth('md')
                     ->modalSubheading(fn (Access $record): string => "Are you sure you want to delete the Access for the Vehicle [{$record->vehicle->plate_number}] with Driver [{$record->driver->name} - {$record->driver->phone_number}]?")
                     ->form([
-                        \Phpsa\FilamentPasswordReveal\Password::make("current_password")
+                        Password::make("current_password")
                             ->required()
                             ->password()
                             ->rule("current_password")
@@ -284,7 +283,7 @@ class AccessResource extends Resource
                 Tables\Actions\DeleteBulkAction::make()
                     ->requiresConfirmation()
                     ->form([
-                        \Phpsa\FilamentPasswordReveal\Password::make("current_password")
+                        Password::make("current_password")
                             ->required()
                             ->password()
                             ->rule("current_password")
