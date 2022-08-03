@@ -35,7 +35,7 @@ class EnsureAccessIsValid
 
             return $request->expectsJson()
             ? abort(403, 'The Access is invalid or expired.')
-            : Redirect::route($redirectToRoute ?: 'access.home')->with(compact($access));
+            : Redirect::route($redirectToRoute ?: 'access.home')->with(compact('access'));
         }
 
         return $next($request);
