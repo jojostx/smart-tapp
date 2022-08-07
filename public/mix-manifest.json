@@ -1,7 +1,8 @@
 {
-    "/js/app.js": "/js/app.js?id=ada3fd8cc5651ca67dc8247ab42fdc27",
-    "/js/phoneinput.js": "/js/phoneinput.js?id=55092c3e388a6c8fcb700a35a1aacd8c",
+    "/js/app.js": "/js/app.js?id=0dab692e2aef85ebf53d713c93eeac39",
+    "/js/phoneinput.js": "/js/phoneinput.js?id=d8c8f12d0e574c9554598e4c55b62ef4",
     "/js/qr-scanner.js": "/js/qr-scanner.js?id=d98aedba3cbf103381c10355da55d1f3",
-    "/css/filament.css": "/css/filament.css?id=6c74ee565403ba253d9a7c55c479efec",
-    "/css/app.css": "/css/app.css?id=83826fc0ca08e4ca243a5d8e33341846"
+    "/js/actionable-text-column.js": "/js/actionable-text-column.js?id=45cbcda639f6b8fdff26722dd7946dd6",
+    "/css/filament.css": "/css/filament.css?id=621423b0bd62438cfda9fa9bd8bcb79f",
+    "/css/app.css": "/css/app.css?id=3d7d14e34954d880854409868863f25c"
 }

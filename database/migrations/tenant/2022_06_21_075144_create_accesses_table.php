@@ -19,7 +19,7 @@ return new class extends Migration
             $table->string('uuid')->unique();
 
             $table->string('status')->default(AccessStatus::INACTIVE->value);
-            $table->integer('expires_after')->default(30);
+            $table->integer('expires_after')->default(30)->nullable();
             $table->timestamp('valid_until')->nullable();
 
             $table->foreignId('driver_id')->nullable()->constrained()->cascadeOnDelete();

@@ -38,6 +38,8 @@ mix.js(
 
 mix.js("resources/js/qr-scanner.js", "public/js").version().sourceMaps();
 
+mix.js("resources/js/filament/table/actionable-text-column.js", "public/js/actionable-text-column.js").version().sourceMaps();
+
 if (mix.inProduction()) {
     mix.version();
 }

@@ -20,6 +20,7 @@ class FilamentServiceProvider extends ServiceProvider
     Filament::serving(function () {
       Filament::registerTheme(mix('css/filament.css'));
       Filament::registerScripts([asset('js/phoneinput.js')]);
+      Filament::registerScripts([asset('js/actionable-text-column.js')], true);
     });
   }
 }

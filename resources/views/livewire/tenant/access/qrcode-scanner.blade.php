@@ -79,7 +79,11 @@
     @if (!$this->isValidAccess)
     <div>
         <div x-trap.inert.noscroll="true" class="fixed inset-0 z-40 flex flex-col items-center justify-center bg-gray-50">
-            <div class="px-4 py-6 text-center bg-white border shadow-md sm:px-12 sm:py-12 rounded-xl">
+            <div class="flex flex-col items-center justify-center overflow-hidden">
+                <x-logo class="flex-shrink-0 w-auto mb-2 mr-3 text-primary-600 h-9" alt="{{ config('app.name') }} Logo" />
+                <span class="self-center text-xl font-semibold whitespace-nowrap">{{ tenant('organization') }}</span>
+            </div>
+            <div class="px-4 py-6 mt-8 text-center bg-white border shadow-md sm:px-12 sm:py-12 rounded-xl">
                 <div>
                     <x-heroicon-o-x-circle class="w-20 h-20 m-auto text-danger-400" />
                 </div>

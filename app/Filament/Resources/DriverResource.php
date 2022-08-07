@@ -4,7 +4,7 @@ namespace App\Filament\Resources;
 
 use App\Filament\Forms\Components\PhoneNumberInput;
 use App\Filament\Resources\DriverResource\Pages;
-use App\Filament\Resources\DriverResource\RelationManagers;
+use App\Filament\Tables\Columns\ActionableTextColumn;
 use App\Models\Tenant\Driver;
 use Filament\Forms;
 use Filament\Forms\Components\Section;
@@ -14,6 +14,7 @@ use Filament\Resources\Table;
 use Filament\Tables;
 use Filament\Tables\Filters\TernaryFilter;
 use Illuminate\Database\Eloquent\Model;
+use App\Filament\Resources\DriverResource\RelationManagers;
 use Illuminate\Database\Eloquent\SoftDeletingScope;
 
 class DriverResource extends Resource
@@ -78,9 +79,9 @@ class DriverResource extends Resource
     {
         return $table
             ->columns([
-                Tables\Columns\TextColumn::make('name'),
-                Tables\Columns\TextColumn::make('email')->searchable(),
-                Tables\Columns\TextColumn::make('phone_number')->searchable(),
+                ActionableTextColumn::make('name')->animated()->searchable(),
+                ActionableTextColumn::make('email')->animated()->searchable(),
+                ActionableTextColumn::make('phone_number')->animated()->searchable(),
                 Tables\Columns\BooleanColumn::make('phone_verified_at')
                     ->label('Phone verified')
                     ->default(false)
