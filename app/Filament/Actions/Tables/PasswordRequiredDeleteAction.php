@@ -1,11 +1,11 @@
 <?php
 
-namespace App\Filament\Actions;
+namespace App\Filament\Actions\Tables;
 
 use Filament\Forms;
-use Filament\Tables\Actions\DeleteBulkAction;
+use Filament\Tables\Actions\DeleteAction;
 
-class PasswordRequiredDeleteBulkAction extends DeleteBulkAction
+class PasswordRequiredDeleteAction extends DeleteAction
 {
   protected function setUp(): void
   {
@@ -14,7 +14,7 @@ class PasswordRequiredDeleteBulkAction extends DeleteBulkAction
     $this->requiresConfirmation()
       ->modalHeading("Confirm password")
       ->modalSubheading(
-        "Please confirm your password to complete this item."
+        "Please confirm your password to complete this action."
       )
       ->form([
         Forms\Components\TextInput::make("current_password")

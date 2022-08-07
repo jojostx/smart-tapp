@@ -33,12 +33,14 @@ Route::middleware([
         dd('ok');
     })->name('access.home');
 
-    // /access/{access}
     Route::middleware(['access.valid'])->group(function () {
         Route::get('/access/{access}/scan', QrcodeScanner::class)
+            ->withoutMiddleware(['access.valid'])
             ->name('access.scan');
 
-        Route::get('/access/{access}/dashboard', Dashboard::class)->middleware('auth:driver')->name('access.dashboard');
+        Route::get('/access/{access}/dashboard', Dashboard::class)
+            ->middleware('auth:driver')
+            ->name('access.dashboard');
     });
 
     Route::get('/impersonate/{token}', function ($token) {
