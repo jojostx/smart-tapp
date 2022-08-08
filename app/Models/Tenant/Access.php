@@ -38,14 +38,6 @@ class Access extends Model
         'expires_after' => 'integer',
     ];
 
-    // return URL::temporarySignedRoute(
-    //     'access.verify',
-    //     now()->addMinutes($attributes['expires_after']),
-    //     [
-    //         'uuid' => sha1($attributes['uuid']),
-    //     ]
-    // );
-
     /**
      * checks if the access is expired.
      *
@@ -53,7 +45,7 @@ class Access extends Model
      */
     public function isValid(): bool
     {
-        return ! blank($this->valid_until) && now()->lte($this->valid_until);
+        return !blank($this->valid_until) && now()->lte($this->valid_until);
     }
 
     /**
@@ -65,7 +57,7 @@ class Access extends Model
     {
         // deactivate every other accesses with the same vehicle.
         Access::where('vehicle_id', $this->vehicle->id)->update(['status' => AccessStatus::INACTIVE]);
-        
+
         $this->save(['status' => AccessStatus::ACTIVE]);
     }
 
@@ -92,7 +84,53 @@ class Access extends Model
 
                 return $plate_number ? 'Access_' . $plate_number : "Access_{$attributes['id']}";
             },
-        )->shouldCache();
+        );
+    }
+
+    /**
+     * Get the name for the access.
+     *
+     * @return \Illuminate\Database\Eloquent\Casts\Attribute
+     */
+    public function state(): Attribute
+    {
+        // [expired, issued, active, inactive]
+        // to specify when the access is expired, the 'expires_after' attribute should be set and elapsed and the 'valid_until' is not in the past.
+        // to specify when the access is issued the 'expires_after' attribute should be set and not elapsed and the 'valid_until' attribute should not be in the past.
+        // to specify when the access is active, the 'expires_after' attribute should be null and the 'valid_until' attribute should not be in the past.
+        // to specify when the access is inactive the expires_after' attribute should be null and the 'valid_until' attribute should be in the past.
+        return Attribute::make(
+            get: function ($value, $attributes) {
+                $issued_at = $this->asDateTime($attributes['issued_at']);
+                $valid_until =  $this->asDateTime($attributes['valid_until']);
+                $expires_after = $attributes['expires_after'];
+
+                $elapsed = now()->greaterThan($issued_at->addMinutes($expires_after));
+                $invalid = now()->greaterThan($valid_until->subMinutes($expires_after));
+
+                // expired
+                if (filled($expires_after) && $elapsed && $invalid) {
+                    return AccessStatus::EXPIRED;
+                }
+
+                // issued
+                if (filled($expires_after) && !$elapsed && !$invalid) {
+                    return AccessStatus::ISSUED;
+                }
+
+                // active
+                if (blank($expires_after) && !$invalid) {
+                    return AccessStatus::ACTIVE;
+                }
+
+                // inactive | deactivated
+                if (blank($expires_after) && $invalid) {
+                    return AccessStatus::INACTIVE;
+                }
+
+                return AccessStatus::EXPIRED;
+            },
+        );
     }
 
     /**

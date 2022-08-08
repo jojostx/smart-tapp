@@ -7,6 +7,7 @@ enum AccessStatus: string
   case INACTIVE = 'inactive';
   case ISSUED = 'issued';
   case ACTIVE = 'active';
+  case EXPIRED = 'expired';
 
   public static function toArray(): array
   {
@@ -21,6 +22,7 @@ enum AccessStatus: string
         self::INACTIVE->value => 'The Access will be deactivated and cannot be used by the customer.',   
         self::ISSUED->value => "The Access will be sent to the customer's phone and can be activated.",   
         self::ACTIVE->value => "The Access will be activated and sent to the customer's phone.",
+        self::EXPIRED->value => "The Access will be deactivated and cannot be used by the customer.",
     ];
   }
 }
