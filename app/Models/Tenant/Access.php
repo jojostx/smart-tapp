@@ -109,7 +109,7 @@ class Access extends Model
                 $invalid = now()->greaterThan($valid_until->subMinutes($expires_after));
 
                 // expired
-                if (filled($expires_after) && $elapsed && $invalid) {
+                if (filled($expires_after) && $elapsed && !$invalid) {
                     return AccessStatus::EXPIRED;
                 }
 
@@ -128,7 +128,7 @@ class Access extends Model
                     return AccessStatus::INACTIVE;
                 }
 
-                return AccessStatus::EXPIRED;
+                // return AccessStatus::EXPIRED;
             },
         );
     }
