@@ -128,7 +128,7 @@ class Access extends Model
                     return AccessStatus::INACTIVE;
                 }
 
-                // return AccessStatus::EXPIRED;
+                return AccessStatus::INACTIVE;
             },
         );
     }
