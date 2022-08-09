@@ -71,7 +71,7 @@ class CreateAccess extends CreateRecord
 
             $return_value = match (AccessStatus::from($data['status'])) {
                 AccessStatus::ISSUED => $access->issue(shouldNotify: true),
-                AccessStatus::ACTIVE => $access->activate(shouldNotify: false),
+                AccessStatus::ACTIVE => $access->activate(shouldNotify: true),
                 AccessStatus::INACTIVE => $access->deactivate(),
                 default => false,
             };
