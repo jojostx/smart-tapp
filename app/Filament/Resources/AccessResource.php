@@ -21,6 +21,7 @@ use Filament\Tables\Filters\SelectFilter;
 use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\SoftDeletingScope;
+use Illuminate\Validation\Rules\Enum;
 use Illuminate\Validation\Rules\Unique;
 
 class AccessResource extends Resource
@@ -191,22 +192,28 @@ class AccessResource extends Resource
                             ->label('Parking Lot')
                             ->relationship('parkingLot', 'name'),
 
-                        Forms\Components\DatePicker::make('valid_until')
-                            ->label('Valid Until')
-                            ->minDate(now())
-                            ->default(now()->addDay())
-                            ->maxDate(now()->addDays(3)),
+                        RangeSlider::make('validity_period')
+                            ->label('Valid for')
+                            ->max(3)
+                            ->rule('integer')
+                            ->min(1)
+                            ->step(1)
+                            ->hint('<span>&#9432;</span> Time in days')
+                            ->helperText('<span class="text-xs"><span>&#9432;</span> The Access will be deactivated after the validity period.</span>'),
 
-                        RangeSlider::make('expires_after')
+                        RangeSlider::make('expiry_period')
                             ->label('Activation Timeout')
                             ->max(120)
                             ->min(30)
+                            ->rule('integer')
                             ->step(10)
-                            ->hint('<span>&#9432;</span> Time in minutes (min)')
-                            ->helperText('<span class="text-xs"><span>&#9432;</span> The Access will be deactivated if it is not used by the customer after the timeout.</span>'),
+                            ->hint('<span>&#9432;</span> Time in minutes')
+                            ->helperText('<span class="text-xs"><span>&#9432;</span> The Access will expire if it is not activated by the customer before the timeout.</span>'),
 
                         Forms\Components\Radio::make('status')
-                            ->options(AccessStatus::toArray())->default(AccessStatus::ISSUED)
+                            ->options(AccessStatus::toArray(['expired']))
+                            ->default(AccessStatus::ISSUED)
+                            ->rule(new Enum(AccessStatus::class))
                             ->descriptions(AccessStatus::toDescriptionArray())->columnSpan('full'),
                     ])
                     ->columnSpan([
@@ -239,8 +246,9 @@ class AccessResource extends Resource
                     ->enum(AccessStatus::toArray())
                     ->colors([
                         'warning' => fn ($state): bool => $state === AccessStatus::INACTIVE->value,
-                        'danger' => fn ($state): bool => $state === AccessStatus::ISSUED->value,
+                        'primary' => fn ($state): bool => $state === AccessStatus::ISSUED->value,
                         'success' => fn ($state): bool => $state === AccessStatus::ACTIVE->value,
+                        'danger' => fn ($state): bool => $state === AccessStatus::EXPIRED->value,
                     ]),
                 Tables\Columns\TextColumn::make('parkingLot.name')->searchable(),
                 Tables\Columns\TextColumn::make('driver.name')->searchable(),
@@ -263,6 +271,13 @@ class AccessResource extends Resource
             ->filters([
                 SelectFilter::make('status')
                     ->options(AccessStatus::toArray())
+                    ->query(function (Builder $query, array $data): Builder {
+                        if (isset($data['value']) && boolval($status = AccessStatus::tryFrom($data['value']))) {
+                            return $query->status($status);
+                        }
+
+                        return $query;
+                    })
             ])
             ->actions([
                 Tables\Actions\EditAction::make(),

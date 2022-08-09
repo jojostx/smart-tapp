@@ -18,18 +18,17 @@ return new class extends Migration
             $table->id();
             $table->string('uuid')->unique();
 
-            $table->string('status')->default(AccessStatus::INACTIVE->value);
-            $table->integer('expires_after')->default(30)->nullable();
-            $table->timestamp('valid_until')->nullable();
-
+            $table->integer('expiry_period')->default(30);
+            $table->integer('validity_period')->default(1);
+            $table->timestamp('issued_at')->useCurrent();
+            
             $table->foreignId('driver_id')->nullable()->constrained()->cascadeOnDelete();
             $table->foreignId('vehicle_id')->constrained()->cascadeOnDelete();
             
             $table->foreignId('parking_lot_id')->constrained('parking_lots')->cascadeOnDelete();
             $table->foreignId('created_by')->nullable()->constrained('users')->nullOnDelete();
             $table->foreignId('issued_by')->nullable()->constrained('users')->nullOnDelete();
-            $table->timestamp('issued_at')->useCurrent();
-            
+
             $table->timestamps();
         });
     }

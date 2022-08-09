@@ -50,6 +50,7 @@ class CreateAccess extends CreateRecord
         if (blank($parking_lot)) {
             return $this->addError('parking_lot_id', 'Unable to create Access for invalid Parking Lot');
         }
+
         /**
          * @var Access $access
          */
@@ -57,25 +58,25 @@ class CreateAccess extends CreateRecord
 
         // create access, attach driver and vehicle models and set it's status
         try {
-            $accessStatus = AccessStatus::from($data['status'])->value;
-
-            $access->fill([
-                "valid_until" => $data['valid_until'],
-                "expires_after" => $data['expires_after'],
-                "status" => $accessStatus,
-            ]);
-
             $access->driver()->associate($driver);
             $access->vehicle()->associate($vehicle);
             $access->parkingLot()->associate($parking_lot);
             $access->creator()->associate(auth()->user());
             $access->issuer()->associate(auth()->user());
+            
+            $access->fill([
+                "expiry_period" => intval($data['expiry_period']),
+                "validity_period" => intval($data['validity_period']),
+            ]);
 
-            $access->save();
+            $return_value = match (AccessStatus::from($data['status'])) {
+                AccessStatus::ISSUED => $access->issue(shouldNotify: true),
+                AccessStatus::ACTIVE => $access->activate(shouldNotify: false),
+                AccessStatus::INACTIVE => $access->deactivate(),
+                default => false,
+            };
 
-            // @todo if it's status is set to issued and send access sms is true, then emit sendAccessSMSEvent
-
-            return $access->refresh();
+            return $return_value && $access->refresh();
         } catch (\Throwable $th) {
             return $access;
         }

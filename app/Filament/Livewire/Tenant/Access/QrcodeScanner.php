@@ -26,6 +26,10 @@ class QrcodeScanner extends Component
     {
         $this->access = $access;
 
+        if (!auth('driver')->check() && $this->access->isActive()) {
+            Auth::guard('driver')->login($this->access->driver);
+        }
+
         if (auth('driver')->check()) {
             return redirect()->route('access.dashboard', ['access' => $this->access]);
         }

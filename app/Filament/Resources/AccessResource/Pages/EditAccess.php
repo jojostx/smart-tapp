@@ -4,7 +4,6 @@ namespace App\Filament\Resources\AccessResource\Pages;
 
 use App\Filament\Forms\Components\Password;
 use App\Filament\Resources\AccessResource;
-use Filament\Forms\Components\Checkbox;
 use Filament\Pages\Actions;
 use Filament\Resources\Pages\EditRecord;
 
