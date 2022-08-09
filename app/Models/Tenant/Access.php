@@ -28,6 +28,13 @@ class Access extends Model implements CanSendAccessActivationNotification
     ];
 
     /**
+     * The accessors to append to the model's array form.
+     *
+     * @var array
+     */
+    protected $appends = ['status'];
+
+    /**
      * The attributes that should be cast.
      *
      * @var array

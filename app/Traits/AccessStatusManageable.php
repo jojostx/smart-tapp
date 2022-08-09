@@ -53,7 +53,7 @@ trait AccessStatusManageable
 	 *
 	 * @return \Illuminate\Database\Eloquent\Casts\Attribute
 	 */
-	public function status(): Attribute
+	protected function status(): Attribute
 	{
 		return Attribute::make(
 			get: function ($value, $attributes) {
