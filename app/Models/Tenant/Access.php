@@ -32,7 +32,7 @@ class Access extends Model implements CanSendAccessActivationNotification
      *
      * @var array
      */
-    protected $appends = ['status'];
+    protected $appends = ['status', 'valid_until'];
 
     /**
      * The attributes that should be cast.
@@ -50,7 +50,7 @@ class Access extends Model implements CanSendAccessActivationNotification
      *
      * @return \Illuminate\Database\Eloquent\Casts\Attribute
      */
-    public function valid_until(): Attribute
+    public function validUntil(): Attribute
     {
         return Attribute::make(
             get: function ($value, $attributes) {
