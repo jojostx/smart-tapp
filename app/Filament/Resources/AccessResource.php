@@ -201,8 +201,12 @@ class AccessResource extends Resource
                             ->hint('<span>&#9432;</span> Time in days')
                             ->helperText('<span class="text-xs"><span>&#9432;</span> The Access will be deactivated after the validity period.</span>'),
 
+                        // hide if on edit page and access is active or deactivated
                         RangeSlider::make('expiry_period')
                             ->label('Activation Timeout')
+                            ->hidden(function (?Access $record) {
+                                return $record?->isActive() ?? false;
+                            })
                             ->max(120)
                             ->min(30)
                             ->rule('integer')
