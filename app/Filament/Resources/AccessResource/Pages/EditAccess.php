@@ -27,4 +27,11 @@ class EditAccess extends EditRecord
                 ->modalWidth('md'),
         ];
     }
+
+
+    public function save(bool $shouldRedirect = true): void
+    {
+        dd($this);
+        $data = $this->form->getState();
+    }
 }
