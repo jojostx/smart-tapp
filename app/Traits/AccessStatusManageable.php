@@ -36,7 +36,7 @@ trait AccessStatusManageable
 
 			AccessStatus::INACTIVE => $query->where('expiry_period', '=', 0)
 				->whereRaw("now() > {$invalidFragment}"),
-			
+
 			default => $query
 		};
 
@@ -221,16 +221,9 @@ trait AccessStatusManageable
 			return true;
 		}
 
-		/** @var Carbon $pastBeforeValidityPeriod */
-		$pastBeforeValidityPeriod = $this->valid_until ?? now();
-
-		while (!(elapsed($pastBeforeValidityPeriod))) {
-			$pastBeforeValidityPeriod = $pastBeforeValidityPeriod->subDays($this->validity_period);
-		}
-
 		return $this->forceFill([
 			'expiry_period' => 0,
-			'issued_at' => $pastBeforeValidityPeriod,
+			'issued_at' => $this->issued_at->subDays($this->validity_period)
 		])->save();
 	}
 }
