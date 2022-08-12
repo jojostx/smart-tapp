@@ -86,6 +86,6 @@ if (!function_exists('elapsed')) {
   {
     $referenceTime = $referenceTime ?? now();
 
-    return $referenceTime->greaterThan($time);
+    return $referenceTime->greaterThanOrEqualTo($time);
   }
 }

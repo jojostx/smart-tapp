@@ -13,6 +13,7 @@ use App\Models\Tenant\Driver;
 use App\Models\Tenant\Vehicle;
 use Filament\Forms;
 use Filament\Forms\Components\Select;
+use Filament\Notifications\Notification;
 use Filament\Resources\Form;
 use Filament\Resources\Resource;
 use Filament\Resources\Table;
@@ -307,7 +308,17 @@ class AccessResource extends Resource
                             ->label('Send Activation Notification')
                             ->default(fn (Access $record) => $record->isInactive() ? true : false)
                     ])
-                    ->action(fn (Access $record, ?array $data) => dd($record, $data) && $record->activate(shouldNotify: isset($data['shouldNotify']) ? true : false)),
+                    ->action(function (Access $record, ?array $data) {
+                        $shouldNotify = isset($data['shouldNotify']) && $data['shouldNotify'];
+
+                        $record
+                            ->activate(shouldNotify: $shouldNotify) &&
+                        Notification::make()
+                            ->title('Access Activated Successfully')
+                            ->success()
+                            ->body('The **Access** have been activated.'. $shouldNotify ? " The Activation Notification have been sent to the Driver's phone.": '')
+                            ->send();
+                    }),
 
                 Tables\Actions\Action::make('Deactivate')
                     ->visible(fn (Access $record) => $record->isExpired() || $record->isActive() || $record->isIssued())
@@ -328,7 +339,13 @@ class AccessResource extends Resource
                             ->placeholder('••••••••')
                             ->disableAutocomplete(),
                     ])
-                    ->action(fn (Access $record) => dd($record) && $record->deactivate()),
+                    ->action(function (Access $record) {
+                        $record->deactivate() &&
+                        Notification::make()
+                            ->title('Access Deactivated Successfully')
+                            ->success()
+                            ->send();
+                    }),
 
                 ActionGroup::make([
                     Tables\Actions\Action::make('issue')
@@ -350,7 +367,17 @@ class AccessResource extends Resource
                                 ->label('Send Activation Notification')
                                 ->default(true)
                         ])
-                        ->action(fn (Access $record, array $data) => dd($record, $data) && $record->issue(shouldNotify: $data['shouldNotify'])),
+                        ->action(function (Access $record, ?array $data) {
+                            $shouldNotify = isset($data['shouldNotify']) && $data['shouldNotify'];
+    
+                            $record
+                                ->issue(shouldNotify: $shouldNotify) &&
+                            Notification::make()
+                                ->title('Access Issued Successfully')
+                                ->success()
+                                ->body('The **Access** have been Issued.'. $shouldNotify ? " The Activation Notification have been sent to the Driver's phone.": '')
+                                ->send();
+                        }),
 
                     Tables\Actions\Action::make('send')
                         ->label('Send Activation')
@@ -364,7 +391,7 @@ class AccessResource extends Resource
                             return "Send Activation Notification";
                         })
                         ->modalSubheading(function (): string {
-                            return "This will send the Access Activation Notification to the Driver's phone number.";
+                            return "This will send the Access Activation Notification to the Driver's phone.";
                         })
                         ->form([
                             Password::make("current_password")
@@ -374,7 +401,14 @@ class AccessResource extends Resource
                                 ->placeholder('••••••••')
                                 ->disableAutocomplete(),
                         ])
-                        ->action(fn (Access $record) => dd($record) && $record->issue(shouldNotify: true)),
+                        ->action(function (Access $record) {
+                            $record->sendAccessActivationNotification() &&
+                            Notification::make()
+                                ->title('Activation Notification Sent Successfully')
+                                ->success()
+                                ->body("The **Access** Activation Notification have been sent to the Driver's phone.")
+                                ->send();
+                        }),
 
                     Tables\Actions\EditAction::make(),
                     Tables\Actions\DeleteAction::make()
