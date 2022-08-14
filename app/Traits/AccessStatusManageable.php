@@ -152,7 +152,7 @@ trait AccessStatusManageable
 	 * 
 	 * @return bool
 	 */
-	public function issue(?int $expiry_period = 0, ?int $validity_period = 0, bool $shouldNotify = false): bool
+	public function issue(?int $expiry_period = 0, ?int $validity_period = 0, bool $shouldNotify = false)
 	{
 		// MAX_VALIDITY_PERIOD
 		// MAX_EXPIRY_PERIOD
@@ -174,7 +174,7 @@ trait AccessStatusManageable
 		])->save();
 
 		if ($shouldNotify && $updated) {
-			return $this->sendAccessActivationNotification();
+			$this->sendAccessActivationNotification();
 		}
 
 		return $updated;
@@ -203,7 +203,7 @@ trait AccessStatusManageable
 		])->save();
 
 		if ($shouldNotify && $updated) {
-			return $this->sendAccessActivationNotification();
+			$this->sendAccessActivationNotification();
 		}
 
 		return $updated;

@@ -2,33 +2,21 @@
 
 namespace App\Concerns\Models;
 
+use Illuminate\Database\Eloquent\Relations\BelongsTo;
+
 interface CanSendAccessActivationNotification
 {
   /**
-   * Determine if the driver has verified their phone number.
-   *
-   * @return bool
+   * Get the driver to be notified.
+   * 
+   * @return \Illuminate\Database\Eloquent\Relations\BelongsTo
    */
-  public function hasVerifiedPhoneNumber();
+  public function driver(): BelongsTo;
 
-  /**
-   * Mark the given driver's phone number as verified.
-   *
-   * @return bool
-   */
-  public function markPhoneNumberAsVerified();
-
-  /**
-   * Get the phone number for the notification.
-   *
-   * @return string
-   */
-  public function getPhoneNumberForNotification();
-  
   /**
    * send the access activation notification (SMS) to the access' driver phone number.
    *
-   * @return bool
+   * @return void
    */
   public function sendAccessActivationNotification();
 }

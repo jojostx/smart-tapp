@@ -311,8 +311,8 @@ class AccessResource extends Resource
                     ->action(function (Access $record, ?array $data) {
                         $shouldNotify = isset($data['shouldNotify']) && $data['shouldNotify'];
 
-                        $record
-                            ->activate(shouldNotify: $shouldNotify) &&
+                        $record->activate(shouldNotify: $shouldNotify);
+
                         Notification::make()
                             ->title('Access Activated Successfully')
                             ->success()
@@ -370,8 +370,8 @@ class AccessResource extends Resource
                         ->action(function (Access $record, ?array $data) {
                             $shouldNotify = isset($data['shouldNotify']) && $data['shouldNotify'];
     
-                            $record
-                                ->issue(shouldNotify: $shouldNotify) &&
+                            $record->issue(shouldNotify: $shouldNotify);
+
                             Notification::make()
                                 ->title('Access Issued Successfully')
                                 ->success()
@@ -402,7 +402,8 @@ class AccessResource extends Resource
                                 ->disableAutocomplete(),
                         ])
                         ->action(function (Access $record) {
-                            $record->sendAccessActivationNotification() &&
+                            $record->sendAccessActivationNotification();
+                            
                             Notification::make()
                                 ->title('Activation Notification Sent Successfully')
                                 ->success()

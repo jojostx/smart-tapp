@@ -2,32 +2,27 @@
 
 namespace App\Notifications\Tenant\Driver;
 
-use Carbon\Carbon;
+use App\Models\Tenant\Access;
 use Illuminate\Bus\Queueable;
 use Illuminate\Contracts\Queue\ShouldQueue;
 use NotificationChannels\AfricasTalking\AfricasTalkingChannel;
 use NotificationChannels\AfricasTalking\AfricasTalkingMessage;
+use ManeOlawale\Laravel\Termii\Messages\Message as TermiiMessage;
 use Illuminate\Notifications\Notification;
-use Illuminate\Support\Facades\Config;
-use Illuminate\Support\Facades\URL;
 
 class AccessActivationNotification extends Notification implements ShouldQueue
 {
   use Queueable;
 
   /**
-   * The callback that should be used to create the verify email URL.
+   * Create a new notification instance.
    *
-   * @var \Closure|null
+   * @return void
    */
-  public static $createUrlCallback;
-
-  /**
-   * The callback that should be used to build the SMS message.
-   *
-   * @var \Closure|null
-   */
-  public static $toSMSCallback;
+  public function __construct(public Access $access)
+  {
+    $this->afterCommit();
+  }
 
   /**
    * Get the notification's delivery channels.
@@ -41,77 +36,50 @@ class AccessActivationNotification extends Notification implements ShouldQueue
   }
 
   /**
-   * Get the SMS representation of the notification.
+   * Get the AfricasTalking SMS representation of the notification.
    *
    * @param  mixed  $notifiable
    * @return AfricasTalkingMessage
    */
   public function toAfricasTalking($notifiable)
   {
-    $verificationUrl = $this->verificationUrl($notifiable);
+    $message = $this->buildSMSMessage($notifiable);
 
-    if (static::$toSMSCallback) {
-      return call_user_func(static::$toSMSCallback, $notifiable, $verificationUrl);
-    }
+    return (new AfricasTalkingMessage())
+      ->content($message);
+  }
 
-    $message = $this->buildSMSMessage($verificationUrl, $notifiable);
+  /**
+   * Get the termii SMS representation of the notification.
+   *
+   * @param  mixed  $notifiable
+   * @return \ManeOlawale\Laravel\Termii\Messages\Message
+   */
+  public function toTermii($notifiable)
+  {
+    $message = $this->buildSMSMessage($notifiable);
 
-    // return (new AfricasTalkingMessage())
-    //   ->content($message);
+    return (new TermiiMessage())
+      ->content($message);
   }
 
   /**
    * Get the verify SMS notification message for the given URL.
    *
-   * @param  string  $url
    * @param  mixed  $notifiable
    * 
    * @return string
    */
-  protected function buildSMSMessage($url, $notifiable)
+  protected function buildSMSMessage($notifiable): string
   {
-    $name = (string) $notifiable->first_name ?? '';
+    $key = ((string) $this->access->id) . str($this->access->uuid)->before('-')->value();
+    $url = tenant_route(tenant()->domain, 'access.redirect', compact('key'));
+    $plate_number = $this->access->vehicle->plate_number;
 
-    return "\n Hello {$name},\n Click the link below to verify your phone number:\n {$url}";
-  }
-
-  /**
-   * Get the verification URL for the given notifiable.
-   *
-   * @param  mixed  $notifiable
-   * @return string
-   */
-  protected function verificationUrl($notifiable)
-  {
-    return URL::temporarySignedRoute(
-      'phoneverification.verify',
-      Carbon::now()->addMinutes(Config::get('auth.verification.expire', 15)),
-      [
-        'id' => $notifiable->getKey(),
-        'hash' => sha1($notifiable->getPhoneNumberForVerification()),
-      ]
-    );
-  }
-
-  /**
-   * Set a callback that should be used when creating the SMS verification URL.
-   *
-   * @param  \Closure  $callback
-   * @return void
-   */
-  public static function createUrlUsing(callable $callback)
-  {
-    static::$createUrlCallback = $callback;
-  }
-
-  /**
-   * Set a callback that should be used when building the notification SMS message.
-   *
-   * @param  \Closure  $callback
-   * @return void
-   */
-  public static function toSMSUsing(callable $callback)
-  {
-    static::$toSMSCallback = $callback;
+    $message = "Hello, Click the link below to activate your access for vehicle [{$plate_number}]:";
+    $message .= "\n{$url}\n";
+    $message .= \boolval($this->access->expiry_period) ? "  This Access expires in {$this->access->expiry_period} minutes" : "";
+    
+    return $message;
   }
 }

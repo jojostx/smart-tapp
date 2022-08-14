@@ -26,18 +26,6 @@ trait MustVerifyPhoneNumber
         ])->save();
     }
 
-    // /**
-    //  * Send the phone number verification notification.
-    //  *
-    //  * @return void
-    //  * 
-    //  * @throws CouldNotSendNotification
-    //  */
-    // public function sendPhoneNumberVerificationNotification()
-    // {
-    //     $this->notify(new VerifyPhoneNumberSMS);
-    // }
-
     /**
      * Get the phone number that should be used for verification.
      *

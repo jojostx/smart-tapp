@@ -33,14 +33,27 @@ Route::middleware([
         dd('ok');
     })->name('access.home');
 
-    Route::middleware(['access.valid'])->group(function () {
-        Route::get('/access/{access}/scan', QrcodeScanner::class)
-            ->withoutMiddleware(['access.valid'])
-            ->name('access.scan');
 
-        Route::get('/access/{access}/dashboard', Dashboard::class)
-            ->middleware('auth:driver')
-            ->name('access.dashboard');
+    Route::prefix('access')->name('access.')->group(function () {
+        Route::get('/{access}/scan', QrcodeScanner::class)
+            ->name('scan');
+
+        Route::get('/{access}/dashboard', Dashboard::class)
+            ->middleware('auth:driver', 'access.valid')
+            ->name('dashboard');
+
+        Route::get('/{key?}', function (?string $key = null) {
+            abort_if(blank($key), 404);
+
+            $id = str($key)->substr(0, 1);
+            $uuid_first_segment = str($key)->substr(1);
+
+            $access = \App\Models\Tenant\Access::where('id', $id)->where('uuid', 'LIKE', "{$uuid_first_segment}-%")->first();
+
+            abort_if(blank($access), 404);
+
+            return redirect()->route('access.scan', compact('access'));
+        })->name('redirect');
     });
 
     Route::get('/impersonate/{token}', function ($token) {
