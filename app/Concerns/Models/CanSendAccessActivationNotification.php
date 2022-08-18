@@ -2,6 +2,7 @@
 
 namespace App\Concerns\Models;
 
+use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
 
 interface CanSendAccessActivationNotification
@@ -15,8 +16,8 @@ interface CanSendAccessActivationNotification
 
   /**
    * send the access activation notification (SMS) to the access' driver phone number.
-   *
+   * 
    * @return void
    */
-  public function sendAccessActivationNotification();
+  public function sendAccessActivationNotification(?Model $admin);
 }
