@@ -59,3 +59,10 @@
         // [] check the notifications table every 5 minutes to know if any sms activation notification has been updated
         // [] if so, dispatch a filament notification for each
     }
+
+    {
+        // issued - [Activate (default do not Send)], Deactivate, Send access activation notification
+        // active - Deactivate, Send access activation notification
+        // expired - Deactivate, [Issue (default Send), Activate (default do not Send)] -> Send access activation notification,
+        // inactive|deactivated - [Issue (default Send), Activate (default Send)] -> shows modal for Send access activation notification confirmation
+    }
