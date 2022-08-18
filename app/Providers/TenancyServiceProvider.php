@@ -50,6 +50,9 @@ class TenancyServiceProvider extends ServiceProvider
                     
                     // create Tenant Subdomain
                     Tenant\CreateTenantSubdomain::class,
+
+                    // create Tenant Super Admin user
+                    Tenant\CreateTenantAdminUser::class,
                 ])->send(function (TenantVerified $event) {
                     return $event->tenant;
                 })->shouldBeQueued(true), // `false` by default, but you probably want to make this `true` for production.
@@ -84,13 +87,7 @@ class TenancyServiceProvider extends ServiceProvider
             // Database events
             Events\DatabaseCreated::class => [],
 
-            Events\DatabaseMigrated::class => [
-                JobPipeline::make([
-                    Tenant\CreateTenantAdminUser::class,
-                ])->send(function (Events\DatabaseMigrated $event) {
-                    return $event->tenant;
-                })->shouldBeQueued(true),
-            ],
+            Events\DatabaseMigrated::class => [],
 
             Events\DatabaseSeeded::class => [],
             Events\DatabaseRolledBack::class => [],
