@@ -2,7 +2,6 @@
 
 namespace App\Traits;
 
-use App\Models\Tenant\User;
 use App\Notifications\Tenant\Driver\AccessActivationNotification;
 use Illuminate\Database\Eloquent\Model;
 
