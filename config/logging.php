@@ -31,7 +31,7 @@ return [
     */
 
     'deprecations' => [
-        'channel' => env('LOG_DEPRECATIONS_CHANNEL', 'null'),
+        'channel' => env('LOG_DEPRECATIONS_CHANNEL', 'deprecations'),
         'trace' => false,
     ],
 
@@ -51,6 +51,11 @@ return [
     */
 
     'channels' => [
+        'deprecations' => [
+            'driver' => 'single',
+            'path' => storage_path('logs/php-deprecation-warnings.log'),
+        ],
+
         'stack' => [
             'driver' => 'stack',
             'channels' => ['single'],

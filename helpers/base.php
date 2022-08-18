@@ -89,3 +89,27 @@ if (!function_exists('elapsed')) {
     return $referenceTime->greaterThanOrEqualTo($time);
   }
 }
+
+if (!function_exists('flattenWithKeys')) {
+  /**
+   * Flattens an array recursively while preserving keys by "smushing" them
+   * 
+   * Also works by typecasting objects or xml, example: (array) $obj
+   *
+   * @param array   $array
+   * @param string  $nestingDelimiter string to be used as a delimiter for nested keys
+   * @param string  $root string to be prefixed to the keys
+   * @param array   $result
+   * 
+   * @return array
+   */
+  function flattenWithKeys(array $array, $nestingDelimiter = '.', $root = '', $result = []): array
+  {
+    foreach ($array as $k => $v) {
+      if ((is_array($v) || is_object($v)) && !empty($v)) $result = flattenWithKeys((array) $v, $nestingDelimiter, $root . $k . $nestingDelimiter, $result);
+      else $result[$root . $k] = $v;
+    }
+    
+    return $result;
+  }
+}
