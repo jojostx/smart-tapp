@@ -34,3 +34,28 @@
     if (method_exists(static::getModel(), 'driver') && method_exists(static::getModel(), 'vehicle')) {
         dd('hm',  $this->form->getLivewire()->data, $data);
     }
+
+    {
+        // I] after sending a notification, save the:
+        //      1. message_id of the notification from the response of the network call to the API
+        //      2. the response of the network call to the API
+        //      3. the notification and notifiable 
+        //      4. the tenant->id
+        //      5. the admin user->id
+        // to redis with proper tagging based on time period of 5 minutes interval.
+        // ======================================================================
+
+        // A - II] when delivery report returns from the API,
+        // use the message_id from the request body to retrieve the metadata of the notification from redis
+        // deliver the response the correct user in the correct tenant through webhook
+
+        // B - II] 
+        // after sending a notification, 
+        // [] save the message_id from the response to the data column of the notification in the notifications table:[set the status to sending]
+        // [✓] if network failure occurs, set the status of the notification to failed in the notifications table:
+        // when delivery report returns from the API,
+        //      [] use the message_id from the request body to retrieve and update the status of the notification to whatever status 
+        //      [] in the response in the notification's table.
+        // [] check the notifications table every 5 minutes to know if any sms activation notification has been updated
+        // [] if so, dispatch a filament notification for each
+    }
