@@ -3,8 +3,11 @@
 namespace App\Notifications\Tenant\Driver;
 
 use App\Models\Tenant\Access;
+use App\Models\Tenant\User;
+use GuzzleHttp\Exception\GuzzleException;
 use Illuminate\Bus\Queueable;
 use Illuminate\Contracts\Queue\ShouldQueue;
+use Illuminate\Notifications\DatabaseNotification;
 use NotificationChannels\AfricasTalking\AfricasTalkingChannel;
 use NotificationChannels\AfricasTalking\AfricasTalkingMessage;
 use ManeOlawale\Laravel\Termii\Messages\Message as TermiiMessage;
@@ -19,8 +22,12 @@ class AccessActivationNotification extends Notification implements ShouldQueue
    *
    * @return void
    */
-  public function __construct(public Access $access)
+  public function __construct(public Access $access, public User $admin, ?string $id = '')
   {
+    if (filled($id)) {
+      $this->id = $id;
+    }
+
     $this->afterCommit();
   }
 
@@ -32,7 +39,7 @@ class AccessActivationNotification extends Notification implements ShouldQueue
    */
   public function via($notifiable)
   {
-    return [AfricasTalkingChannel::class];
+    return ['database', AfricasTalkingChannel::class];
   }
 
   /**
@@ -79,7 +86,36 @@ class AccessActivationNotification extends Notification implements ShouldQueue
     $message = "Hello, Click the link below to activate your access for vehicle [{$plate_number}]:";
     $message .= "\n{$url}\n";
     $message .= \boolval($this->access->expiry_period) ? "  This Access expires in {$this->access->expiry_period} minutes" : "";
-    
+
     return $message;
+  }
+
+  /**
+   * Get the array representation of the notification.
+   *
+   * @param  mixed  $notifiable
+   * @return array
+   */
+  public function toArray($notifiable)
+  {
+    return [
+      'admin_id' => auth()->id() ?? $this->admin->id,
+      'access_id' => $this->access->id,
+    ];
+  }
+
+  public function failed(\Exception $exception)
+  {
+    if ($exception instanceof GuzzleException) {
+      // set the status of the notification to failed in the notifications table:
+      /** @var \Illuminate\Database\Eloquent\Model|null $notification */
+      $notification = DatabaseNotification::find($this->id);
+
+      if (filled($notification)) {
+        $notification->forceFill([
+          'data->status' => 'failed'
+        ])->save();
+      }
+    }
   }
 }

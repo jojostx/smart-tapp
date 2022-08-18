@@ -4,6 +4,7 @@ use App\Filament\Livewire\Auth\Login;
 use App\Filament\Livewire\Auth\PasswordRequest;
 use App\Filament\Livewire\Auth\Register;
 use App\Filament\Livewire\Auth\Verify;
+use App\Http\Controllers\HandleAfricasTalkingWebhookReport;
 use Illuminate\Support\Facades\Route;
 
 /*
@@ -35,5 +36,5 @@ Route::middleware(['web', 'guest'])
             ->name('password.request');
     });
 
+Route::post('africastalking-webhook-url', HandleAfricasTalkingWebhookReport::class);
 Route::webhooks('termii-webhook-url', 'termii-webhook-url');
-Route::webhooks('africastalking-webhook-url', 'africastalking-webhook-url');

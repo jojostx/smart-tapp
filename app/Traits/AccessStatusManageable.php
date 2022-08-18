@@ -9,6 +9,8 @@ use Illuminate\Support\Carbon;
 
 trait AccessStatusManageable
 {
+	use AccessActivationNotifiable;
+
 	/**
 	 * Scope a query to only include popular users.
 	 *
@@ -150,9 +152,9 @@ trait AccessStatusManageable
 	 * @param int $validity_period
 	 * @param bool $shouldNotify
 	 * 
-	 * @return bool
+	 * @return string
 	 */
-	public function issue(?int $expiry_period = 0, ?int $validity_period = 0, bool $shouldNotify = false)
+	public function issue(?int $expiry_period = 0, ?int $validity_period = 0, bool $shouldNotify = false): string
 	{
 		// MAX_VALIDITY_PERIOD
 		// MAX_EXPIRY_PERIOD
@@ -164,9 +166,6 @@ trait AccessStatusManageable
 			$validity_period = $this->validity_period ?? 2;
 		}
 
-		/**
-		 * @var \Illuminate\Database\Eloquent\Model|\App\Concerns\CanSendAccessActivationNotification $this
-		 */
 		$updated = $this->forceFill([
 			'expiry_period' => $expiry_period,
 			'validity_period' => $validity_period,
@@ -174,19 +173,19 @@ trait AccessStatusManageable
 		])->save();
 
 		if ($shouldNotify && $updated) {
-			$this->sendAccessActivationNotification();
+			return $this->sendAccessActivationNotification();
 		}
 
-		return $updated;
+		return '';
 	}
 
 	/**
 	 * activate the access.
 	 * activate sets 'expiry_period' attribute to 0, if and only if the access is issued or expired.
 	 *
-	 * @return bool
+	 * @return string
 	 */
-	public function activate(bool $shouldNotify = false): bool
+	public function activate(bool $shouldNotify = false): string
 	{
 		if ($this->isActive()) {
 			return false;
@@ -203,10 +202,10 @@ trait AccessStatusManageable
 		])->save();
 
 		if ($shouldNotify && $updated) {
-			$this->sendAccessActivationNotification();
+			return $this->sendAccessActivationNotification();
 		}
 
-		return $updated;
+		return '';
 	}
 
 	/**
