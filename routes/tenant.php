@@ -33,7 +33,6 @@ Route::middleware([
         dd('ok');
     })->name('access.home');
 
-
     Route::prefix('access')->name('access.')->group(function () {
         Route::get('/{access}/scan', QrcodeScanner::class)
             ->name('scan');
