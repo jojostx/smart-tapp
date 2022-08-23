@@ -79,8 +79,7 @@ class AccessActivationNotification extends Notification implements ShouldQueue
    */
   protected function buildSMSMessage($notifiable): string
   {
-    $key = ((string) $this->access->id) . str($this->access->uuid)->before('-')->value();
-    $url = tenant_route(tenant()->domain, 'access.redirect', compact('key'));
+    $url = $this->access->activation_link;
     $plate_number = $this->access->vehicle->plate_number;
 
     $message = "Hello, Click the link below to activate your access for vehicle [{$plate_number}]:";
