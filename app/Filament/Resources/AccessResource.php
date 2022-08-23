@@ -103,10 +103,7 @@ class AccessResource extends Resource
                                 }
 
                                 $record = $component->getRelationship()->getRelated();
-                                // also check if there are dangling vehicle records [vehicle's with no related access and drivers]
-                                // Vehicle::doesntHave('drivers')->whereDoesntHave('accesses', function (Builder $query) {
-                                //     $query->where('created_at', '<', now()->subDay());
-                                // })->delete();
+
                                 static::cleanupstaleRecords($record, ['drivers'], 2);
 
                                 $record->fill($data);
@@ -156,10 +153,6 @@ class AccessResource extends Resource
 
                                 $record = $component->getRelationship()->getRelated();
 
-                                // also check if there are dangling driver records [driver's with no related access and vehicles]
-                                // Driver::doesntHave('vehicles')->whereDoesntHave('accesses', function (Builder $query) {
-                                //     $query->where('created_at', '<', now()->subDay());
-                                // })->delete();
                                 static::cleanupstaleRecords($record, ['vehicles'], 2);
 
                                 $record->fill($data);
@@ -310,22 +303,29 @@ class AccessResource extends Resource
 
                         $notification_id = $record->activate(shouldNotify: $shouldNotify);
 
-                        ActionTimedNotification::make()
-                            ->title('Access Activated Successfully')
-                            ->success()
-                            ->body('The **Access** have been activated.' . $shouldNotify ? " Sending the Activation Notification to the Driver's phone..." : '')
-                            ->actions(function ($duration) use ($notification_id) {
-                                return [
-                                    Action::make('check-notification-status')
-                                        ->extraAttributes(compact('duration'))
-                                        ->view('notifications::actions.timed-action')
-                                        ->emit('checkNotificationStatus', compact('notification_id'))
-                                        ->close(),
-                                ];
-                            })
-                            ->icon('heroicon-pulse-rings')
-                            ->seconds(30)
-                            ->send();
+                        if ($shouldNotify) {
+                            ActionTimedNotification::make()
+                                ->title('Access Activated Successfully')
+                                ->success()
+                                ->body('The **Access** have been activated.' . $shouldNotify ? " Sending the Activation Notification to the Driver's phone..." : '')
+                                ->actions(function ($duration) use ($notification_id) {
+                                    return [
+                                        Action::make('check-notification-status')
+                                            ->extraAttributes(compact('duration'))
+                                            ->view('notifications::actions.timed-action')
+                                            ->emit('checkNotificationStatus', compact('notification_id'))
+                                            ->close(),
+                                    ];
+                                })
+                                ->icon('heroicon-pulse-rings')
+                                ->seconds(30)
+                                ->send();
+                        } else {
+                            Notification::make()
+                                ->title('Access Activated Successfully')
+                                ->success()
+                                ->send();
+                        }
                     }),
 
                 Tables\Actions\Action::make('Deactivate')
@@ -380,22 +380,29 @@ class AccessResource extends Resource
 
                             $notification_id = $record->issue(shouldNotify: $shouldNotify);
 
-                            ActionTimedNotification::make()
-                                ->title('Access Issued Successfully')
-                                ->success()
-                                ->body('The **Access** have been Issued.' . $shouldNotify ? " Sending the Activation Notification to the Driver's phone..." : '')
-                                ->actions(function ($duration) use ($notification_id) {
-                                    return [
-                                        Action::make('check-notification-status')
-                                            ->extraAttributes(compact('duration'))
-                                            ->view('notifications::actions.timed-action')
-                                            ->emit('checkNotificationStatus', compact('notification_id'))
-                                            ->close(),
-                                    ];
-                                })
-                                ->icon('heroicon-pulse-rings')
-                                ->seconds(30)
-                                ->send();
+                            if ($shouldNotify) {
+                                ActionTimedNotification::make()
+                                    ->title('Access Issued Successfully')
+                                    ->success()
+                                    ->body('The **Access** have been Issued.' . $shouldNotify ? " Sending the Activation Notification to the Driver's phone..." : '')
+                                    ->actions(function ($duration) use ($notification_id) {
+                                        return [
+                                            Action::make('check-notification-status')
+                                                ->extraAttributes(compact('duration'))
+                                                ->view('notifications::actions.timed-action')
+                                                ->emit('checkNotificationStatus', compact('notification_id'))
+                                                ->close(),
+                                        ];
+                                    })
+                                    ->icon('heroicon-pulse-rings')
+                                    ->seconds(30)
+                                    ->send();
+                            } else {
+                                Notification::make()
+                                    ->title('Access Issued Successfully')
+                                    ->success()
+                                    ->send();
+                            }
                         }),
 
                     Tables\Actions\Action::make('send')
