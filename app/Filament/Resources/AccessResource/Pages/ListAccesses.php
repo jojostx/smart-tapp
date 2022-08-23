@@ -58,12 +58,8 @@ class ListAccesses extends ListRecords
         ];
     }
 
-
-    protected function getHeaderWidgets(): array
+    protected function getTablePollingInterval(): ?string
     {
-        return [
-            // FilamentInfoWidget::class,
-            RefreshListPageTableComponent::class,
-        ];
+        return '30s';
     }
 }
