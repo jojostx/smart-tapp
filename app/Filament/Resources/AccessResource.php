@@ -3,6 +3,7 @@
 namespace App\Filament\Resources;
 
 use App\Enums\Models\AccessStatus;
+use App\Filament\Actions\Tables\CopyAction;
 use App\Filament\Forms\Components\Password;
 use App\Filament\Forms\Components\RangeSlider;
 use App\Filament\Notifications\Notification as ActionTimedNotification;
@@ -281,6 +282,12 @@ class AccessResource extends Resource
                     })
             ])
             ->actions([
+                CopyAction::make()
+                    ->content(fn (Access $record) => $record->activation_link)
+                    ->tooltip('Copy Activation link')
+                    ->iconButton()
+                    ->visible(fn (Access $record) => $record->isExpired() || $record->isActive() || $record->isIssued()),
+
                 Tables\Actions\Action::make('Activate')
                     ->visible(fn (Access $record) => $record->isExpired() || $record->isInactive() || $record->isIssued())
                     ->color('primary')

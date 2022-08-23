@@ -60,6 +60,22 @@ class Access extends Model implements CanSendAccessActivationNotification
     }
 
     /**
+     * Get the name for the activation link.
+     *
+     * @return \Illuminate\Database\Eloquent\Casts\Attribute
+     */
+    public function activationLink(): Attribute
+    {
+        return Attribute::make(
+            get: function ($value, $attributes) {
+                $key = ((string) $attributes['id']) . str($attributes['uuid'])->before('-')->value();
+
+                return tenant_route(tenant()->domain, 'access.redirect', compact('key'));
+            },
+        );
+    }
+
+    /**
      * Get the name for the access.
      *
      * @return \Illuminate\Database\Eloquent\Casts\Attribute
