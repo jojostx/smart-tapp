@@ -9,5 +9,5 @@ class TableCellAction extends Action
 {
   use HasKeyBindings;
 
-  protected string $view = 'filament::actions.tables.table-cell-action';
+  protected string $view = 'filament::tables.actions.table-cell-action';
 }
