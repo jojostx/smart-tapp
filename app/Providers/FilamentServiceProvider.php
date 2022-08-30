@@ -5,6 +5,7 @@ declare(strict_types=1);
 namespace App\Providers;
 
 use Filament\Facades\Filament;
+use Illuminate\Support\Facades\Blade;
 use Illuminate\Support\ServiceProvider;
 
 class FilamentServiceProvider extends ServiceProvider
@@ -16,11 +17,15 @@ class FilamentServiceProvider extends ServiceProvider
 
   public function boot()
   {
-    
     Filament::serving(function () {
       Filament::registerTheme(mix('css/filament.css'));
       Filament::registerScripts([asset('js/phoneinput.js')]);
       Filament::registerScripts([asset('js/actionable-text-column.js')], true);
     });
+
+    Filament::registerRenderHook(
+      'global-search.end',
+      fn (): string => Blade::render('@livewire(\'components.notifications-panel\')'),
+    );
   }
 }
