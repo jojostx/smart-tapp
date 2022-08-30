@@ -19,7 +19,14 @@ module.exports = {
                 sans: ['Inter var', ...defaultTheme.fontFamily.sans],
                 jet: ['JetBrains Mono', 'monospace', ...defaultTheme.fontFamily.sans],
             },
+            keyframes: {
+                'swing': {
+                    '0%,100%' : { transform: 'rotate(15deg)' },
+                    '50%' : { transform: 'rotate(-15deg)' },
+                }
+            },
             animation: {
+                'swing': 'swing 1s infinite',
                 'spin-slow': 'spin 3s linear infinite',
                 'ping-slow': 'ping 3s linear infinite',
                 'pulse-slow': 'pulse 3s linear infinite',
