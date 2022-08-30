@@ -28,6 +28,7 @@ use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\SoftDeletingScope;
 use Illuminate\Validation\Rules\Enum;
 use Illuminate\Validation\Rules\Unique;
+use Route;
 
 class AccessResource extends Resource
 {
@@ -468,7 +469,7 @@ class AccessResource extends Resource
                                 ->rule("current_password")
                                 ->disableAutocomplete(),
                         ]),
-                ])->icon('heroicon-o-dots-horizontal')
+                ])->icon('heroicon-o-dots-vertical')
             ])
             ->bulkActions([
                 Tables\Actions\DeleteBulkAction::make()

@@ -27,7 +27,7 @@ class DriverResource extends Resource
 
     protected static ?string $recordTitleAttribute = 'identifierforfilament';
 
-    protected static ?int $navigationSort = 3;
+    protected static ?int $navigationSort = 4;
 
     public static function getGloballySearchableAttributes(): array
     {
@@ -80,8 +80,8 @@ class DriverResource extends Resource
         return $table
             ->columns([
                 ActionableTextColumn::make('name')->animated()->searchable(),
-                ActionableTextColumn::make('email')->animated()->searchable(),
                 ActionableTextColumn::make('phone_number')->animated()->searchable(),
+                ActionableTextColumn::make('email')->animated()->searchable(),
                 Tables\Columns\BooleanColumn::make('phone_verified_at')
                     ->label('Phone verified')
                     ->default(false)

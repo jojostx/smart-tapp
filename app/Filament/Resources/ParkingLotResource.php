@@ -25,7 +25,7 @@ class ParkingLotResource extends Resource
 
     protected static ?string $recordTitleAttribute = 'name';
 
-    protected static ?int $navigationSort = 4;
+    protected static ?int $navigationSort = 5;
 
     public static function form(Form $form): Form
     {
@@ -36,11 +36,15 @@ class ParkingLotResource extends Resource
                         Forms\Components\TextInput::make('name')
                             ->label('Name')
                             ->required()
+                            ->maxLength(8)
+                            ->minLength(2)
                             ->rules(['alpha_dash'])
                             ->unique(),
                         Forms\Components\Radio::make('status')
-                            ->options(ParkingLotStatus::toArray())->default(ParkingLotStatus::OPEN)
-                            ->descriptions(ParkingLotStatus::toDescriptionArray())->columnSpan('full')
+                            ->options(ParkingLotStatus::toArray())
+                            ->default(ParkingLotStatus::OPEN)
+                            ->descriptions(ParkingLotStatus::toDescriptionArray())
+                            ->columnSpan('full')
                             ->required(),
                     ])->columnSpan([
                         'sm' => 1,
@@ -87,13 +91,13 @@ class ParkingLotResource extends Resource
     {
         return $table
             ->columns([
-                Tables\Columns\TextColumn::make('name')->searchable(),
                 Tables\Columns\BadgeColumn::make('status')
                     ->enum(ParkingLotStatus::toArray())
                     ->colors([
                         'warning' => fn ($state): bool => $state === ParkingLotStatus::CLOSED->value,
                         'success' => fn ($state): bool => $state === ParkingLotStatus::OPEN->value,
                     ]),
+                Tables\Columns\TextColumn::make('name')->searchable(),
                 Tables\Columns\TextColumn::make('updated_at')->label('Modified at')->date(config('filament.date_format'))->sortable(),
                 Tables\Columns\TextColumn::make('created_at')->date(config('filament.date_format'))->sortable(),
             ])
