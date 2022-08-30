@@ -173,7 +173,7 @@ class User extends Authenticatable
     }
 
     /**
-     * Check if the user's account status is 'deactivated'.
+     * activates the user's account.
      * 
      * @param bool $saveAfterFill
      * 
@@ -193,7 +193,7 @@ class User extends Authenticatable
     }
 
     /**
-     * Check if the user's account status is 'deactivated'.
+     * deactivates the user's account
      *
      * @param bool $saveAfterFill
      * 

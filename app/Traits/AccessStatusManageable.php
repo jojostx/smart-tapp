@@ -5,24 +5,36 @@ namespace App\Traits;
 use App\Enums\Models\AccessStatus;
 use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\Casts\Attribute;
-use Illuminate\Support\Carbon;
 
 trait AccessStatusManageable
 {
 	use AccessActivationNotifiable;
 
+	public function getQueryFragmentForElapsedCheck()
+	{
+		return 'DATE_ADD(issued_at, INTERVAL IFNULL(expiry_period, 0) MINUTE)';
+	}
+
+	public function getQueryFragmentForInvalidCheck()
+	{
+		return 'DATE_SUB(TIMESTAMPADD(DAY, `validity_period`, `issued_at`), INTERVAL IFNULL(`expiry_period`, 0) MINUTE)';
+	}
+
 	/**
-	 * Scope a query to only include popular users.
+	 * Scope a query to only query access of the type indicated by the $type parameter
 	 *
 	 * @param  \Illuminate\Database\Eloquent\Builder  $query
+	 * @param \App\Enums\Models\AccessStatus $type
+	 * @throws \ValueError
+	 * 
 	 * @return \Illuminate\Database\Eloquent\Builder
 	 */
 	public function scopeStatus(Builder $query, string|AccessStatus $type = '')
 	{
-		$status = is_string($type) ? AccessStatus::from($type) :  $type;
+		$status = is_string($type) ? AccessStatus::from($type) : $type;
 
-		$elapsedFragment = 'DATE_ADD(issued_at, INTERVAL IFNULL(expiry_period, 0) MINUTE)';
-		$invalidFragment = 'DATE_SUB(TIMESTAMPADD(DAY, `validity_period`, `issued_at`), INTERVAL IFNULL(`expiry_period`, 0) MINUTE)';
+		$elapsedFragment = $this->getQueryFragmentForElapsedCheck();
+		$invalidFragment = $this->getQueryFragmentForInvalidCheck();
 
 		$query = match ($status) {
 			AccessStatus::EXPIRED => $query->where('expiry_period', '!=', 0)
@@ -43,6 +55,82 @@ trait AccessStatusManageable
 		};
 
 		return $query;
+	}
+
+	/**
+	 * Scope a query to only include issued accesses.
+	 *
+	 * @param  \Illuminate\Database\Eloquent\Builder  $query
+	 * @return \Illuminate\Database\Eloquent\Builder
+	 */
+	public function scopeIssued(Builder $query)
+	{
+		$elapsedFragment = $this->getQueryFragmentForElapsedCheck();
+		$invalidFragment = $this->getQueryFragmentForInvalidCheck();
+
+		return $query->where('expiry_period', '!=', 0)
+			->whereRaw("now() < {$elapsedFragment}")
+			->whereRaw("now() < {$invalidFragment}");
+	}
+
+	/**
+	 * Scope a query to only include expired accesses.
+	 *
+	 * @param  \Illuminate\Database\Eloquent\Builder  $query
+	 * @return \Illuminate\Database\Eloquent\Builder
+	 */
+	public function scopeExpired(Builder $query)
+	{
+		$elapsedFragment = $this->getQueryFragmentForElapsedCheck();
+		$invalidFragment = $this->getQueryFragmentForInvalidCheck();
+
+		return $query->where('expiry_period', '!=', 0)
+			->whereRaw("now() > {$elapsedFragment}")
+			->whereRaw("now() < {$invalidFragment}");
+	}
+
+	/**
+	 * Scope a query to only include active accesses.
+	 *
+	 * @param  \Illuminate\Database\Eloquent\Builder  $query
+	 * @return \Illuminate\Database\Eloquent\Builder
+	 */
+	public function scopeActive(Builder $query)
+	{
+		$invalidFragment = $this->getQueryFragmentForInvalidCheck();
+
+		return $query->where('expiry_period', '=', 0)
+			->whereRaw("now() < {$invalidFragment}");
+	}
+
+	/**
+	 * Scope a query to only include inactive/deactivated accesses.
+	 *
+	 * @param  \Illuminate\Database\Eloquent\Builder  $query
+	 * @return \Illuminate\Database\Eloquent\Builder
+	 */
+	public function scopeInactive(Builder $query)
+	{
+		$invalidFragment = $this->getQueryFragmentForInvalidCheck();
+
+		return $query->where('expiry_period', '=', 0)
+			->whereRaw("now() > {$invalidFragment}");
+	}
+
+	/**
+	 * Scope a query to only include inactive/deactivated accesses.
+	 *
+	 * @param  \Illuminate\Database\Eloquent\Builder  $query
+	 * @return \Illuminate\Database\Eloquent\Builder
+	 */
+	public function scopeNotInactive(Builder $query)
+	{
+		$invalidFragment = $this->getQueryFragmentForInvalidCheck();
+
+		return $query->whereNot(function ($query) use ($invalidFragment) {
+			$query->where('expiry_period', '=', 0)
+				->whereRaw("now() > {$invalidFragment}");
+		});
 	}
 
 	/**
