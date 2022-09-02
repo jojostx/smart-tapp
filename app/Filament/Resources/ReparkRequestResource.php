@@ -16,6 +16,7 @@ use Filament\Tables;
 use Filament\Tables\Filters\SelectFilter;
 use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\SoftDeletingScope;
+use Illuminate\Support\Str;
 
 class ReparkRequestResource extends Resource
 {
@@ -67,6 +68,7 @@ class ReparkRequestResource extends Resource
     {
         return $table
             ->columns([
+                Tables\Columns\TextColumn::make('uuid')->label('id')->formatStateUsing(fn ($state) => str($state)->before('-')->value())->searchable(),
                 Tables\Columns\BadgeColumn::make('status')
                     ->enum(ReparkRequestStatus::toArray())
                     ->colors([

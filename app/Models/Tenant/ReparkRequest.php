@@ -35,6 +35,58 @@ class ReparkRequest extends Model
     ];
 
     /**
+     * Create a new repark request from blocker and blockee accesses
+     * 
+     * @param Access $blocker_access
+     * @param Access $blockee_access
+     * 
+     * @return self|null
+     * @static
+     */
+    public static function createFromAccess(Access $blocker_access, Access $blockee_access): ?self
+    {
+        $blocker_vehicle_id = $blocker_access->vehicle->getKey();
+        $blockee_vehicle_id = $blockee_access->vehicle->getKey();
+        $blocker_driver_id = $blocker_access->driver->getKey();
+        $blockee_driver_id = $blockee_access->driver->getKey();
+
+        if ($blocker_access->is($blockee_access)) {
+            return null;
+        }
+
+        if ($blocker_vehicle_id === $blockee_vehicle_id || $blocker_driver_id === $blockee_driver_id) {
+            return null;
+        }
+
+        // try to find a repark request that has the same blocker_driver, blocker_vehicle, blockee_vehicle and blockee_driver
+        // if found, set the status to unresolved
+        // and if the repark request has been softdeleted remove softdelete
+        // return the repark request.
+        $reparkRequest = static::where([
+            ['blockee_vehicle_id', '=', $blockee_vehicle_id],
+            ['blocker_vehicle_id', '=', $blocker_vehicle_id],
+            ['blockee_driver_id', '=', $blockee_driver_id],
+            ['blocker_driver_id', '=', $blocker_driver_id],
+        ])->latest()->first();
+
+        if (filled($reparkRequest)) {
+            $reparkRequest->{$reparkRequest->getDeletedAtColumn()} = null;
+            $reparkRequest->status = ReparkRequestStatus::UNRESOLVED;
+
+            return $reparkRequest->save() ? $reparkRequest : null;
+        }
+
+        return static::forceCreate([
+            'blockee_access_id' => $blockee_access->getKey(),
+            'blocker_access_id' => $blocker_access->getKey(),
+            'blockee_vehicle_id' => $blockee_vehicle_id,
+            'blocker_vehicle_id' => $blocker_vehicle_id,
+            'blockee_driver_id' => $blockee_driver_id,
+            'blocker_driver_id' => $blocker_driver_id
+        ]);
+    }
+
+    /**
      * Get the prunable model query.
      *
      * @return \Illuminate\Database\Eloquent\Builder
@@ -86,7 +138,7 @@ class ReparkRequest extends Model
     {
         return $query->where('status', ReparkRequestStatus::UNRESOLVED->value);
     }
-    
+
     /**
      * Scope a query to only include resolving repark request.
      *

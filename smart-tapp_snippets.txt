@@ -66,3 +66,164 @@
         // expired - Deactivate, [Issue (default Send), Activate (default do not Send)] -> Send access activation notification,
         // inactive|deactivated - [Issue (default Send), Activate (default Send)] -> shows modal for Send access activation notification confirmation
     }
+
+    <div>
+      <x-notification-card class="bg-white border-b border-gray-200 rounded dark:border-gray-700" :action="false">
+        <x-slot:icon>
+          <div tabindex="0" aria-label="group icon" role="img" class="flex items-center justify-center flex-shrink-0 w-8 h-8 border border-gray-200 rounded-full focus:outline-none">
+            <img src="https://tuk-cdn.s3.amazonaws.com/can-uploader/notification_1-svg2.svg" alt="icon" />
+          </div>
+        </x-slot>
+        <x-slot:body>
+          <p tabindex="0" class="text-sm leading-tight focus:outline-none"><span class="text-indigo-700">James Doe</span> favourited an <span class="text-indigo-700">item</span></p>
+          <p tabindex="0" class="pt-1 text-xs leading-3 text-gray-500 focus:outline-none">2 hours ago</p>
+        </x-slot>
+      </x-notification-card>
+
+      <x-notification-card class="bg-white border-b border-gray-200 rounded dark:border-gray-700" :action="false">
+        <x-slot:icon>
+          <div tabindex="0" aria-label="group icon" role="img" class="flex items-center justify-center flex-shrink-0 w-8 h-8 border border-gray-200 rounded-full focus:outline-none">
+            <img src="https://tuk-cdn.s3.amazonaws.com/can-uploader/notification_1-svg5.svg" alt="icon" />
+          </div>
+        </x-slot>
+        <x-slot:body>
+          <p tabindex="0" class="text-sm leading-tight focus:outline-none"><span class="text-indigo-700">Sarah</span> posted in the thread: <span class="text-indigo-700">Update gone wrong</span></p>
+          <p tabindex="0" class="pt-1 text-xs leading-3 text-gray-500 focus:outline-none">2 hours ago</p>
+        </x-slot>
+      </x-notification-card>
+
+      <x-notification-card class="bg-white border-b border-gray-200 rounded dark:border-gray-700" :action="false">
+        <x-slot:icon>
+          <div tabindex="0" aria-label="group icon" role="img" class="flex items-center justify-center flex-shrink-0 w-8 h-8 border border-gray-200 rounded-full focus:outline-none">
+            <img src="https://tuk-cdn.s3.amazonaws.com/can-uploader/notification_1-svg7.svg" alt="icon" />
+          </div>
+        </x-slot>
+        <x-slot:body>
+          <p tabindex="0" class="text-sm leading-tight focus:outline-none">Shipment delayed for order<span class="text-indigo-700"> #25551</span></p>
+          <p tabindex="0" class="pt-1 text-xs leading-3 text-gray-500 focus:outline-none">2 hours ago</p>
+        </x-slot>
+      </x-notification-card>
+
+      <x-notification-card class="flex items-center border-b border-gray-200 rounded bg-danger-100 dark:border-gray-700" :action="false">
+        <x-slot:icon>
+          <div tabindex="0" aria-label="storage icon" role="img" class="flex items-center justify-center flex-shrink-0 w-8 h-8 border rounded-full border-danger-200 focus:outline-none">
+            <img src="https://tuk-cdn.s3.amazonaws.com/can-uploader/notification_1-svg6.svg" alt="icon" />
+          </div>
+        </x-slot>
+        <x-slot:body>
+          <p tabindex="0" class="text-sm leading-tight text-danger-700 focus:outline-none">Low on storage: 2.5/32gb remaining</p>
+        </x-slot>
+
+        <x-slot:action>
+          <p tabindex="0" class="text-xs leading-3 text-right underline cursor-pointer text-danger-700 focus:outline-none">Manage</p>
+        </x-slot>
+      </x-notification-card>
+
+      <x-notification-card class="bg-white rounded shadow">
+        <x-slot:icon>
+          <div tabindex="0" aria-label="group icon" role="img" class="flex items-center justify-center flex-shrink-0 w-8 h-8 border border-gray-200 rounded-full focus:outline-none">
+            <img src="https://tuk-cdn.s3.amazonaws.com/can-uploader/notification_1-svg3.svg" alt="icon">
+          </div>
+        </x-slot>
+        <x-slot:body>
+          <p tabindex="0" class="text-sm leading-tight focus:outline-none"><span class="text-primary-700">Sash</span> added you to the group: <span class="text-primary-700">UX Designers</span></p>
+          <p tabindex="0" class="pt-1 mt-1 text-xs leading-3 text-gray-500 focus:outline-none">2 hours ago</p>
+        </x-slot>
+      </x-notification-card>
+
+      <h2 tabindex="0" class="pt-8 pb-2 text-sm leading-normal text-gray-600 border-b border-gray-300 focus:outline-none">YESTERDAY</h2>
+      
+      <x-notification-card class="bg-white border-b border-gray-200 rounded dark:border-gray-700" :action="false">
+        <x-slot:icon>
+          <div tabindex="0" aria-label="group icon" role="img" class="flex items-center justify-center flex-shrink-0 w-8 h-8 border border-gray-200 rounded-full focus:outline-none">
+            <img src="https://tuk-cdn.s3.amazonaws.com/can-uploader/notification_1-svg2.svg" alt="icon" />
+          </div>
+        </x-slot>
+        <x-slot:body>
+          <p tabindex="0" class="text-sm leading-tight focus:outline-none"><span class="text-indigo-700">James Doe</span> favourited an <span class="text-indigo-700">item</span></p>
+          <p tabindex="0" class="pt-1 text-xs leading-3 text-gray-500 focus:outline-none">2 hours ago</p>
+        </x-slot>
+      </x-notification-card>
+
+      <x-notification-card class="bg-white border-b border-gray-200 rounded dark:border-gray-700" :action="false">
+        <x-slot:icon>
+          <div tabindex="0" aria-label="group icon" role="img" class="flex items-center justify-center flex-shrink-0 w-8 h-8 border border-gray-200 rounded-full focus:outline-none">
+            <img src="https://tuk-cdn.s3.amazonaws.com/can-uploader/notification_1-svg5.svg" alt="icon" />
+          </div>
+        </x-slot>
+        <x-slot:body>
+          <p tabindex="0" class="text-sm leading-tight focus:outline-none"><span class="text-indigo-700">Sarah</span> posted in the thread: <span class="text-indigo-700">Update gone wrong</span></p>
+          <p tabindex="0" class="pt-1 text-xs leading-3 text-gray-500 focus:outline-none">2 hours ago</p>
+        </x-slot>
+      </x-notification-card>
+
+      <x-notification-card class="bg-white border-b border-gray-200 rounded dark:border-gray-700" :action="false">
+        <x-slot:icon>
+          <div tabindex="0" aria-label="group icon" role="img" class="flex items-center justify-center flex-shrink-0 w-8 h-8 border border-gray-200 rounded-full focus:outline-none">
+            <img src="https://tuk-cdn.s3.amazonaws.com/can-uploader/notification_1-svg7.svg" alt="icon" />
+          </div>
+        </x-slot>
+        <x-slot:body>
+          <p tabindex="0" class="text-sm leading-tight focus:outline-none">Shipment delayed for order<span class="text-indigo-700"> #25551</span></p>
+          <p tabindex="0" class="pt-1 text-xs leading-3 text-gray-500 focus:outline-none">2 hours ago</p>
+        </x-slot>
+      </x-notification-card>
+
+      <x-notification-card class="flex items-center border-b border-gray-200 rounded bg-success-100 dark:border-gray-700" :action="false">
+        <x-slot:icon>
+          <div tabindex="0" aria-label="success icon" role="img" class="flex items-center justify-center flex-shrink-0 w-8 h-8 border rounded-full border-success-200 focus:outline-none">
+            <img src="https://tuk-cdn.s3.amazonaws.com/can-uploader/notification_1-svg11.svg" alt="icon" />
+          </div>
+        </x-slot>
+        <x-slot:body>
+          <p tabindex="0" class="text-sm leading-tight text-success-700 focus:outline-none">Design sprint completed</p>
+        </x-slot>
+
+        <x-slot:action>
+          <p tabindex="0" class="text-xs leading-3 underline cursor-pointer text-success-700 focus:outline-none focus:text-indigo-600">View</p>
+        </x-slot>
+      </x-notification-card>
+
+      <div class="flex items-center justiyf-between">
+        <hr class="w-full">
+        <p tabindex="0" class="flex flex-shrink-0 px-3 py-16 text-sm leading-normal text-gray-500 focus:outline-none">Thats it for now :)</p>
+        <hr class="w-full">
+      </div>
+    </div>
+
+                <div x-data class="relative">
+                <x-filament-support::icon-button
+                    x-on:click="$refs.panel_2.toggle"
+                    :dark-mode="$darkMode"
+                    icon="heroicon-o-dots-vertical"
+                    class="-my-2"
+                >
+                    <x-slot name="label">
+                        trigger
+                    </x-slot>
+                </x-filament-support::icon-button>
+
+                <div
+                    x-ref="panel_2"
+                    x-transition
+                    x-cloak
+                    x-float.placement.bottom-end.flip.offset.shift.teleport="{ offset: 8 }"
+                    @class([
+                        'filament-action-group-dropdown absolute hidden z-20 border-t-2 shadow-xl ring-1 ring-gray-900/10 overflow-hidden w-52',
+                        'dark:ring-white/20' => $darkMode,
+                    ])
+                >
+                    <ul @class([
+                        'py-1 space-y-1 bg-white shadow',
+                        'dark:bg-gray-700 dark:divide-gray-600' => $darkMode,
+                    ])>
+                      <li>
+                        <button type="button" class="w-full">
+                            <span class="">
+                                Mark As Read
+                            </span>
+                        </button>
+                      </li>
+                    </ul>
+                </div>
+              </div>

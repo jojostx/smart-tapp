@@ -36,7 +36,7 @@
               </span>
             </h3>
             <div>
-              {{ $access->valid_until->format('g:i A, D') }}
+              {{ $access->valid_until->format('M, j \a\t g:ia') }}
             </div>
           </div>
           <div class="flex flex-col p-6">

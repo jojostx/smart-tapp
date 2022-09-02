@@ -2,34 +2,76 @@
 
 namespace App\Filament\Components;
 
+use App\Models\Tenant\User;
 use Illuminate\Contracts\View\View;
 use Illuminate\Support\Collection;
 use Livewire\Component;
 
 class NotificationsPanel extends Component
 {
-    protected static string $view = 'filament::components.notifications-panel';
+  protected static string $view = 'filament::components.notifications-panel';
 
-    public function getUnreadNotifications(): ?Collection
-    {
-      return \collect([1]);
-      // return auth()->user()->unreadNotifications;
+  public function getAdminUserProperty(): ?User
+  {
+    return auth()->user();
+  }
+
+  public function getHasUnreadNotificationsProperty(): bool
+  {
+    $hasUnread = $this->adminUser->unreadNotifications()->exists();
+
+    //    if ($hasUnread) {
+    //     $this->dispatchBrowserEvent('notification-recieved');
+    // }
+
+    return $hasUnread;
+  }
+
+  public function getReadNotificationsProperty(): ?array
+  {
+    return $this->adminUser->readNotifications->pluck('id')->toArray();
+  }
+
+  public function getNotificationsProperty(): ?Collection
+  {
+    return $this->adminUser->notifications;
+  }
+
+  public function markNotificationAsRead($key)
+  {
+    $this->notifications->find($key)?->markAsRead();
+  }
+
+  public function markNotificationAsUnread($key)
+  {
+    $notification = $this->notifications->find($key);
+
+    if (blank($notification)) {
+      return;
     }
 
-    public function getHasUnreadNotificationsProperty(): bool
-    {
-      return auth()->user()->unreadNotifications()->exists();
-    }
+    $notification->read_at = null;
 
-    public function getViewData(): array
-    {
-      return [
-        'unreadNotifications' => $this->getUnreadNotifications()
-      ];
-    }
+    $notification->save();
+  }
 
-    public function render(): View
-    {
-        return view(static::$view, $this->getViewData());
-    }
+  public function markAllNotificationsAsRead(): ?array
+  {
+    $this->notifications->markAsRead();
+
+    return $this->notifications->pluck('id')->toArray();
+  }
+
+  public function getViewData(): array
+  {
+    return [
+      'readNotifications' => $this->readNotifications,
+      'notifications' => $this->notifications,
+    ];
+  }
+
+  public function render(): View
+  {
+    return view(static::$view, $this->getViewData());
+  }
 }

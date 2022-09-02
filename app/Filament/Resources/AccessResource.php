@@ -307,6 +307,21 @@ class AccessResource extends Resource
                             ->default(fn (Access $record) => $record->isInactive() ? true : false)
                     ])
                     ->action(function (Access $record, ?array $data) {
+                        $anotherActiveAccessExists = Access::query()
+                            ->notInactive()
+                            ->whereRelation('vehicle', 'plate_number', $record->vehicle->plate_number)
+                            ->exists();
+
+                        if ($anotherActiveAccessExists) {
+                            Notification::make()
+                                ->body('Unable to activate because another Access already exists and has been issued for this Vehicle.')
+                                ->danger()
+                                ->send()
+                                ->seconds(30);
+
+                            return;
+                        }
+
                         $shouldNotify = isset($data['shouldNotify']) && $data['shouldNotify'];
 
                         $notification_id = $record->activate(shouldNotify: $shouldNotify);
