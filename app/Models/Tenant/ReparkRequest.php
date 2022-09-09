@@ -67,7 +67,12 @@ class ReparkRequest extends Model
             ['blocker_vehicle_id', '=', $blocker_vehicle_id],
             ['blockee_driver_id', '=', $blockee_driver_id],
             ['blocker_driver_id', '=', $blocker_driver_id],
-        ])->latest()->first();
+        ])->orWhere(function (Builder $query) use ($blocker_access, $blockee_access) {
+            $query->where([
+                ['blockee_access_id', '=', $blockee_access->id],
+                ['blocker_access_id', '=', $blocker_access->id],
+            ]);
+        })->latest()->first();
 
         if (filled($reparkRequest)) {
             $reparkRequest->{$reparkRequest->getDeletedAtColumn()} = null;
@@ -84,6 +89,18 @@ class ReparkRequest extends Model
             'blockee_driver_id' => $blockee_driver_id,
             'blocker_driver_id' => $blocker_driver_id
         ]);
+    }
+
+    /**
+     * Resolve the repark request
+     *
+     * @return bool
+     */
+    public function resolve(): bool
+    {
+        return $this->forceFill([
+            'status' => ReparkRequestStatus::RESOLVED,
+        ])->save();
     }
 
     /**
