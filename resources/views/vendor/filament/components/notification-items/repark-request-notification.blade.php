@@ -5,6 +5,7 @@
 
 @php
   $link = route('filament.resources.tenant/repark-requests.index', [ 'tableSearchQuery' => $notification->data['repark_request_uuid'] ]);
+  $panel_ref = "panel_notification_item_menu_" . str($notification->id)->before('-')->value();
 @endphp
 
 <x-notification-card wire:key="notification-{{ $notification->id }}" x-bind:class="isNotificationRead('{{ $notification->id }}') ? 'bg-white {{ $darkMode ? 'dark:bg-gray-500/10' : '' }}' : 'bg-primary-50 {{ $darkMode ? 'dark:bg-primary-500/10' : '' }}' " class="border-b border-gray-300 dark:border-gray-700">
@@ -31,34 +32,46 @@
   </x-slot>
 
   <x-slot:action>
-    <div>
-      <template x-ref="template">
-        <div class="divide-y">
-          <button type="button" @click="toggleNotificationRead('{{ $notification->id }}'); $refs.panel.open;" class="flex items-center w-full h-8 px-3 text-sm font-medium filament-dropdown-item group whitespace-nowrap focus:outline-none hover:text-white focus:text-white hover:bg-primary-600 focus:bg-primary-700">
-            <span x-text="isNotificationRead('{{ $notification->id }}') ? 'Mark As Unread' : 'Mark As Read' ">
-              Mark As Read
-            </span>
+    <div x-data="{
+          toggle: function (event) {
+              $refs.panel.toggle(event)
+          },
+          open: function (event) {
+              $refs.panel.open(event)
+          },
+          close: function (event) {
+              $refs.panel.close(event)
+          },
+      }"
+      >
+      <x-filament-support::icon-button x-on:click="toggle" :dark-mode="$darkMode" icon="heroicon-o-dots-vertical" class="-my-2">
+        <x-slot name="label">
+          trigger
+        </x-slot>
+      </x-filament-support::icon-button>
+
+      <div x-ref="panel" x-float.placement.bottom-end.flip.offset.teleport="{ offset: 8 }"
+        x-transition:enter-start="opacity-0 scale-95" x-transition:leave-end="opacity-0 scale-95"
+        class="filament-dropdown-panel divide-y overflow-hidden absolute z-10 w-full rounded-lg bg-white shadow-lg ring-1 ring-black/5 transition max-w-[14rem]"
+        style="position: fixed; display: block; left: 990px; top: 126px;">
+
+        <div class="text-gray-700 filament-tables-grouped-action">
+          <button x-show="!isNotificationRead('{{ $notification->id }}')" x-cloak @click="markNotificationAsRead('{{ $notification->id }}'); $refs.panel.open;" type="button" class="flex items-center w-full h-8 px-3 text-sm font-medium filament-dropdown-item group whitespace-nowrap focus:outline-none hover:text-white focus:text-white hover:bg-primary-600 focus:bg-primary-700">
+            Mark As Read
           </button>
+          <button x-show="isNotificationRead('{{ $notification->id }}')" x-cloak @click="markNotificationAsUnread('{{ $notification->id }}'); $refs.panel.open;" type="button" class="flex items-center w-full h-8 px-3 text-sm font-medium filament-dropdown-item group whitespace-nowrap focus:outline-none hover:text-white focus:text-white hover:bg-primary-600 focus:bg-primary-700">
+            Mark As Unread
+          </button>
+        </div>
+        
+        <div class="text-gray-700 filament-tables-grouped-action">
           <button type="button" class="flex items-center w-full h-8 px-3 text-sm font-medium filament-dropdown-item group whitespace-nowrap focus:outline-none hover:text-white focus:text-white hover:bg-primary-600 focus:bg-primary-700">
             <span class="">
               Delete
             </span>
           </button>
         </div>
-      </template>
-
-      <x-filament-support::icon-button :dark-mode="$darkMode" icon="heroicon-o-dots-vertical" class="-my-2" x-tooltip.on.click="{
-              content: () => $refs.template.innerHTML,
-              allowHTML: true,
-              interactive: true,
-              appendTo: $root,
-              placement: 'bottom-start',
-              theme: 'light',
-        }">
-        <x-slot name="label">
-          trigger
-        </x-slot>
-      </x-filament-support::icon-button>
+      </div>
     </div>
   </x-slot>
 </x-notification-card>
