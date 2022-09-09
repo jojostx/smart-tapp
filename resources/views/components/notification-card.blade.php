@@ -12,7 +12,7 @@
 
 <div
     {{ $attributes->class([
-        'flex flex-shrink-0 justify-between w-full filament-notifications-notification pointer-events-auto ',
+        'flex flex-shrink-0 bg-white justify-between w-full filament-notifications-notification pointer-events-auto ',
         'dark:bg-gray-800 ' => $darkMode,
         'hover:bg-primary-100 dark:hover:bg-gray-700 ' => $link,
       ])

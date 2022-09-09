@@ -10,10 +10,24 @@
 
         isLoading: false,
 
+        shouldCheckUniqueSelection: false,
+        
         readNotifications: @js($readNotifications),
 
         init: function () {
           window.addEventListener('notification-recieved', () => { new Audio(`{{ url('assets/notification-sound.mp3') }}`).play() });
+
+          $watch('readNotifications', () => {
+              if (! this.shouldCheckUniqueSelection) {
+                  this.shouldCheckUniqueSelection = true
+
+                  return
+              }
+
+              this.readNotifications = [...new Set(this.readNotifications)];
+
+              this.shouldCheckUniqueSelection = false;
+          });
         },
 
         markNotificationAsRead: async function (key) {
@@ -21,8 +35,8 @@
               return
           }
 
-          await $wire.markNotificationAsRead(key)
           this.readNotifications.push(key)
+          await $wire.markNotificationAsRead(key)
         },
 
         markNotificationAsUnread: async function (key) {
@@ -32,8 +46,8 @@
               return
           }
 
-          await $wire.markNotificationAsUnread(key)
           this.readNotifications.splice(index, 1)
+          await $wire.markNotificationAsUnread(key)
         },
 
         markAllNotificationAsRead: async function () {

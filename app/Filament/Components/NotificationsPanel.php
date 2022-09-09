@@ -20,10 +20,6 @@ class NotificationsPanel extends Component
   {
     $hasUnread = $this->adminUser->unreadNotifications()->exists();
 
-    //    if ($hasUnread) {
-    //     $this->dispatchBrowserEvent('notification-recieved');
-    // }
-
     return $hasUnread;
   }
 
