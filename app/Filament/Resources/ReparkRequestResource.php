@@ -9,6 +9,7 @@ use App\Models\Tenant\Access;
 use App\Models\Tenant\ReparkRequest;
 use Filament\Forms;
 use Filament\Forms\Components\Select;
+use Filament\Notifications\Notification;
 use Filament\Resources\Form;
 use Filament\Resources\Resource;
 use Filament\Resources\Table;
@@ -16,6 +17,7 @@ use Filament\Tables;
 use Filament\Tables\Filters\SelectFilter;
 use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\SoftDeletingScope;
+use Illuminate\Support\HtmlString;
 use Illuminate\Support\Str;
 
 class ReparkRequestResource extends Resource
@@ -40,7 +42,35 @@ class ReparkRequestResource extends Resource
                         Forms\Components\Checkbox::make('shouldNotify')
                             ->label('Send Notification')
                             ->default(true)
-                            ->helperText("If selected, the Repark request notification will be sent to the Blocker")
+                            ->helperText("If selected, the Repark Request notification (text message) will be sent to the Driver of the vehicle that is blocking another!"),
+
+                        Forms\Components\Placeholder::make('hasExistingReparkRequest')
+                            ->disableLabel()
+                            ->visible(function (callable $get) {
+                                $blockee_access_id = (string) $get('blockee_access_id');
+                                $blocker_access_id = (string) $get('blocker_access_id');
+
+                                if ($blocker_access_id && $blockee_access_id) {
+                                    return static::getExistingReparkRequestQuery($blockee_access_id, $blocker_access_id)->exists();
+                                }
+
+                                return false;
+                            })
+                            ->extraAttributes(['class' => 'bg-danger-100 text-danger-800 rounded-md p-4 border'])
+                            ->content(function (callable $get) {
+                                $blockee_access_id = (string) $get('blockee_access_id');
+                                $blocker_access_id = (string) $get('blocker_access_id');
+
+                                if ($blocker_access_id && $blockee_access_id) {
+                                    $reparkRequest = static::getExistingReparkRequestQuery($blockee_access_id, $blocker_access_id)->first();
+
+                                    $link = blank($reparkRequest) ? '#' : route('filament.resources.tenant/repark-requests.index', ['tableSearchQuery' => $reparkRequest->uuid]);
+
+                                    return new HtmlString("<span>An unresolved <a class='font-semibold underline' href='$link'>Repark Request</a> already exists for this Blocker and Blockee. Are you sure you want to create another?</span>");
+                                }
+
+                                return '';
+                            })
                     ])
                     ->columnSpan([
                         'sm' => 2,
@@ -61,7 +91,7 @@ class ReparkRequestResource extends Resource
             ])->columns([
                 'sm' => 4,
                 'lg' => null,
-            ]);;
+            ]);
     }
 
     public static function table(Table $table): Table
@@ -113,8 +143,11 @@ class ReparkRequestResource extends Resource
                     ->modalHeading(function (): string {
                         return "Resolve Repark Request";
                     })
-                    ->action(function () {
-                        \dd('ok');
+                    ->action(function (ReparkRequest $record) {
+                        $record->resolve() && Notification::make()
+                            ->title('The Repark Request has been resolved!')
+                            ->success()
+                            ->send();
                     }),
             ])
             ->bulkActions([
@@ -155,7 +188,7 @@ class ReparkRequestResource extends Resource
         $field_name = "{$name->lower()->value()}" . "_access_id";
         $field_label = "{$name->ucfirst()->value()}" . "'s Access";
         $field_relationship_name = "{$name->lower()->value()}" . "Access";
-        
+
         $dependent_field_name = "{$dependent_name->lower()->value()}" . "_access_id";
 
         return Select::make($field_name)
@@ -192,5 +225,21 @@ class ReparkRequestResource extends Resource
                 }
             )
             ->required();
+    }
+
+    protected static function getExistingReparkRequestQuery(string $blockee_access_id = '', string $blocker_access_id = ''): Builder
+    {
+        return ReparkRequest::unresolved()
+            ->where(function (Builder $query) use ($blockee_access_id, $blocker_access_id) {
+                $query->where([
+                    ['blockee_access_id', '=', $blockee_access_id],
+                    ['blocker_access_id', '=', $blocker_access_id],
+                ])->orWhere(function (Builder $query) use ($blockee_access_id, $blocker_access_id) {
+                    $query->where([
+                        ['blockee_access_id', '=', $blocker_access_id],
+                        ['blocker_access_id', '=', $blockee_access_id],
+                    ]);
+                });
+            })->latest();
     }
 }
