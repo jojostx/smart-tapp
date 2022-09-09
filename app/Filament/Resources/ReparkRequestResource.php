@@ -34,8 +34,8 @@ class ReparkRequestResource extends Resource
             ->schema([
                 Forms\Components\Card::make()
                     ->schema([
-                        static::getAccessForReparkRequestSelect('blocker'),
-                        static::getAccessForReparkRequestSelect('blockee'),
+                        static::getAccessForReparkRequestSelect('blocker', "blockee"),
+                        static::getAccessForReparkRequestSelect('blockee', "blocker"),
 
                         Forms\Components\Checkbox::make('shouldNotify')
                             ->label('Send Notification')
@@ -148,20 +148,28 @@ class ReparkRequestResource extends Resource
         ];
     }
 
-    protected static function getAccessForReparkRequestSelect(string $name = ""): Select
+    protected static function getAccessForReparkRequestSelect(string $name = "", string $dependent_name = ""): Select
     {
         $name = str($name);
+        $dependent_name = str($dependent_name);
+        $field_name = "{$name->lower()->value()}" . "_access_id";
+        $field_label = "{$name->ucfirst()->value()}" . "'s Access";
+        $field_relationship_name = "{$name->lower()->value()}" . "Access";
+        
+        $dependent_field_name = "{$dependent_name->lower()->value()}" . "_access_id";
 
-        return Select::make("{$name->lower()->value()}" . "_access_id")
-            ->label("{$name->ucfirst()->value()}" . "'s Access")
-            ->relationship("{$name->lower()->value()}" . "Access", 'id')
-            ->searchable()
-            ->placeholder("Select the Blocker's Access")
+        return Select::make($field_name)
+            ->label($field_label)
+            ->relationship($field_relationship_name, 'id')
+            ->placeholder("Select the {$name->ucfirst()->value()}'s Access")
             ->searchPrompt("Search by Driver's Name, Phone Number and Vehicle Plate Number")
+            ->searchable()
+            ->reactive()
             ->getSearchResultsUsing(
-                function (string $search) {
+                function (string $search, callable $get) use ($dependent_field_name) {
                     /** @var \Illuminate\Database\Eloquent\Collection */
                     $accesses = Access::with(['driver:id,name,phone_number', 'vehicle:id,plate_number'])
+                        ->whereNot("id", $get($dependent_field_name))
                         ->where(function (Builder $query) {
                             $query->notInactive();
                         })

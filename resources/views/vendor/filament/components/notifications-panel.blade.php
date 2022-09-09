@@ -13,7 +13,7 @@
         readNotifications: @js($readNotifications),
 
         init: function () {
-            window.addEventListener('notification-recieved', () => { new Audio(`{{ url('assets/notification-sound.mp3') }}`).play() });
+          window.addEventListener('notification-recieved', () => { new Audio(`{{ url('assets/notification-sound.mp3') }}`).play() });
         },
 
         markNotificationAsRead: async function (key) {
