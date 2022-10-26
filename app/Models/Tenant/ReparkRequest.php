@@ -3,6 +3,7 @@
 namespace App\Models\Tenant;
 
 use App\Enums\Models\ReparkRequestStatus;
+use App\Traits\ReparkRequestStatusManageable;
 use Dyrynda\Database\Support\BindsOnUuid;
 use Dyrynda\Database\Support\GeneratesUuid;
 use Illuminate\Database\Eloquent\Builder;
@@ -14,7 +15,7 @@ use Illuminate\Database\Eloquent\SoftDeletes;
 
 class ReparkRequest extends Model
 {
-    use HasFactory, GeneratesUuid, BindsOnUuid, SoftDeletes, MassPrunable;
+    use HasFactory, GeneratesUuid, BindsOnUuid, SoftDeletes, MassPrunable, ReparkRequestStatusManageable;
 
     /**
      * The attributes that are mass assignable.
@@ -33,6 +34,16 @@ class ReparkRequest extends Model
     protected $casts = [
         'status' => ReparkRequestStatus::class,
     ];
+
+    /**
+     * Get the prunable model query.
+     *
+     * @return \Illuminate\Database\Eloquent\Builder
+     */
+    public function prunable()
+    {
+        return static::where('deleted_at', '<=', now()->subMonth());
+    }
 
     /**
      * Create a new repark request from blocker and blockee accesses
@@ -89,93 +100,6 @@ class ReparkRequest extends Model
             'blockee_driver_id' => $blockee_driver_id,
             'blocker_driver_id' => $blocker_driver_id
         ]);
-    }
-
-    /**
-     * Resolve the repark request
-     *
-     * @return bool
-     */
-    public function resolve(): bool
-    {
-        return $this->forceFill([
-            'status' => ReparkRequestStatus::RESOLVED,
-        ])->save();
-    }
-
-    /**
-     * Get the prunable model query.
-     *
-     * @return \Illuminate\Database\Eloquent\Builder
-     */
-    public function prunable()
-    {
-        return static::where('deleted_at', '<=', now()->subMonth());
-    }
-
-    /**
-     * Checks if the repark request has been resolved.
-     */
-    public function isResolved(): bool
-    {
-        return $this->status == ReparkRequestStatus::RESOLVED;
-    }
-
-    /**
-     * Checks if the repark request is unresolved.
-     */
-    public function isUnresolved(): bool
-    {
-        return $this->status == ReparkRequestStatus::UNRESOLVED;
-    }
-
-    /**
-     * Scope a query to only query access of the type indicated by the $type parameter
-     *
-     * @param  \Illuminate\Database\Eloquent\Builder  $query
-     * @param \App\Enums\Models\ReparkRequestStatus $type
-     * @throws \ValueError
-     * 
-     * @return \Illuminate\Database\Eloquent\Builder
-     */
-    public function scopeStatus(Builder $query, string|ReparkRequestStatus $type = '')
-    {
-        $status = is_string($type) ? ReparkRequestStatus::from($type) : $type;
-
-        return $query->where('status', $status);
-    }
-
-    /**
-     * Scope a query to only include unresolved repark request.
-     *
-     * @param  \Illuminate\Database\Eloquent\Builder  $query
-     * @return \Illuminate\Database\Eloquent\Builder
-     */
-    public function scopeUnresolved(Builder $query)
-    {
-        return $query->where('status', ReparkRequestStatus::UNRESOLVED->value);
-    }
-
-    /**
-     * Scope a query to only include resolving repark request.
-     *
-     * @param  \Illuminate\Database\Eloquent\Builder  $query
-     * @return \Illuminate\Database\Eloquent\Builder
-     */
-    public function scopeResolving(Builder $query)
-    {
-        return $query->where('status', ReparkRequestStatus::RESOLVING->value);
-    }
-
-    /**
-     * Scope a query to only include resolved repark request.
-     *
-     * @param  \Illuminate\Database\Eloquent\Builder  $query
-     * @return \Illuminate\Database\Eloquent\Builder
-     */
-    public function scopeResolved(Builder $query)
-    {
-        return $query->where('status', ReparkRequestStatus::RESOLVED->value);
     }
 
     /**
