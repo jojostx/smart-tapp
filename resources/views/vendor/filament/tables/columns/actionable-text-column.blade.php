@@ -1,11 +1,11 @@
 @php
-    $description = $getDescription();
+    $descriptionAbove = $getDescriptionAbove();
+    $descriptionBelow = $getDescriptionBelow();
     $actions = $getActions();
-    $descriptionPosition = $getDescriptionPosition();
-    $triggerIcon = $getTriggerIcon;
+    $triggerIcon = $getTriggerIcon();
     $triggerPosition = $getTriggerPosition();
-    $triggerColor = $getTriggerColor;
-    $triggerLabel = $getTriggerLabel;
+    $triggerColor = $getTriggerColor();
+    $triggerLabel = $getTriggerLabel();
     $darkMode = config('filament.dark_mode');
     $tooltip = $getTooltip();
 @endphp
@@ -85,7 +85,7 @@
     @endif
 
     <div>
-        @if (filled($description) && $descriptionPosition === 'above')
+        @if (filled($descriptionAbove))
             <span class="block text-sm text-gray-400">
                 {!! \Illuminate\Support\Str::of($description)->markdown()->sanitizeHtml() !!}
             </span>
@@ -93,7 +93,7 @@
         
         {{ $getFormattedState() }}
         
-        @if (filled($description) && $descriptionPosition === 'below')
+        @if (filled($descriptionBelow))
             <span class="block text-sm text-gray-400">
                 {!! \Illuminate\Support\Str::of($description)->markdown()->sanitizeHtml() !!}
             </span>
