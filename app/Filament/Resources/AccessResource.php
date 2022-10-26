@@ -6,7 +6,6 @@ use App\Enums\Models\AccessStatus;
 use App\Filament\Actions\Tables\CopyAction;
 use App\Filament\Forms\Components\Password;
 use App\Filament\Forms\Components\RangeSlider;
-use App\Filament\Notifications\Notification as ActionTimedNotification;
 use App\Filament\Resources\AccessResource\Pages;
 use App\Filament\Resources\AccessResource\RelationManagers;
 use App\Filament\Traits\CanCleanupStaleRecords;
@@ -15,7 +14,6 @@ use App\Models\Tenant\Driver;
 use App\Models\Tenant\Vehicle;
 use Filament\Forms;
 use Filament\Forms\Components\Select;
-use Filament\Notifications\Actions\Action;
 use Filament\Notifications\Notification;
 use Filament\Resources\Form;
 use Filament\Resources\Resource;
@@ -254,7 +252,7 @@ class AccessResource extends Resource
                         'danger' => fn ($state): bool => $state === AccessStatus::EXPIRED->value,
                     ]),
                 Tables\Columns\TextColumn::make('parkingLot.name')->searchable(),
-                Tables\Columns\TextColumn::make('driver.name')->searchable(),
+                Tables\Columns\TextColumn::make('driver.phone_number')->searchable(),
                 Tables\Columns\TextColumn::make('vehicle.plate_number')->searchable(),
                 Tables\Columns\TextColumn::make('issued_at')
                     ->date(config('filament.date_format'))
@@ -283,11 +281,90 @@ class AccessResource extends Resource
                     })
             ])
             ->actions([
-                CopyAction::make()
-                    ->content(fn (Access $record) => $record->activation_link)
-                    ->tooltip('Copy Activation link')
-                    ->iconButton()
-                    ->visible(fn (Access $record) => $record->isExpired() || $record->isActive() || $record->isIssued()),
+                ActionGroup::make([
+                    Tables\Actions\Action::make('issue')
+                        ->label('Issue Activation')
+                        ->visible(fn (Access $record) => $record->isExpired() || $record->isInactive())
+                        ->color('warning')
+                        ->icon('heroicon-o-arrow-circle-up')
+                        ->size('lg')
+                        ->tooltip('Issue Access Activation')
+                        ->requiresConfirmation()
+                        ->modalHeading(function (): string {
+                            return "Issue Access Activation";
+                        })
+                        ->modalSubheading(function (): string {
+                            return "This will re-issue the access and by default, the Access Activation Notification will be sent to the Driver's phone number.";
+                        })
+                        ->form([
+                            Forms\Components\Checkbox::make('shouldNotify')
+                                ->label('Send Activation Notification')
+                                ->default(true)
+                        ])
+                        ->action(function (Access $record, ?array $data) {
+                            $shouldNotify = isset($data['shouldNotify']) && $data['shouldNotify'];
+
+                            if ($record->issue()) {
+                                $shouldNotify &&
+                                    $record->sendAccessActivationNotification(checkStatusCountdown: 30) &&
+                                    Notification::make()
+                                        ->title('Access Issued Successfully')
+                                        ->body($shouldNotify ? "The **Access Activation Notification** will be sent to the Driver's phone" : null)
+                                        ->success()
+                                        ->send();
+                            } else {
+                                Notification::make()
+                                    ->title('Unable to Issue Access')
+                                    ->danger()
+                                    ->send();
+                            }
+                        }),
+
+                    Tables\Actions\Action::make('send')
+                        ->label('Send Activation')
+                        ->visible(fn (Access $record) => $record->isIssued() || $record->isActive())
+                        ->color('primary')
+                        ->icon('heroicon-o-paper-airplane')
+                        ->size('lg')
+                        ->tooltip('Send Activation Notification')
+                        ->requiresConfirmation()
+                        ->modalHeading(function (): string {
+                            return "Send Activation Notification";
+                        })
+                        ->modalSubheading(function (): string {
+                            return "This will send the Access Activation Notification to the Driver's phone.";
+                        })
+                        ->form([
+                            Password::make("current_password")
+                                ->required()
+                                ->password()
+                                ->rule("current_password")
+                                ->placeholder('••••••••')
+                                ->disableAutocomplete(),
+                        ])
+                        ->action(function (Access $record) {
+                            $record->sendAccessActivationNotification(checkStatusCountdown: 30) &&
+                                Notification::make()
+                                    ->body("The **Access Activation Notification** will be sent to the Driver's phone")
+                                    ->success()
+                                    ->send();
+                        }),
+
+                    Tables\Actions\EditAction::make(),
+                    Tables\Actions\DeleteAction::make()
+                        ->requiresConfirmation()
+                        ->modalHeading(fn (): string => 'Delete Access')
+                        ->modalWidth('md')
+                        ->modalSubheading(fn (Access $record): string => "Are you sure you want to delete the Access for the Vehicle [{$record->vehicle->plate_number}] with Driver [{$record->driver->name} - {$record->driver->phone_number}]?")
+                        ->form([
+                            Password::make("current_password")
+                                ->required()
+                                ->password()
+                                ->rule("current_password")
+                                ->disableAutocomplete(),
+                        ]),
+                ])
+                ->icon('heroicon-o-dots-vertical'),
 
                 Tables\Actions\Action::make('Activate')
                     ->visible(fn (Access $record) => $record->isExpired() || $record->isInactive() || $record->isIssued())
@@ -324,29 +401,18 @@ class AccessResource extends Resource
 
                         $shouldNotify = isset($data['shouldNotify']) && $data['shouldNotify'];
 
-                        $notification_id = $record->activate(shouldNotify: $shouldNotify);
-
-                        if ($shouldNotify) {
-                            ActionTimedNotification::make()
-                                ->title('Access Activated Successfully')
-                                ->success()
-                                ->body('The **Access** have been activated.' . $shouldNotify ? " Sending the Activation Notification to the Driver's phone..." : '')
-                                ->actions(function ($duration) use ($notification_id) {
-                                    return [
-                                        Action::make('check-notification-status')
-                                            ->extraAttributes(compact('duration'))
-                                            ->view('notifications::actions.timed-action')
-                                            ->emit('checkNotificationStatus', compact('notification_id'))
-                                            ->close(),
-                                    ];
-                                })
-                                ->icon('heroicon-pulse-rings')
-                                ->seconds(30)
-                                ->send();
+                        if ($record->activate()) {
+                            $shouldNotify &&
+                                $record->sendAccessActivationNotification(checkStatusCountdown: 30) &&
+                                Notification::make()
+                                    ->title('Access Activated Successfully')
+                                    ->body($shouldNotify ? "The **Access Activation Notification** will be sent to the Driver's phone" : null)
+                                    ->success()
+                                    ->send();
                         } else {
                             Notification::make()
-                                ->title('Access Activated Successfully')
-                                ->success()
+                                ->title('Unable to Activate Access')
+                                ->danger()
                                 ->send();
                         }
                     }),
@@ -378,113 +444,11 @@ class AccessResource extends Resource
                             ->send();
                     }),
 
-                ActionGroup::make([
-                    Tables\Actions\Action::make('issue')
-                        ->label('Issue Activation')
-                        ->visible(fn (Access $record) => $record->isExpired() || $record->isInactive())
-                        ->color('warning')
-                        ->icon('heroicon-o-arrow-circle-up')
-                        ->size('lg')
-                        ->tooltip('Issue Access Activation')
-                        ->requiresConfirmation()
-                        ->modalHeading(function (): string {
-                            return "Issue Access Activation";
-                        })
-                        ->modalSubheading(function (): string {
-                            return "This will re-issue the access and by default, the Access Activation Notification will be sent to the Driver's phone number.";
-                        })
-                        ->form([
-                            Forms\Components\Checkbox::make('shouldNotify')
-                                ->label('Send Activation Notification')
-                                ->default(true)
-                        ])
-                        ->action(function (Access $record, ?array $data) {
-                            $shouldNotify = isset($data['shouldNotify']) && $data['shouldNotify'];
-
-                            $notification_id = $record->issue(shouldNotify: $shouldNotify);
-
-                            if ($shouldNotify) {
-                                ActionTimedNotification::make()
-                                    ->title('Access Issued Successfully')
-                                    ->success()
-                                    ->body('The **Access** have been Issued.' . $shouldNotify ? " Sending the Activation Notification to the Driver's phone..." : '')
-                                    ->actions(function ($duration) use ($notification_id) {
-                                        return [
-                                            Action::make('check-notification-status')
-                                                ->extraAttributes(compact('duration'))
-                                                ->view('notifications::actions.timed-action')
-                                                ->emit('checkNotificationStatus', compact('notification_id'))
-                                                ->close(),
-                                        ];
-                                    })
-                                    ->icon('heroicon-pulse-rings')
-                                    ->seconds(30)
-                                    ->send();
-                            } else {
-                                Notification::make()
-                                    ->title('Access Issued Successfully')
-                                    ->success()
-                                    ->send();
-                            }
-                        }),
-
-                    Tables\Actions\Action::make('send')
-                        ->label('Send Activation')
-                        ->visible(fn (Access $record) => $record->isIssued() || $record->isActive())
-                        ->color('primary')
-                        ->icon('heroicon-o-paper-airplane')
-                        ->size('lg')
-                        ->tooltip('Send Activation Notification')
-                        ->requiresConfirmation()
-                        ->modalHeading(function (): string {
-                            return "Send Activation Notification";
-                        })
-                        ->modalSubheading(function (): string {
-                            return "This will send the Access Activation Notification to the Driver's phone.";
-                        })
-                        ->form([
-                            Password::make("current_password")
-                                ->required()
-                                ->password()
-                                ->rule("current_password")
-                                ->placeholder('••••••••')
-                                ->disableAutocomplete(),
-                        ])
-                        ->action(function (Access $record) {
-                            $notification_id = $record->sendAccessActivationNotification();
-
-                            ActionTimedNotification::make()
-                                ->title('Sending Activation Notification')
-                                ->success()
-                                ->body("Sending the **Access** Activation Notification to the Driver's phone...")
-                                ->actions(function ($duration) use ($notification_id) {
-                                    return [
-                                        Action::make('check-notification-status')
-                                            ->extraAttributes(compact('duration'))
-                                            ->view('notifications::actions.timed-action')
-                                            ->emit('checkNotificationStatus', compact('notification_id'))
-                                            ->close(),
-                                    ];
-                                })
-                                ->icon('heroicon-pulse-rings')
-                                ->seconds(30)
-                                ->send();
-                        }),
-
-                    Tables\Actions\EditAction::make(),
-                    Tables\Actions\DeleteAction::make()
-                        ->requiresConfirmation()
-                        ->modalHeading(fn (): string => 'Delete Access')
-                        ->modalWidth('md')
-                        ->modalSubheading(fn (Access $record): string => "Are you sure you want to delete the Access for the Vehicle [{$record->vehicle->plate_number}] with Driver [{$record->driver->name} - {$record->driver->phone_number}]?")
-                        ->form([
-                            Password::make("current_password")
-                                ->required()
-                                ->password()
-                                ->rule("current_password")
-                                ->disableAutocomplete(),
-                        ]),
-                ])->icon('heroicon-o-dots-vertical')
+                CopyAction::make()
+                    ->content(fn (Access $record) => $record->activation_link)
+                    ->tooltip('Copy Activation link')
+                    ->iconButton()
+                    ->visible(fn (Access $record) => $record->isExpired() || $record->isActive() || $record->isIssued()),
             ])
             ->bulkActions([
                 Tables\Actions\DeleteBulkAction::make()
