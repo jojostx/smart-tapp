@@ -32,7 +32,7 @@ class Access extends Model implements CanSendAccessActivationNotification
      *
      * @var array
      */
-    protected $appends = ['status', 'valid_until'];
+    protected $appends = ['status', 'valid_until', 'activation_link'];
 
     /**
      * The attributes that should be cast.
