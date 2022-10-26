@@ -2,6 +2,7 @@
 
 namespace App\Filament\Resources;
 
+use App\Filament\Forms\Components\Password;
 use App\Filament\Forms\Components\PhoneNumberInput;
 use App\Filament\Resources\DriverResource\Pages;
 use App\Filament\Tables\Columns\ActionableTextColumn;
@@ -15,6 +16,7 @@ use Filament\Tables;
 use Filament\Tables\Filters\TernaryFilter;
 use Illuminate\Database\Eloquent\Model;
 use App\Filament\Resources\DriverResource\RelationManagers;
+use Filament\Tables\Actions\ActionGroup;
 use Illuminate\Database\Eloquent\SoftDeletingScope;
 
 class DriverResource extends Resource
@@ -81,7 +83,12 @@ class DriverResource extends Resource
             ->columns([
                 ActionableTextColumn::make('name')->animated()->searchable(),
                 ActionableTextColumn::make('phone_number')->animated()->searchable(),
-                ActionableTextColumn::make('email')->animated()->searchable(),
+                ActionableTextColumn::make('email')
+                    ->animated()
+                    ->searchable()
+                    ->toggleable()
+                    ->sortable()
+                    ->toggledHiddenByDefault(),
                 Tables\Columns\BooleanColumn::make('phone_verified_at')
                     ->label('Phone verified')
                     ->default(false)
@@ -106,20 +113,22 @@ class DriverResource extends Resource
                     ->nullable(),
             ])
             ->actions([
-                Tables\Actions\EditAction::make(),
-                Tables\Actions\DeleteAction::make('delete')
-                    ->requiresConfirmation()
-                    ->modalHeading(fn (): string => 'Delete Driver')
-                    ->modalSubheading('Are you sure you would like to do this? Deleting the driver will delete all associated Acessess.')
-                    ->modalWidth('md')
-                    ->form([
-                        \Phpsa\FilamentPasswordReveal\Password::make("current_password")
-                            ->required()
-                            ->password()
-                            ->placeholder('••••••••')
-                            ->rule("current_password")
-                            ->disableAutocomplete(),
-                    ]),
+                ActionGroup::make([
+                    Tables\Actions\EditAction::make(),
+                    Tables\Actions\DeleteAction::make('delete')
+                        ->requiresConfirmation()
+                        ->modalHeading(fn (): string => 'Delete Driver')
+                        ->modalSubheading('Are you sure you would like to do this? Deleting the driver will delete all associated Acessess.')
+                        ->modalWidth('md')
+                        ->form([
+                            Password::make("current_password")
+                                ->required()
+                                ->password()
+                                ->placeholder('••••••••')
+                                ->rule("current_password")
+                                ->disableAutocomplete(),
+                        ]),
+                ])->icon('heroicon-o-dots-vertical'),
             ])
             ->bulkActions([
                 Tables\Actions\DeleteBulkAction::make()
