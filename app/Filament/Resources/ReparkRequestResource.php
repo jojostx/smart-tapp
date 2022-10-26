@@ -3,6 +3,7 @@
 namespace App\Filament\Resources;
 
 use App\Enums\Models\ReparkRequestStatus;
+use App\Filament\Forms\Components\Password;
 use App\Filament\Resources\ReparkRequestResource\Pages;
 use App\Filament\Resources\ReparkRequestResource\RelationManagers;
 use App\Models\Tenant\Access;
@@ -14,11 +15,11 @@ use Filament\Resources\Form;
 use Filament\Resources\Resource;
 use Filament\Resources\Table;
 use Filament\Tables;
+use Filament\Tables\Actions\ActionGroup;
 use Filament\Tables\Filters\SelectFilter;
 use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\SoftDeletingScope;
 use Illuminate\Support\HtmlString;
-use Illuminate\Support\Str;
 
 class ReparkRequestResource extends Resource
 {
@@ -122,33 +123,89 @@ class ReparkRequestResource extends Resource
                     })
             ])
             ->actions([
-                Tables\Actions\Action::make('notify')
-                    ->visible(fn (ReparkRequest $record) => !$record->isResolved())
-                    ->color('primary')
-                    ->tooltip('Notify Driver')
-                    ->requiresConfirmation()
-                    ->modalHeading(function (): string {
-                        return "Notify Driver";
-                    })
-                    ->modalSubheading('This will mark this request as "resolving" and send a notification (text message) to the Driver of the vehicle that is blocking another!')
-                    ->action(function () {
-                        \dd('ok');
-                    }),
+                ActionGroup::make([
+                    Tables\Actions\Action::make('start-resolving')
+                        ->label('Start resolving')
+                        ->visible(fn (ReparkRequest $record) => !$record->isResolving())
+                        ->color('danger')
+                        ->icon('heroicon-o-play')
+                        ->tooltip('Start resolving Repark Request')
+                        ->requiresConfirmation()
+                        ->modalHeading(function (): string {
+                            return "Start Resolving Repark Request";
+                        })
+                        ->form([
+                            Forms\Components\Checkbox::make('shouldNotify')
+                                ->label('Send Repark Request notification')
+                                ->helperText('This will send a Repark Request notification (text message) to the Driver of the vehicle that is blocking another!')
+                                ->default(true)
+                        ])
+                        ->action(function (ReparkRequest $record, ?array $data) {
+                            $shouldNotify = isset($data['shouldNotify']) && $data['shouldNotify'];
 
-                Tables\Actions\Action::make('resolve')
-                    ->visible(fn (ReparkRequest $record) => !$record->isResolved())
-                    ->color('danger')
-                    ->tooltip('Resolve Repark Request')
-                    ->requiresConfirmation()
-                    ->modalHeading(function (): string {
-                        return "Resolve Repark Request";
-                    })
-                    ->action(function (ReparkRequest $record) {
-                        $record->resolve() && Notification::make()
-                            ->title('The Repark Request has been resolved!')
-                            ->success()
-                            ->send();
-                    }),
+                            if ($record->startResolving()) {
+                                $shouldNotify &&
+                                    $record->sendReparkRequestResolutionNotification(checkStatusCountdown: 30) &&
+                                    Notification::make()
+                                    ->title('Started Resolving Repark Request')
+                                    ->body($shouldNotify ? "The **Repark Request notification** will be sent to the Driver's phone" : null)
+                                    ->success()
+                                    ->send();
+                            } else {
+                                Notification::make()
+                                    ->title('Unable to Start Resolving Repark Request')
+                                    ->danger()
+                                    ->send();
+                            }
+                        }),
+
+                    Tables\Actions\Action::make("resolve")
+                        ->label('Resolve')
+                        ->color('success')
+                        ->icon('heroicon-o-check-circle')
+                        ->tooltip('Resolve Repark Request')
+                        ->visible(fn (ReparkRequest $record) => !$record->isResolved())
+                        ->requiresConfirmation()
+                        ->modalHeading(function (): string {
+                            return "Resolve Repark Request";
+                        })
+                        ->action(function (ReparkRequest $record) {
+                            $record->resolve() &&
+                                Notification::make()
+                                ->title('The Repark Request has been resolved!')
+                                ->success()
+                                ->send();
+                        }),
+
+                    Tables\Actions\Action::make('notify')
+                        ->visible(fn (ReparkRequest $record) => !$record->isResolved())
+                        ->color('primary')
+                        ->tooltip('Notify Driver')
+                        ->icon('heroicon-o-paper-airplane')
+                        ->requiresConfirmation()
+                        ->modalHeading(function (): string {
+                            return "Notify Driver";
+                        })
+                        ->modalSubheading('This will send a Repark Request notification (text message) to the Driver of the vehicle that is blocking another!')
+                        ->action(function (ReparkRequest $record) {
+                            $record->sendReparkRequestResolutionNotification(checkStatusCountdown: 30) &&
+                                Notification::make()
+                                ->body("The **Repark Request notification** will be sent to the Driver's phone")
+                                ->success()
+                                ->send();
+                        }),
+                    Tables\Actions\DeleteAction::make()
+                        ->requiresConfirmation()
+                        ->modalHeading(fn (): string => 'Delete ReparkRequest')
+                        ->modalSubheading("Are you sure you want to delete this ReparkRequest?")
+                        ->form([
+                            Password::make("current_password")
+                                ->required()
+                                ->password()
+                                ->rule("current_password")
+                                ->disableAutocomplete(),
+                        ]),
+                ])->icon('heroicon-o-dots-vertical')
             ])
             ->bulkActions([
                 Tables\Actions\DeleteBulkAction::make(),
