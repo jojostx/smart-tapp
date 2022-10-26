@@ -2,17 +2,17 @@
 
 @section('content')
 
-<header class="absolute z-20 w-full" x-data="{ navOpen: false }">
+<header class="absolute z-20 w-full" x-data="{ open: false }">
     <nav class="bg-white w-full border-gray-200 px-4 lg:px-6 py-2.5 dark:bg-gray-800">
         <div class="flex flex-wrap items-center justify-between max-w-screen-xl mx-auto">
             <a href="https://flowbite.com" class="flex items-center">
-                <x-logo class="w-auto h-6 mr-3 sm:h-9 text-primary-600" alt="{{ config('app.name') }} Logo" />
-                <span class="self-center hidden text-xl font-semibold md:inline whitespace-nowrap dark:text-white">{{ config('app.name') }}</span>
+                <x-logo class="w-auto h-6 mr-1 sm:mr-3 sm:h-9 text-primary-600" alt="{{ config('app.name') }} Logo" />
+                <span class="self-center text-base font-semibold sm:text-xl md:inline whitespace-nowrap dark:text-white">{{ config('app.name') }}</span>
             </a>
             <div class="flex items-center lg:order-2">
-                <a href="{{ route('login') }}" class="text-gray-800 dark:text-white hover:bg-gray-50 focus:ring-4 focus:ring-gray-300 font-medium rounded-lg text-sm px-4 lg:px-5 py-2 lg:py-2.5 mr-2 dark:hover:bg-gray-700 focus:outline-none dark:focus:ring-gray-800">Log in</a>
+                <a href="{{ route('login') }}" class="hidden sm:inline-block text-gray-800 dark:text-white hover:bg-gray-50 focus:ring-4 focus:ring-gray-300 font-medium rounded-lg text-sm px-4 lg:px-5 py-2 lg:py-2.5 mr-2 dark:hover:bg-gray-700 focus:outline-none dark:focus:ring-gray-800">Log in</a>
                 <a href="{{ route('register') }}" class="text-white bg-primary-700 hover:bg-primary-800 focus:ring-4 focus:ring-primary-300 font-medium rounded-lg text-sm px-4 lg:px-5 py-2 lg:py-2.5 mr-2 dark:bg-primary-600 dark:hover:bg-primary-700 focus:outline-none dark:focus:ring-primary-800">Get started</a>
-                <button x-on:click="navOpen = !navOpen" type="button" class="inline-flex items-center p-2 ml-1 text-sm text-gray-500 rounded-lg lg:hidden hover:bg-gray-100 focus:outline-none focus:ring-2 focus:ring-gray-200 dark:text-gray-400 dark:hover:bg-gray-700 dark:focus:ring-gray-600" aria-controls="mobile-menu-2" aria-expanded="false">
+                <button x-on:click="open = !open" type="button" class="inline-flex items-center p-2 ml-1 text-sm text-gray-500 rounded-lg lg:hidden hover:bg-gray-100 focus:outline-none focus:ring-2 focus:ring-gray-200 dark:text-gray-400 dark:hover:bg-gray-700 dark:focus:ring-gray-600" aria-controls="mobile-menu-2" aria-expanded="false">
                     <span class="sr-only">Open main menu</span>
                     <svg class="w-6 h-6" fill="currentColor" viewBox="0 0 20 20" xmlns="http://www.w3.org/2000/svg">
                         <path fill-rule="evenodd" d="M3 5a1 1 0 011-1h12a1 1 0 110 2H4a1 1 0 01-1-1zM3 10a1 1 0 011-1h12a1 1 0 110 2H4a1 1 0 01-1-1zM3 15a1 1 0 011-1h12a1 1 0 110 2H4a1 1 0 01-1-1z" clip-rule="evenodd"></path>
@@ -22,7 +22,7 @@
                     </svg>
                 </button>
             </div>
-            <div class="items-center justify-between hidden w-full md:flex lg:w-auto lg:order-1">
+            <div class="items-center justify-between hidden w-full lg:flex lg:w-auto lg:order-1">
                 <ul class="flex flex-col mt-4 font-medium lg:flex-row lg:space-x-8 lg:mt-0">
                     <li>
                         <div class="py-2 pl-3 pr-4 text-white rounded opacity-0 lg:bg-transparent lg:p-0 dark:text-white">Home</div>
@@ -44,7 +44,7 @@
                     </li>
                 </ul>
             </div>
-            <div x-show="navOpen" x-cloak class="items-center justify-between w-full md::hidden lg:w-auto lg:order-1">
+            <div x-show="open" @click.outside="open = false" @keyup.escape.window="open = false" x-trap.inert.noscroll.noreturn="open" x-cloak class="items-center justify-between w-full lg:hidden lg:w-auto lg:order-1">
                 <ul class="flex flex-col mt-4 font-medium lg:flex-row lg:space-x-8 lg:mt-0">
                     <li>
                         <a href="#" class="block py-2 pl-3 pr-4 text-white rounded bg-primary-700 lg:bg-transparent lg:text-primary-700 lg:p-0 dark:text-white" aria-current="page">Home</a>
@@ -70,7 +70,7 @@
     </nav>
 </header>
 
-<section class="relative flex flex-col justify-center px-8 pb-24 mx-auto overflow-hidden pt-36 md:py-48 max-w-8xl bg-gray-50">
+<section class="relative flex flex-col justify-center px-4 pb-24 mx-auto overflow-hidden md:px-8 pt-36 md:py-48 max-w-8xl bg-gray-50">
     <div class="absolute inset-x-0 flex justify-center w-full -top-1/3 md:-top-3/4 opacity-20">
         <svg class="w-full m-auto md:w-2/3" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" viewBox="0 0 100 100" preserveAspectRatio="xMidYMid">
             <circle cx="50" cy="50" r="0" fill="none" class="stroke-primary-400" stroke-width="3">
@@ -88,9 +88,9 @@
         </svg>
     </div>
 
-    <div class="relative z-10 max-w-screen-xl px-4 mx-auto lg:items-center lg:flex">
+    <div class="relative z-10 max-w-screen-xl mx-auto md:px-4 lg:items-center lg:flex">
         <div class="max-w-4xl mx-auto text-center">
-            <h1 class="text-5xl font-extrabold tracking-wider text-center text-gray-800 md:text-7xl">
+            <h1 class="text-4xl font-extrabold tracking-wider text-center text-gray-800 sm:text-5xl md:text-7xl">
                 World-Class Parking
                 <strong>
                     <span class="text-primary-600">
@@ -105,10 +105,9 @@
             </p>
 
             <div class="flex flex-wrap justify-center gap-4 mt-8">
-                <x-filament::button tag="a" href="{{ route('register') }}" class="text-base font-medium text-white">
+                <a href="{{ route('register')  }}" class="flex items-center justify-center w-full px-5 py-3 font-medium text-center text-white rounded-lg bg-primary-700 sm:w-max hover:bg-primary-800 focus:ring-4 focus:outline-none focus:ring-primary-300">
                     {{ __('Get started') }}
-                </x-filament::button>
-
+                </a>
                 <a href="{{ route('register')  }}" class="flex items-center justify-center w-full px-5 py-3 font-medium text-center text-white bg-black rounded-lg sm:w-max hover:bg-gray-800 focus:ring-4 focus:outline-none focus:ring-gray-300">
                     Learn more
                     <svg class="w-4 h-4 ml-2 -mr-1" fill="currentColor" viewBox="0 0 20 20" xmlns="http://www.w3.org/2000/svg">

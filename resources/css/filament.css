@@ -5,7 +5,7 @@
 @import '../../node_modules/intl-tel-input/build/css/intlTelInput.css';
 
 html {
-    font-family: "JetBrains Mono", monospace !important;
+    font-family: 'Inter', "JetBrains Mono", monospace !important;
 }
 .iti {
     position: relative;
