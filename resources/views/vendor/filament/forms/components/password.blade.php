@@ -44,10 +44,10 @@ $affixLabelClasses = ['whitespace-nowrap group-focus-within:text-primary-500', '
                 }},
                 id: 0,
                 show: false,
-                generatePasswd: function() {
-                    let chars = '{{ $getPasswChars() }}';
+                generatePassword: function() {
+                    let chars = '{{ $getPasswordChars() }}';
                     let password = '';
-                    for (let i = 0; i < {{ $getPasswLength() }}; i++) {
+                    for (let i = 0; i < {{ $getPasswordLength() }}; i++) {
                         password += chars.charAt(Math.floor(Math.random() * chars.length));
                     }
                     this.state = password;
@@ -88,7 +88,7 @@ $affixLabelClasses = ['whitespace-nowrap group-focus-within:text-primary-500', '
                         x-tooltip.raw="Generate Random Password"
                         title="Generate Password"
                         type="button"
-                        x-on:click.prevent="generatePasswd()"
+                        x-on:click.prevent="generatePassword()"
                     >
                         <x-dynamic-component
                             :component="$getGenerateIcon()"
@@ -96,6 +96,7 @@ $affixLabelClasses = ['whitespace-nowrap group-focus-within:text-primary-500', '
                         />
                     </button>
                 @endif
+
                 @if ($isCopyable())
                     <button
                         x-tooltip.raw="Copy Password"
@@ -128,6 +129,7 @@ $affixLabelClasses = ['whitespace-nowrap group-focus-within:text-primary-500', '
                         title="Reveal Password"
                         type="button"
                         @click="show = !show"
+                        x-cloak
                         x-bind:class="{ 'hidden': show, 'block': !show }"
                     >
                         <x-dynamic-component
