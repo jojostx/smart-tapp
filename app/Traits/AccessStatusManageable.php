@@ -238,11 +238,10 @@ trait AccessStatusManageable
 	 *
 	 * @param int $expiry_period
 	 * @param int $validity_period
-	 * @param bool $shouldNotify
 	 * 
-	 * @return string
+	 * @return bool
 	 */
-	public function issue(?int $expiry_period = 0, ?int $validity_period = 0, bool $shouldNotify = false): string
+	public function issue(?int $expiry_period = 0, ?int $validity_period = 0): bool
 	{
 		// MAX_VALIDITY_PERIOD
 		// MAX_EXPIRY_PERIOD
@@ -254,26 +253,20 @@ trait AccessStatusManageable
 			$validity_period = $this->validity_period ?? 2;
 		}
 
-		$updated = $this->forceFill([
+		return $this->forceFill([
 			'expiry_period' => $expiry_period,
 			'validity_period' => $validity_period,
 			'issued_at' => $this->freshTimestamp(),
 		])->save();
-
-		if ($shouldNotify && $updated) {
-			return $this->sendAccessActivationNotification();
-		}
-
-		return '';
 	}
 
 	/**
 	 * activate the access.
 	 * activate sets 'expiry_period' attribute to 0, if and only if the access is issued or expired.
 	 *
-	 * @return string
+	 * @return bool
 	 */
-	public function activate(bool $shouldNotify = false): string
+	public function activate(): string
 	{
 		if ($this->isActive()) {
 			return false;
@@ -285,15 +278,9 @@ trait AccessStatusManageable
 			]);
 		}
 
-		$updated = $this->forceFill([
+		return $this->forceFill([
 			'expiry_period' => 0,
 		])->save();
-
-		if ($shouldNotify && $updated) {
-			return $this->sendAccessActivationNotification();
-		}
-
-		return '';
 	}
 
 	/**
