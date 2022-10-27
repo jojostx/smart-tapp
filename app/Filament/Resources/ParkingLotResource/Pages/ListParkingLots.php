@@ -5,6 +5,7 @@ namespace App\Filament\Resources\ParkingLotResource\Pages;
 use App\Filament\Resources\ParkingLotResource;
 use Filament\Pages\Actions;
 use Filament\Resources\Pages\ListRecords;
+use Filament\Tables\Actions\Position;
 
 class ListParkingLots extends ListRecords
 {
@@ -15,5 +16,10 @@ class ListParkingLots extends ListRecords
         return [
             Actions\CreateAction::make(),
         ];
+    }
+    
+    protected function getTableActionsPosition(): ?string
+    {
+        return Position::BeforeCells;
     }
 }

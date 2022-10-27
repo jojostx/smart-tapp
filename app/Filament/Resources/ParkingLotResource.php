@@ -3,6 +3,7 @@
 namespace App\Filament\Resources;
 
 use App\Enums\Models\ParkingLotStatus;
+use App\Filament\Forms\Components\Password;
 use App\Filament\Forms\Components\Qrcode;
 use App\Filament\Resources\ParkingLotResource\Pages;
 use App\Filament\Resources\ParkingLotResource\RelationManagers;
@@ -12,6 +13,7 @@ use Filament\Resources\Form;
 use Filament\Resources\Resource;
 use Filament\Resources\Table;
 use Filament\Tables;
+use Filament\Tables\Actions\ActionGroup;
 use Filament\Tables\Filters\SelectFilter;
 use Illuminate\Database\Eloquent\SoftDeletingScope;
 
@@ -106,23 +108,26 @@ class ParkingLotResource extends Resource
                     ->options(ParkingLotStatus::toArray())
             ])
             ->actions([
-                Tables\Actions\EditAction::make(),
-                Tables\Actions\ViewAction::make(),
-                Tables\Actions\DeleteAction::make()
-                    ->requiresConfirmation()
-                    ->form([
-                        \Phpsa\FilamentPasswordReveal\Password::make("current_password")
-                            ->required()
-                            ->password()
-                            ->rule("current_password")
-                            ->disableAutocomplete(),
-                    ]),
+                ActionGroup::make([
+                    Tables\Actions\EditAction::make(),
+                    Tables\Actions\ViewAction::make(),
+                    Tables\Actions\DeleteAction::make()
+                        ->requiresConfirmation()
+                        ->form([
+                            Password::make("current_password")
+                                ->required()
+                                ->password()
+                                ->rule("current_password")
+                                ->disableAutocomplete(),
+                        ]),
+                ])
+                    ->icon('heroicon-o-dots-vertical'),
             ])
             ->bulkActions([
                 Tables\Actions\DeleteBulkAction::make()
                     ->requiresConfirmation()
                     ->form([
-                        \Phpsa\FilamentPasswordReveal\Password::make("current_password")
+                        Password::make("current_password")
                             ->required()
                             ->password()
                             ->rule("current_password")
