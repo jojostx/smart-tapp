@@ -8,7 +8,7 @@
   $panel_ref = "panel_notification_item_menu_" . str($notification->id)->before('-')->value();
 @endphp
 
-<x-notification-card wire:key="notification-{{ $notification->id }}" x-bind:class="isNotificationRead('{{ $notification->id }}') ? 'bg-white {{ $darkMode ? 'dark:bg-gray-500/10' : '' }}' : 'bg-primary-50 {{ $darkMode ? 'dark:bg-primary-500/10' : '' }}' " class="border-b border-gray-300 dark:border-gray-700">
+<x-notification-card wire:key="notification-{{ $notification->id }}" x-bind:class="isNotificationRead('{{ $notification->id }}') ? 'bg-white {{ $darkMode ? 'dark:bg-gray-500/10' : '' }}' : 'bg-primary-50 {{ $darkMode ? 'dark:bg-primary-500/10' : '' }}' " class="rounded-md border border-primary-200">
   <x-slot:icon>
     <div tabindex="0" aria-label="group icon" role="img" class="flex items-center justify-center flex-shrink-0 w-8 h-8 border rounded-full text-danger-500 border-danger-300 focus:outline-none">
       <svg xmlns="http://www.w3.org/2000/svg" class="w-5" height="192" fill="currentColor" viewBox="0 0 256 256"><rect width="256" height="256" fill="none"></rect><path d="M240,112H229.2L201.4,49.5A15.9,15.9,0,0,0,186.8,40H69.2a15.9,15.9,0,0,0-14.6,9.5L26.8,112H16a8,8,0,0,0,0,16h8v80a16,16,0,0,0,16,16H64a16,16,0,0,0,16-16V192h96v16a16,16,0,0,0,16,16h24a16,16,0,0,0,16-16V128h8a8,8,0,0,0,0-16ZM80,160H64a8,8,0,0,1,0-16H80a8,8,0,0,1,0,16Zm96,0a8,8,0,0,1,0-16h16a8,8,0,0,1,0,16Z"></path></svg>
