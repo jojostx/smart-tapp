@@ -2,9 +2,8 @@
 
 namespace App\Notifications\Tenant\Driver;
 
-use App\Models\Tenant\Access;
+use App\Models\Tenant\ReparkRequest;
 use App\Models\Tenant\User;
-use Filament\Notifications\Notification as NotificationsNotification;
 use GuzzleHttp\Exception\GuzzleException;
 use Illuminate\Bus\Queueable;
 use Illuminate\Contracts\Queue\ShouldQueue;
@@ -14,7 +13,7 @@ use NotificationChannels\AfricasTalking\AfricasTalkingMessage;
 use ManeOlawale\Laravel\Termii\Messages\Message as TermiiMessage;
 use Illuminate\Notifications\Notification;
 
-class AccessActivationNotification extends Notification implements ShouldQueue
+class ShouldReparkVehicleNotification extends Notification implements ShouldQueue
 {
   use Queueable;
 
@@ -24,7 +23,7 @@ class AccessActivationNotification extends Notification implements ShouldQueue
    * @return void
    */
   public function __construct(
-    public Access $access,
+    public ReparkRequest $reparkRequest,
     public ?User $admin = null,
     ?string $id = '',
     public int $checkStatusCountdown = 0
@@ -58,7 +57,7 @@ class AccessActivationNotification extends Notification implements ShouldQueue
    * @param  mixed  $notifiable
    * @return array
    */
-  public function fallbackChannels()
+  public function fallbackChannels($notifiable)
   {
     return ['termii'];
   }
@@ -100,12 +99,12 @@ class AccessActivationNotification extends Notification implements ShouldQueue
    */
   protected function buildSMSMessage($notifiable): string
   {
-    $url = $this->access->activation_link;
-    $plate_number = $this->access->vehicle->plate_number;
+    $url = $this->reparkRequest->blockerAccess->activation_link;
+    $plate_number = $this->reparkRequest->blockerVehicle->plate_number;
 
-    $message = "Hello, Click the link below to activate your access for vehicle [{$plate_number}]:";
+    $message = "Hello, You have been requested to repark your vehicle [{$plate_number}]";
+    $message .= "\nAfter reparking, confirm that you have reparked on your Dashboard.";
     $message .= "\n{$url}\n";
-    $message .= \boolval($this->access->expiry_period) ? "  This Access expires in {$this->access->expiry_period} minutes" : "";
 
     return $message;
   }
@@ -120,7 +119,7 @@ class AccessActivationNotification extends Notification implements ShouldQueue
   {
     return [
       'admin_id' => $this->admin->id,
-      'access_id' => $this->access->id,
+      'repark_request_id' => $this->reparkRequest->id,
       'notification' => serialize($this),
       'checkStatusCountdown' => $this->getCheckStatusCountdown()
     ];

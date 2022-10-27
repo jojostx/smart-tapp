@@ -5,8 +5,6 @@ namespace App\Listeners\Tenant;
 use App\Notifications\Tenant\Driver\AccessActivationNotification;
 use Illuminate\Notifications\Events\NotificationSent;
 use Illuminate\Notifications\DatabaseNotification;
-use Illuminate\Contracts\Queue\ShouldQueue;
-use Illuminate\Queue\InteractsWithQueue;
 use Illuminate\Support\Facades\Redis;
 use NotificationChannels\AfricasTalking\AfricasTalkingChannel;
 
@@ -25,7 +23,7 @@ class LogAccessActivationNotification
     if ($event->channel == AfricasTalkingChannel::class) {
       if (
         $event->notification instanceof AccessActivationNotification &&
-        !($response instanceof \Illuminate\Notifications\DatabaseNotification)
+        !($event->notification instanceof \Illuminate\Notifications\DatabaseNotification)
       ) {
         // note in this case, response is tested to make sure it is an array or object
         if ($response instanceof \Illuminate\Http\Client\Response && $response->successful()) {
