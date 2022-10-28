@@ -6,7 +6,6 @@ use Filament\Http\Middleware\Authenticate;
 use Filament\Http\Middleware\DispatchServingFilamentEvent;
 use Filament\Http\Middleware\MirrorConfigToSubpackages;
 use Filament\Pages;
-use Filament\Tables\Actions\Action;
 use Filament\Widgets;
 use Illuminate\Cookie\Middleware\AddQueuedCookiesToResponse;
 use Illuminate\Cookie\Middleware\EncryptCookies;
@@ -15,7 +14,6 @@ use Illuminate\Routing\Middleware\SubstituteBindings;
 use Illuminate\Session\Middleware\AuthenticateSession;
 use Illuminate\Session\Middleware\StartSession;
 use Illuminate\View\Middleware\ShareErrorsFromSession;
-use Stancl\Tenancy\Middleware\InitializeTenancyByDomain;
 use Stancl\Tenancy\Middleware\PreventAccessFromCentralDomains;
 
 return [
@@ -32,13 +30,12 @@ return [
 
     'path' => env('FILAMENT_PATH', '/admin'),
 
-
     /*
     |--------------------------------------------------------------------------
     | Filament Core Path
     |--------------------------------------------------------------------------
     |
-    | This is the path which Filament will use to load it's core routes and assets.
+    | This is the path which Filament will use to load its core routes and assets.
     | You may change it if it conflicts with your other routes.
     |
     */
@@ -180,6 +177,44 @@ return [
 
     /*
     |--------------------------------------------------------------------------
+    | Database notifications
+    |--------------------------------------------------------------------------
+    |
+    | By enabling this feature, your users are able to open a slide-over within
+    | the admin panel to view their database notifications.
+    |
+    */
+
+    'database_notifications' => [
+        'enabled' => false,
+        'polling_interval' => '30s',
+    ],
+
+    /*
+    |--------------------------------------------------------------------------
+    | Broadcasting
+    |--------------------------------------------------------------------------
+    |
+    | By uncommenting the Laravel Echo configuration, you may connect your
+    | admin panel to any Pusher-compatible websockets server.
+    |
+    | This will allow your admin panel to receive real-time notifications.
+    |
+    */
+
+    'broadcasting' => [
+
+        // 'echo' => [
+        //     'broadcaster' => 'pusher',
+        //     'key' => env('VITE_PUSHER_APP_KEY'),
+        //     'cluster' => env('VITE_PUSHER_APP_CLUSTER'),
+        //     'forceTLS' => true,
+        // ],
+
+    ],
+
+    /*
+    |--------------------------------------------------------------------------
     | Layout
     |--------------------------------------------------------------------------
     |
@@ -191,6 +226,16 @@ return [
     */
 
     'layout' => [
+        'actions' => [
+            'modal' => [
+                'actions' => [
+                    'alignment' => 'right',
+                ],
+            ],
+            'cell' => [
+                'alignment' => 'right',
+            ],
+        ],
         'forms' => [
             'actions' => [
                 'alignment' => 'left',
@@ -210,6 +255,7 @@ return [
             'groups' => [
                 'are_collapsible' => true,
             ],
+            'width' => null,
         ],
         'tables' => [
             'actions' => [
@@ -266,18 +312,7 @@ return [
     |
     */
 
-    'google_fonts' => 'https://fonts.googleapis.com/css2?family=JetBrains+Mono:ital,wght@0,100;0,200;0,300;0,400;0,500;0,600;0,700;0,800;1,100;1,200;1,300;1,400;1,500;1,600;1,700;1,800&display=swap',
-
-    /*
-    |--------------------------------------------------------------------------
-    | Date Format
-    |--------------------------------------------------------------------------
-    |
-    | This is the format for date\datetime columns on the tables.
-    |
-    */
-
-    'date_format' => 'd M Y',
+    'google_fonts' => 'https://fonts.googleapis.com/css2?family=Inter:ital,wght@0,400;0,500;0,700;1,400;1,500;1,700&display=swap',
 
     /*
     |--------------------------------------------------------------------------
@@ -304,7 +339,7 @@ return [
             SubstituteBindings::class,
             DispatchServingFilamentEvent::class,
             MirrorConfigToSubpackages::class,
-            
+
             // custom middleware & middleware from third party packages
             RedirectIfAuthenticated::class,
             'universal',
@@ -312,5 +347,16 @@ return [
             App\Http\Middleware\InitializeTenancyByDomain::class
         ],
     ],
+
+    /*
+    |--------------------------------------------------------------------------
+    | Date Format
+    |--------------------------------------------------------------------------
+    |
+    | This is the format for date\datetime columns on the tables.
+    |
+    */
+
+    'date_format' => 'd M Y',
 
 ];
