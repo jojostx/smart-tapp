@@ -274,7 +274,7 @@ class AccessResource extends Resource
                     ->options(AccessStatus::toArray())
                     ->query(function (Builder $query, array $data): Builder {
                         if (isset($data['value']) && boolval($status = AccessStatus::tryFrom($data['value']))) {
-                            return $query->status($status);
+                            return $query->whereStatus($status);
                         }
 
                         return $query;
@@ -385,7 +385,7 @@ class AccessResource extends Resource
                     ])
                     ->action(function (Access $record, ?array $data) {
                         $anotherActiveAccessExists = Access::query()
-                            ->notInactive()
+                            ->whereNotInactive()
                             ->whereRelation('vehicle', 'plate_number', $record->vehicle->plate_number)
                             ->exists();
 

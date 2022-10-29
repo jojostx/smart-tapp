@@ -29,7 +29,7 @@ trait AccessStatusManageable
 	 * 
 	 * @return \Illuminate\Database\Eloquent\Builder
 	 */
-	public function scopeStatus(Builder $query, string|AccessStatus $type = '')
+	public function scopeWhereStatus(Builder $query, string|AccessStatus $type = '')
 	{
 		$status = is_string($type) ? AccessStatus::from($type) : $type;
 
@@ -63,7 +63,7 @@ trait AccessStatusManageable
 	 * @param  \Illuminate\Database\Eloquent\Builder  $query
 	 * @return \Illuminate\Database\Eloquent\Builder
 	 */
-	public function scopeIssued(Builder $query)
+	public function scopeWhereIssued(Builder $query)
 	{
 		$elapsedFragment = $this->getQueryFragmentForElapsedCheck();
 		$invalidFragment = $this->getQueryFragmentForInvalidCheck();
@@ -79,7 +79,7 @@ trait AccessStatusManageable
 	 * @param  \Illuminate\Database\Eloquent\Builder  $query
 	 * @return \Illuminate\Database\Eloquent\Builder
 	 */
-	public function scopeExpired(Builder $query)
+	public function scopeWhereExpired(Builder $query)
 	{
 		$elapsedFragment = $this->getQueryFragmentForElapsedCheck();
 		$invalidFragment = $this->getQueryFragmentForInvalidCheck();
@@ -95,7 +95,7 @@ trait AccessStatusManageable
 	 * @param  \Illuminate\Database\Eloquent\Builder  $query
 	 * @return \Illuminate\Database\Eloquent\Builder
 	 */
-	public function scopeActive(Builder $query)
+	public function scopeWhereActive(Builder $query)
 	{
 		$invalidFragment = $this->getQueryFragmentForInvalidCheck();
 
@@ -109,7 +109,7 @@ trait AccessStatusManageable
 	 * @param  \Illuminate\Database\Eloquent\Builder  $query
 	 * @return \Illuminate\Database\Eloquent\Builder
 	 */
-	public function scopeInactive(Builder $query)
+	public function scopeWhereInactive(Builder $query)
 	{
 		$invalidFragment = $this->getQueryFragmentForInvalidCheck();
 
@@ -118,12 +118,12 @@ trait AccessStatusManageable
 	}
 
 	/**
-	 * Scope a query to only include inactive/deactivated accesses.
+	 * Scope a query to only include accesses that are not inactive [only active, expired and issued].
 	 *
 	 * @param  \Illuminate\Database\Eloquent\Builder  $query
 	 * @return \Illuminate\Database\Eloquent\Builder
 	 */
-	public function scopeNotInactive(Builder $query)
+	public function scopeWhereNotInactive(Builder $query)
 	{
 		$invalidFragment = $this->getQueryFragmentForInvalidCheck();
 
