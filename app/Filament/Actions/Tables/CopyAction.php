@@ -21,7 +21,7 @@ class CopyAction extends Action
 
     $this->label(__('Copy'));
 
-    $this->successNotificationMessage(__('Copied!'));
+    $this->successNotificationTitle(__('Copied!'));
 
     $this->color('primary');
 
@@ -85,6 +85,6 @@ class CopyAction extends Action
 
   public function getSuccessMessage(): string
   {
-    return $this->evaluate($this->successNotificationMessage) ?? __('Copied!');
+    return $this->evaluate($this->successNotificationTitle) ?? __('Copied!');
   }
 }
