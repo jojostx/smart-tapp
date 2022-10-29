@@ -262,7 +262,7 @@ trait AccessStatusManageable
 
 	/**
 	 * activate the access.
-	 * activate sets 'expiry_period' attribute to 0, if and only if the access is issued or expired.
+	 * activate sets 'expiry_period' attribute to 0, if and only if the access is issued or expired and not active.
 	 *
 	 * @return bool
 	 */
