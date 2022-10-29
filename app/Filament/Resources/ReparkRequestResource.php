@@ -116,7 +116,7 @@ class ReparkRequestResource extends Resource
                     ->options(ReparkRequestStatus::toArray())
                     ->query(function (Builder $query, array $data): Builder {
                         if (isset($data['value']) && boolval($status = ReparkRequestStatus::tryFrom($data['value']))) {
-                            return $query->status($status);
+                            return $query->whereStatus($status);
                         }
 
                         return $query;
@@ -224,7 +224,7 @@ class ReparkRequestResource extends Resource
         $routeBaseName = static::getRouteBaseName();
 
         if (!request()->routeIs("{$routeBaseName}.*")) {
-            return ReparkRequest::unresolved()->count() ?? null;
+            return ReparkRequest::whereUnresolved()->count() ?? null;
         }
 
         return null;
@@ -261,7 +261,7 @@ class ReparkRequestResource extends Resource
                     $accesses = Access::with(['driver:id,name,phone_number', 'vehicle:id,plate_number'])
                         ->whereNot("id", $get($dependent_field_name))
                         ->where(function (Builder $query) {
-                            $query->notInactive();
+                            $query->whereNotInactive();
                         })
                         ->where(function ($query) use ($search) {
                             $query->whereHas('driver', function (Builder $query) use ($search) {
@@ -286,7 +286,7 @@ class ReparkRequestResource extends Resource
 
     protected static function getExistingReparkRequestQuery(string $blockee_access_id = '', string $blocker_access_id = ''): Builder
     {
-        return ReparkRequest::unresolved()
+        return ReparkRequest::whereUnresolved()
             ->where(function (Builder $query) use ($blockee_access_id, $blocker_access_id) {
                 $query->where([
                     ['blockee_access_id', '=', $blockee_access_id],

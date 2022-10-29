@@ -42,7 +42,7 @@ trait ReparkRequestStatusManageable
    * 
    * @return \Illuminate\Database\Eloquent\Builder
    */
-  public function scopeStatus(Builder $query, string|ReparkRequestStatus $type = '')
+  public function scopeWhereStatus(Builder $query, string|ReparkRequestStatus $type = '')
   {
     $status = is_string($type) ? ReparkRequestStatus::from($type) : $type;
 
@@ -55,7 +55,7 @@ trait ReparkRequestStatusManageable
    * @param  \Illuminate\Database\Eloquent\Builder  $query
    * @return \Illuminate\Database\Eloquent\Builder
    */
-  public function scopeUnresolved(Builder $query)
+  public function scopeWhereUnresolved(Builder $query)
   {
     return $query->where('status', ReparkRequestStatus::UNRESOLVED->value);
   }
@@ -66,7 +66,7 @@ trait ReparkRequestStatusManageable
    * @param  \Illuminate\Database\Eloquent\Builder  $query
    * @return \Illuminate\Database\Eloquent\Builder
    */
-  public function scopeResolving(Builder $query)
+  public function scopeWhereResolving(Builder $query)
   {
     return $query->where('status', ReparkRequestStatus::RESOLVING->value);
   }
@@ -77,7 +77,7 @@ trait ReparkRequestStatusManageable
    * @param  \Illuminate\Database\Eloquent\Builder  $query
    * @return \Illuminate\Database\Eloquent\Builder
    */
-  public function scopeResolved(Builder $query)
+  public function scopeWhereResolved(Builder $query)
   {
     return $query->where('status', ReparkRequestStatus::RESOLVED->value);
   }
