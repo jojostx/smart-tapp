@@ -194,7 +194,7 @@ class UserResource extends Resource
                     ->placeholder('ex: example@gmail.com')
                     ->validationAttribute(__('Email'))
                     ->maxLength(255)
-                    ->unique(table: User::class, ignorable: fn (?User $record): ?User => $record)
+                    ->unique(ignoreRecord: true)
                     ->required()
                     ->email(),
                 PhoneNumberInput::make('phone_number')
