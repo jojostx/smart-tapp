@@ -60,7 +60,7 @@ class Dashboard extends Component implements Forms\Contracts\HasForms
     {
         // find access by plate number and parking lot, if the access is not deactivated,
         return Access::query()
-            ->notInactive()
+            ->whereNotInactive()
             ->whereRelation('vehicle', 'plate_number', $blocker_plate_number)
             ->latest()
             ->with(['driver', 'issuer'])
