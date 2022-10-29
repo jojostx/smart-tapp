@@ -160,17 +160,25 @@ class AccessResource extends Resource
 
                                 return $record->getKey();
                             })
-                            ->unique(table: 'accesses', column: 'driver_id', callback: function (Unique $rule, callable $get) {
-                                return $rule->where('vehicle_id',  $get('vehicle_id'));
-                            })
+                            ->unique(
+                                table: 'accesses',
+                                column: 'driver_id',
+                                callback: function (Unique $rule, callable $get) {
+                                    return $rule->where('vehicle_id',  $get('vehicle_id'));
+                                }
+                            )
                             ->visibleOn(Pages\CreateAccess::class),
 
                         Forms\Components\Fieldset::make('Vehicle')
                             ->relationship('vehicle')
                             ->schema([
-                                Forms\Components\TextInput::make('plate_number')->required()->unique('vehicles', 'plate_number'),
-                                Forms\Components\TextInput::make('brand')->required(),
-                                Forms\Components\TextInput::make('model')->required(),
+                                Forms\Components\TextInput::make('plate_number')
+                                    ->required()
+                                    ->unique(ignoreRecord: true),
+                                Forms\Components\TextInput::make('brand')
+                                    ->required(),
+                                Forms\Components\TextInput::make('model')
+                                    ->required(),
                                 Forms\Components\TextInput::make('color'),
 
                             ])
@@ -179,9 +187,14 @@ class AccessResource extends Resource
                         Forms\Components\Fieldset::make('Driver')
                             ->relationship('driver')
                             ->schema([
-                                Forms\Components\TextInput::make('name')->required(),
-                                Forms\Components\TextInput::make('phone_number')->required()->unique('drivers', 'phone_number'),
-                                Forms\Components\TextInput::make('email')->required()->unique('drivers', 'email')
+                                Forms\Components\TextInput::make('name')
+                                    ->required(),
+                                Forms\Components\TextInput::make('phone_number')
+                                    ->required()
+                                    ->unique(ignoreRecord: true),
+                                Forms\Components\TextInput::make('email')
+                                    ->required()
+                                    ->unique(ignoreRecord: true)
                             ])
                             ->hiddenOn(Pages\CreateAccess::class),
 
@@ -191,27 +204,34 @@ class AccessResource extends Resource
 
                         RangeSlider::make('validity_period')
                             ->label('Valid for')
-                            ->max(3)
+                            ->max(5)
                             ->rule('integer')
                             ->min(1)
                             ->step(1)
                             ->hint('<span>&#9432;</span> Time in days')
-                            ->helperText('<span class="text-xs"><span>&#9432;</span> The Access will be deactivated after the validity period.</span>'),
+                            ->helperText('<span class="text-sm"><span>&#9432;</span> The Access will be deactivated after the validity period.</span>'),
 
                         // hide if on edit page and access is active or deactivated
                         RangeSlider::make('expiry_period')
                             ->label('Activation Timeout')
-                            ->hidden(function (?Access $record) {
-                                return $record?->isActive() ?? false;
+                            ->afterStateHydrated(function ($component, $state) {
+                                $component->state($state != 0 ? $state : 30);
                             })
-                            ->max(120)
-                            ->min(30)
-                            ->rule('integer')
+                            ->hidden(function (callable $get) {
+                                $status = \is_string($get('status')) ? AccessStatus::tryFrom($get('status')) : $get('status');
+
+                                return $status == AccessStatus::INACTIVE ||
+                                    $status == AccessStatus::ACTIVE;
+                            })
                             ->step(10)
+                            ->rule('integer')
+                            ->min(30)
+                            ->max(120)
                             ->hint('<span>&#9432;</span> Time in minutes')
-                            ->helperText('<span class="text-xs"><span>&#9432;</span> The Access will expire if it is not activated by the customer before the timeout.</span>'),
+                            ->helperText('<span class="text-sm"><span>&#9432;</span> The Access will expire if it is not activated by the customer before the timeout.</span>'),
 
                         Forms\Components\Radio::make('status')
+                            ->reactive()
                             ->options(AccessStatus::toArray(['expired']))
                             ->default(AccessStatus::ISSUED)
                             ->rule(new Enum(AccessStatus::class))
@@ -306,12 +326,13 @@ class AccessResource extends Resource
 
                             if ($record->issue()) {
                                 $shouldNotify &&
-                                    $record->sendAccessActivationNotification(checkStatusCountdown: 30) &&
-                                    Notification::make()
-                                        ->title('Access Issued Successfully')
-                                        ->body($shouldNotify ? "The **Access Activation Notification** will be sent to the Driver's phone" : null)
-                                        ->success()
-                                        ->send();
+                                    $record->sendAccessActivationNotification(checkStatusCountdown: 30);
+
+                                Notification::make()
+                                    ->title('Access Issued Successfully')
+                                    ->body($shouldNotify ? "The **Access Activation Notification** will be sent to the Driver's phone" : null)
+                                    ->success()
+                                    ->send();
                             } else {
                                 Notification::make()
                                     ->title('Unable to Issue Access')
@@ -335,19 +356,14 @@ class AccessResource extends Resource
                             return "This will send the Access Activation Notification to the Driver's phone.";
                         })
                         ->form([
-                            Password::make("current_password")
-                                ->required()
-                                ->password()
-                                ->rule("current_password")
-                                ->placeholder('••••••••')
-                                ->disableAutocomplete(),
+                            static::getCurrentPasswordField(),
                         ])
                         ->action(function (Access $record) {
                             $record->sendAccessActivationNotification(checkStatusCountdown: 30) &&
                                 Notification::make()
-                                    ->body("The **Access Activation Notification** will be sent to the Driver's phone")
-                                    ->success()
-                                    ->send();
+                                ->body("The **Access Activation Notification** will be sent to the Driver's phone")
+                                ->success()
+                                ->send();
                         }),
 
                     Tables\Actions\EditAction::make(),
@@ -357,14 +373,10 @@ class AccessResource extends Resource
                         ->modalWidth('md')
                         ->modalSubheading(fn (Access $record): string => "Are you sure you want to delete the Access for the Vehicle [{$record->vehicle->plate_number}] with Driver [{$record->driver->name} - {$record->driver->phone_number}]?")
                         ->form([
-                            Password::make("current_password")
-                                ->required()
-                                ->password()
-                                ->rule("current_password")
-                                ->disableAutocomplete(),
+                            static::getCurrentPasswordField(),
                         ]),
                 ])
-                ->icon('heroicon-o-dots-vertical'),
+                    ->icon('heroicon-o-dots-vertical'),
 
                 Tables\Actions\Action::make('Activate')
                     ->visible(fn (Access $record) => $record->isExpired() || $record->isInactive() || $record->isIssued())
@@ -402,13 +414,13 @@ class AccessResource extends Resource
                         $shouldNotify = isset($data['shouldNotify']) && $data['shouldNotify'];
 
                         if ($record->activate()) {
-                            $shouldNotify &&
-                                $record->sendAccessActivationNotification(checkStatusCountdown: 30) &&
-                                Notification::make()
-                                    ->title('Access Activated Successfully')
-                                    ->body($shouldNotify ? "The **Access Activation Notification** will be sent to the Driver's phone" : null)
-                                    ->success()
-                                    ->send();
+                            $shouldNotify && $record->sendAccessActivationNotification(checkStatusCountdown: 30);
+
+                            Notification::make()
+                                ->title('Access Activated Successfully')
+                                ->body($shouldNotify ? "The **Access Activation Notification** will be sent to the Driver's phone" : null)
+                                ->success()
+                                ->send();
                         } else {
                             Notification::make()
                                 ->title('Unable to Activate Access')
@@ -429,12 +441,7 @@ class AccessResource extends Resource
                         return "This will deactivate the Access and prevent the Driver from accessing their dashboard.";
                     })
                     ->form([
-                        Password::make("current_password")
-                            ->required()
-                            ->password()
-                            ->rule("current_password")
-                            ->placeholder('••••••••')
-                            ->disableAutocomplete(),
+                        static::getCurrentPasswordField(),
                     ])
                     ->action(function (Access $record) {
                         $record->deactivate() &&
@@ -454,11 +461,7 @@ class AccessResource extends Resource
                 Tables\Actions\DeleteBulkAction::make()
                     ->requiresConfirmation()
                     ->form([
-                        Password::make("current_password")
-                            ->required()
-                            ->password()
-                            ->rule("current_password")
-                            ->disableAutocomplete(),
+                        static::getCurrentPasswordField(),
                     ]),
             ]);
     }
@@ -478,5 +481,14 @@ class AccessResource extends Resource
             'create' => Pages\CreateAccess::route('/create'),
             'edit' => Pages\EditAccess::route('/{record}/edit'),
         ];
+    }
+
+    public static function getCurrentPasswordField()
+    {
+        return Password::make("current_password")
+            ->required()
+            ->password()
+            ->rule("current_password")
+            ->disableAutocomplete();
     }
 }
