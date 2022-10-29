@@ -38,12 +38,16 @@ class ParkingLotResource extends Resource
                         Forms\Components\TextInput::make('name')
                             ->label('Name')
                             ->required()
-                            ->maxLength(8)
+                            ->maxLength(124)
                             ->minLength(2)
                             ->rules(['alpha_dash'])
-                            ->unique(),
+                            ->unique(ignoreRecord: true),
                         Forms\Components\Radio::make('status')
-                            ->options(ParkingLotStatus::toArray())
+                            ->options([
+                                'open' => 'Open',
+                                'closed' => 'Closed'
+                            ])
+                            ->enum(ParkingLotStatus::class)
                             ->default(ParkingLotStatus::OPEN)
                             ->descriptions(ParkingLotStatus::toDescriptionArray())
                             ->columnSpan('full')
@@ -98,6 +102,7 @@ class ParkingLotResource extends Resource
                     ->colors([
                         'warning' => fn ($state): bool => $state === ParkingLotStatus::CLOSED->value,
                         'success' => fn ($state): bool => $state === ParkingLotStatus::OPEN->value,
+                        'danger' => fn ($state): bool => $state === ParkingLotStatus::FILLED->value,
                     ]),
                 Tables\Columns\TextColumn::make('name')->searchable(),
                 Tables\Columns\TextColumn::make('updated_at')->label('Modified at')->date(config('filament.date_format'))->sortable(),
