@@ -3,6 +3,7 @@
 namespace App\Models\Tenant;
 
 use App\Enums\Models\ParkingLotStatus;
+use App\Traits\ParkingLotStatusManageable;
 use Dyrynda\Database\Support\BindsOnUuid;
 use Dyrynda\Database\Support\GeneratesUuid;
 use Illuminate\Database\Eloquent\Casts\Attribute;
@@ -14,7 +15,7 @@ use SimpleSoftwareIO\QrCode\Facades\QrCode;
 
 class ParkingLot extends Model
 {
-    use HasFactory, GeneratesUuid, BindsOnUuid;
+    use HasFactory, GeneratesUuid, BindsOnUuid, ParkingLotStatusManageable;
 
     /**
      * The attributes that are mass assignable.
@@ -32,7 +33,7 @@ class ParkingLot extends Model
      * @var array
      */
     protected $casts = [
-        'status' => ParkingLotStatus::class,
+        // 'status' => ParkingLotStatus::class,
     ];
 
     /**
