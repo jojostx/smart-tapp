@@ -142,7 +142,7 @@ class UserResource extends Resource
                     Tables\Actions\EditAction::make(),
                     Tables\Actions\Action::make('toggle_status')
                         ->label(fn (User $record) => $record->isActive() ? 'Deactivate' : 'Activate')
-                        ->button()
+                        ->icon('heroicon-s-lock-closed')
                         ->action(fn (User $record) => $record->isActive() ? $record->deactivateAccount() : $record->activateAccount())
                         ->color(fn (User $record) => $record->isActive() ? 'danger' : 'primary'),
                 ])->icon('heroicon-o-dots-vertical')
