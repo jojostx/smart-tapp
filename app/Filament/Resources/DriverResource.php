@@ -2,7 +2,6 @@
 
 namespace App\Filament\Resources;
 
-use App\Filament\Forms\Components\Password;
 use App\Filament\Forms\Components\PhoneNumberInput;
 use App\Filament\Resources\DriverResource\Pages;
 use App\Filament\Tables\Columns\ActionableTextColumn;
@@ -16,11 +15,14 @@ use Filament\Tables;
 use Filament\Tables\Filters\TernaryFilter;
 use Illuminate\Database\Eloquent\Model;
 use App\Filament\Resources\DriverResource\RelationManagers;
+use App\Filament\Traits\WithCurrentPasswordField;
 use Filament\Tables\Actions\ActionGroup;
 use Illuminate\Database\Eloquent\SoftDeletingScope;
 
 class DriverResource extends Resource
 {
+    use WithCurrentPasswordField;
+
     protected static ?string $model = Driver::class;
 
     protected static ?string $navigationIcon = 'heroicon-o-support';
@@ -89,13 +91,15 @@ class DriverResource extends Resource
                     ->toggleable()
                     ->sortable()
                     ->toggledHiddenByDefault(),
-                Tables\Columns\BooleanColumn::make('phone_verified_at')
+                Tables\Columns\IconColumn::make('phone_verified_at')
                     ->label('Phone verified')
+                    ->boolean()
                     ->default(false)
                     ->toggleable()
                     ->sortable(),
-                Tables\Columns\BooleanColumn::make('email_verified_at')
+                Tables\Columns\IconColumn::make('email_verified_at')
                     ->label('Email verified')
+                    ->boolean()
                     ->default(false)
                     ->toggleable()
                     ->sortable()
@@ -121,12 +125,7 @@ class DriverResource extends Resource
                         ->modalSubheading('Are you sure you would like to do this? Deleting the driver will delete all associated Acessess.')
                         ->modalWidth('md')
                         ->form([
-                            Password::make("current_password")
-                                ->required()
-                                ->password()
-                                ->placeholder('••••••••')
-                                ->rule("current_password")
-                                ->disableAutocomplete(),
+                            static::getCurrentPasswordField()
                         ]),
                 ])->icon('heroicon-o-dots-vertical'),
             ])
@@ -134,11 +133,7 @@ class DriverResource extends Resource
                 Tables\Actions\DeleteBulkAction::make()
                     ->requiresConfirmation()
                     ->form([
-                        \Phpsa\FilamentPasswordReveal\Password::make("current_password")
-                            ->required()
-                            ->password()
-                            ->rule("current_password")
-                            ->disableAutocomplete(),
+                        static::getCurrentPasswordField()
                     ]),
             ]);
     }

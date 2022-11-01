@@ -108,16 +108,19 @@ class UserResource extends Resource
                     ->colors([
                         'danger' => fn ($state): bool => $state === UserAccountStatus::INACTIVE->value,
                         'success' => fn ($state): bool => $state === UserAccountStatus::ACTIVE->value,
+                        'warning' => fn ($state): bool => $state === UserAccountStatus::DEACTIVATED->value,
                     ]),
                 Tables\Columns\TextColumn::make('name'),
                 Tables\Columns\TextColumn::make('email')
                     ->searchable(),
-                Tables\Columns\BooleanColumn::make('email_verified_at')
+                Tables\Columns\IconColumn::make('email_verified_at')
+                    ->boolean()
                     ->label('Email verified')
                     ->default(false)
                     ->toggleable()
                     ->sortable(),
-                Tables\Columns\BooleanColumn::make('phone_verified_at')
+                Tables\Columns\IconColumn::make('phone_verified_at')
+                    ->boolean()
                     ->label('Phone verified')
                     ->default(false)
                     ->toggleable()
@@ -135,12 +138,14 @@ class UserResource extends Resource
                     ->nullable(),
             ])
             ->actions([
-                Tables\Actions\EditAction::make(),
-                Tables\Actions\Action::make('toggle_status')
-                    ->label(fn (User $record) => $record->isActive() ? 'Deactivate' : 'Activate')
-                    ->button()
-                    ->action(fn (User $record) => $record->isActive() ? $record->deactivateAccount() : $record->activateAccount())
-                    ->color(fn (User $record) => $record->isActive() ? 'danger' : 'primary'),
+                Tables\Actions\ActionGroup::make([
+                    Tables\Actions\EditAction::make(),
+                    Tables\Actions\Action::make('toggle_status')
+                        ->label(fn (User $record) => $record->isActive() ? 'Deactivate' : 'Activate')
+                        ->button()
+                        ->action(fn (User $record) => $record->isActive() ? $record->deactivateAccount() : $record->activateAccount())
+                        ->color(fn (User $record) => $record->isActive() ? 'danger' : 'primary'),
+                ])->icon('heroicon-o-dots-vertical')
             ])
             ->bulkActions([]);
     }
