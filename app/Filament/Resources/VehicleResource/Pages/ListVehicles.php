@@ -5,6 +5,7 @@ namespace App\Filament\Resources\VehicleResource\Pages;
 use App\Filament\Resources\VehicleResource;
 use Filament\Pages\Actions;
 use Filament\Resources\Pages\ListRecords;
+use Filament\Tables\Actions\Position;
 
 class ListVehicles extends ListRecords
 {
@@ -13,5 +14,10 @@ class ListVehicles extends ListRecords
     protected function getActions(): array
     {
         return [];
+    }
+
+    protected function getTableActionsPosition(): ?string
+    {
+        return Position::BeforeCells;
     }
 }
