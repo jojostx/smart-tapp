@@ -3,9 +3,9 @@
 namespace App\Filament\Resources;
 
 use App\Enums\Models\ReparkRequestStatus;
-use App\Filament\Forms\Components\Password;
 use App\Filament\Resources\ReparkRequestResource\Pages;
 use App\Filament\Resources\ReparkRequestResource\RelationManagers;
+use App\Filament\Traits\WithCurrentPasswordField;
 use App\Models\Tenant\Access;
 use App\Models\Tenant\ReparkRequest;
 use Filament\Forms;
@@ -23,6 +23,8 @@ use Illuminate\Support\HtmlString;
 
 class ReparkRequestResource extends Resource
 {
+    use WithCurrentPasswordField;
+
     protected static ?string $model = ReparkRequest::class;
 
     protected static ?string $navigationIcon = 'heroicon-o-shield-exclamation';
@@ -199,11 +201,7 @@ class ReparkRequestResource extends Resource
                         ->modalHeading(fn (): string => 'Delete ReparkRequest')
                         ->modalSubheading("Are you sure you want to delete this ReparkRequest?")
                         ->form([
-                            Password::make("current_password")
-                                ->required()
-                                ->password()
-                                ->rule("current_password")
-                                ->disableAutocomplete(),
+                            static::getCurrentPasswordField(),
                         ]),
                 ])->icon('heroicon-o-dots-vertical')
             ])

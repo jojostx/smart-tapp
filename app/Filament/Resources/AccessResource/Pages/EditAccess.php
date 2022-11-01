@@ -7,12 +7,15 @@ use App\Filament\Forms\Components\Password;
 use App\Filament\Notifications\Notification;
 use Filament\Forms;
 use App\Filament\Resources\AccessResource;
+use App\Filament\Traits\WithCurrentPasswordField;
 use Filament\Pages\Actions;
 use Filament\Resources\Pages\EditRecord;
 use Illuminate\Database\Eloquent\Model;
 
 class EditAccess extends EditRecord
 {
+    use WithCurrentPasswordField;
+
     protected static string $resource = AccessResource::class;
 
     protected function getListeners()
@@ -223,15 +226,5 @@ class EditAccess extends EditRecord
             ->send();
 
         $this->emitSelf('$refresh');
-    }
-
-    public static function getCurrentPasswordField()
-    {
-        return Password::make("current_password")
-            ->required()
-            ->password()
-            ->rule("current_password")
-            ->placeholder('••••••••')
-            ->disableAutocomplete();
     }
 }

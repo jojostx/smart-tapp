@@ -5,6 +5,7 @@ namespace App\Filament\Resources;
 use App\Filament\Resources\VehicleResource\Pages;
 use App\Filament\Resources\VehicleResource\RelationManagers;
 use App\Filament\Resources\VehicleResource\RelationManagers\DriversRelationManager;
+use App\Filament\Traits\WithCurrentPasswordField;
 use App\Models\Tenant\Vehicle;
 use Filament\Forms;
 use Filament\Resources\Form;
@@ -16,6 +17,8 @@ use Illuminate\Database\Eloquent\SoftDeletingScope;
 
 class VehicleResource extends Resource
 {
+    use WithCurrentPasswordField;
+
     protected static ?string $model = Vehicle::class;
 
     protected static ?string $navigationIcon = 'heroicon-o-truck';
@@ -102,11 +105,7 @@ class VehicleResource extends Resource
                 Tables\Actions\DeleteBulkAction::make()
                     ->requiresConfirmation()
                     ->form([
-                        \Phpsa\FilamentPasswordReveal\Password::make("current_password")
-                            ->required()
-                            ->password()
-                            ->rule("current_password")
-                            ->disableAutocomplete(),
+                        static::getCurrentPasswordField(),
                     ]),
             ]);
     }

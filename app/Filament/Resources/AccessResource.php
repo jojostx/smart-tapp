@@ -4,11 +4,11 @@ namespace App\Filament\Resources;
 
 use App\Enums\Models\AccessStatus;
 use App\Filament\Actions\Tables\CopyAction;
-use App\Filament\Forms\Components\Password;
 use App\Filament\Forms\Components\RangeSlider;
 use App\Filament\Resources\AccessResource\Pages;
 use App\Filament\Resources\AccessResource\RelationManagers;
 use App\Filament\Traits\CanCleanupStaleRecords;
+use App\Filament\Traits\WithCurrentPasswordField;
 use App\Models\Tenant\Access;
 use App\Models\Tenant\Driver;
 use App\Models\Tenant\Vehicle;
@@ -31,6 +31,7 @@ use Route;
 class AccessResource extends Resource
 {
     use CanCleanupStaleRecords;
+    use WithCurrentPasswordField;
 
     protected static ?string $model = Access::class;
 
@@ -481,14 +482,5 @@ class AccessResource extends Resource
             'create' => Pages\CreateAccess::route('/create'),
             'edit' => Pages\EditAccess::route('/{record}/edit'),
         ];
-    }
-
-    public static function getCurrentPasswordField()
-    {
-        return Password::make("current_password")
-            ->required()
-            ->password()
-            ->rule("current_password")
-            ->disableAutocomplete();
     }
 }

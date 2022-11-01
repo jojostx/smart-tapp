@@ -3,10 +3,10 @@
 namespace App\Filament\Resources;
 
 use App\Enums\Models\ParkingLotStatus;
-use App\Filament\Forms\Components\Password;
 use App\Filament\Forms\Components\Qrcode;
 use App\Filament\Resources\ParkingLotResource\Pages;
 use App\Filament\Resources\ParkingLotResource\RelationManagers;
+use App\Filament\Traits\WithCurrentPasswordField;
 use App\Models\Tenant\ParkingLot;
 use Filament\Forms;
 use Filament\Resources\Form;
@@ -19,6 +19,8 @@ use Illuminate\Database\Eloquent\SoftDeletingScope;
 
 class ParkingLotResource extends Resource
 {
+    use WithCurrentPasswordField;
+
     protected static ?string $model = ParkingLot::class;
 
     protected static ?string $navigationIcon = 'heroicon-o-view-boards';
@@ -119,11 +121,7 @@ class ParkingLotResource extends Resource
                     Tables\Actions\DeleteAction::make()
                         ->requiresConfirmation()
                         ->form([
-                            Password::make("current_password")
-                                ->required()
-                                ->password()
-                                ->rule("current_password")
-                                ->disableAutocomplete(),
+                            static::getCurrentPasswordField(),
                         ]),
                 ])
                     ->icon('heroicon-o-dots-vertical'),
@@ -132,11 +130,7 @@ class ParkingLotResource extends Resource
                 Tables\Actions\DeleteBulkAction::make()
                     ->requiresConfirmation()
                     ->form([
-                        Password::make("current_password")
-                            ->required()
-                            ->password()
-                            ->rule("current_password")
-                            ->disableAutocomplete(),
+                        static::getCurrentPasswordField(),
                     ]),
             ]);
     }

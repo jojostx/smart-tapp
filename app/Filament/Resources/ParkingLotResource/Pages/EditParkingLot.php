@@ -2,14 +2,16 @@
 
 namespace App\Filament\Resources\ParkingLotResource\Pages;
 
-use App\Filament\Forms\Components\Password;
 use App\Filament\Resources\ParkingLotResource;
+use App\Filament\Traits\WithCurrentPasswordField;
 use App\Models\Tenant\ParkingLot;
 use Filament\Pages\Actions;
 use Filament\Resources\Pages\EditRecord;
 
 class EditParkingLot extends EditRecord
 {
+    use WithCurrentPasswordField;
+
     protected static string $resource = ParkingLotResource::class;
 
     protected function getActions(): array
@@ -20,11 +22,7 @@ class EditParkingLot extends EditRecord
                 ->modalHeading(fn (): string => 'Delete Parking Lot')
                 ->modalSubheading(fn (ParkingLot $record): string => "Are you sure you want to delete the Parking Lot [{$record->name}]? Doing so will delete all Accesses assigned to it.")
                 ->form([
-                    Password::make("current_password")
-                        ->required()
-                        ->password()
-                        ->rule("current_password")
-                        ->disableAutocomplete(),
+                    static::getCurrentPasswordField(),
                 ])
                 ->modalWidth('md'),
         ];
