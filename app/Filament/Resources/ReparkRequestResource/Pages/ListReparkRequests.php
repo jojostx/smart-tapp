@@ -3,27 +3,28 @@
 namespace App\Filament\Resources\ReparkRequestResource\Pages;
 
 use App\Filament\Resources\ReparkRequestResource;
-use App\Filament\Traits\CanQueryNotificationSentStatus;
-use App\Notifications\Tenant\Driver\AccessActivationNotification;
 use Filament\Pages\Actions;
 use Filament\Resources\Pages\ListRecords;
-use Illuminate\Notifications\DatabaseNotification;
+use Filament\Tables\Actions\Position;
 
 class ListReparkRequests extends ListRecords
 {
-    use CanQueryNotificationSentStatus;
-
     protected static string $resource = ReparkRequestResource::class;
-
-    protected function getListeners()
-    {
-        return ['checkNotificationStatus'];
-    }
 
     protected function getActions(): array
     {
         return [
             Actions\CreateAction::make(),
         ];
+    }
+
+    protected function getTablePollingInterval(): ?string
+    {
+        return '30s';
+    }
+
+    protected function getTableActionsPosition(): ?string
+    {
+        return Position::BeforeCells;
     }
 }
