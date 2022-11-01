@@ -2,8 +2,8 @@
 
 namespace App\Filament\Resources\DriverResource\Pages;
 
-use App\Filament\Forms\Components\Password;
 use App\Filament\Resources\DriverResource;
+use App\Filament\Traits\WithCurrentPasswordField;
 use App\Models\Tenant\Driver;
 use Filament\Pages\Actions;
 use Filament\Resources\Pages\EditRecord;
@@ -11,6 +11,8 @@ use Illuminate\Support\Facades\DB;
 
 class EditDriver extends EditRecord
 {
+    use WithCurrentPasswordField;
+
     protected static string $resource = DriverResource::class;
 
     protected function getActions(): array
@@ -22,11 +24,7 @@ class EditDriver extends EditRecord
                     return "Are you sure you want to do this? Doing so will delete all Accesses assigned to it and any associated Vehicle if they have no related Accesses.";
                 })
                 ->form([
-                    Password::make('current_password')
-                        ->placeholder('••••••••')
-                        ->required()
-                        ->password()
-                        ->rule("current_password"),
+                    static::getCurrentPasswordField(),
                 ])
                 ->action(function (Driver $record, \Filament\Pages\Actions\DeleteAction $action): void {
                     $wasSuccessful = DB::transaction(function () use ($record) {

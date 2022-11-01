@@ -2,9 +2,9 @@
 
 namespace App\Filament\Resources\VehicleResource\Pages;
 
-use App\Filament\Forms\Components\Password;
 use App\Filament\Resources\VehicleResource;
 use App\Filament\Traits\CanCleanupStaleRecords;
+use App\Filament\Traits\WithCurrentPasswordField;
 use App\Models\Tenant\Vehicle;
 use Filament\Pages\Actions;
 use Filament\Resources\Pages\EditRecord;
@@ -13,6 +13,7 @@ use Illuminate\Support\Facades\DB;
 class EditVehicle extends EditRecord
 {
     use CanCleanupStaleRecords;
+    use WithCurrentPasswordField;
 
     protected static string $resource = VehicleResource::class;
 
@@ -25,11 +26,7 @@ class EditVehicle extends EditRecord
                     return "Are you sure you want to do this? Doing so will delete all Accesses assigned to it and any associated Driver if they have no related Accesses.";
                 })
                 ->form([
-                    Password::make('current_password')
-                        ->placeholder('••••••••')
-                        ->required()
-                        ->password()
-                        ->rule("current_password"),
+                    static::getCurrentPasswordField(),
                 ])
                 ->action(function (Vehicle $record, \Filament\Pages\Actions\DeleteAction $action): void {
                     $wasSuccessful = DB::transaction(function () use ($record) {

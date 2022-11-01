@@ -11,7 +11,7 @@ trait WithCurrentPasswordField
       return Password::make("current_password")
           ->required()
           ->password()
-          ->rule("current_password")
+          ->currentPassword()
           ->placeholder('••••••••')
           ->disableAutocomplete();
   }
