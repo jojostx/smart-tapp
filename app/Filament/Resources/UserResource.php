@@ -10,7 +10,6 @@ use Filament\Resources\Form;
 use Filament\Resources\Table;
 use App\Enums\Roles\UserRole;
 use Filament\Resources\Resource;
-use App\Models\Tenant\ParkingLot;
 use Spatie\Permission\Models\Role;
 use Filament\Forms\Components\Section;
 use Illuminate\Database\Eloquent\Model;
@@ -24,6 +23,7 @@ use App\Filament\Resources\UserResource\Pages\CreateUser;
 use App\Filament\Forms\Components\SingleOptionMultiSelect;
 use Illuminate\Database\Eloquent\SoftDeletingScope;
 use App\Filament\Resources\UserResource\RelationManagers;
+use App\Filament\Resources\UserResource\RelationManagers\ParkingLotsRelationManager;
 
 class UserResource extends Resource
 {
@@ -171,7 +171,7 @@ class UserResource extends Resource
     public static function getRelations(): array
     {
         return [
-            //
+            ParkingLotsRelationManager::class,
         ];
     }
 
@@ -220,18 +220,6 @@ class UserResource extends Resource
                     )
                     ->required()
                     ->validationAttribute(__('Role')),
-                SingleOptionMultiSelect::make('parking_lot')
-                    ->relationshipName('parkingLots', 'name')
-                    ->label(__('Parking Lot'))
-                    ->required()
-                    ->options(
-                        fn () => ParkingLot::query()
-                            ->pluck('name', 'id')
-                            ->map(fn (string $name) => str(__($name))->ucfirst())
-                            ->all(),
-                    )
-                    ->validationAttribute(__('Parking Lot'))
-                    ->helperText('This is the Parking lot that will be administered by the admin'),
             ]);
     }
 }
