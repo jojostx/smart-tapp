@@ -3464,8 +3464,8 @@ html {
   margin-left: -0.75rem;
   margin-right: -0.75rem;
 }
-.mr-3{
-  margin-right: 0.75rem;
+.mr-1{
+  margin-right: 0.25rem;
 }
 .mr-2{
   margin-right: 0.5rem;
@@ -3500,6 +3500,9 @@ html {
 .mb-2{
   margin-bottom: 0.5rem;
 }
+.mr-3{
+  margin-right: 0.75rem;
+}
 .mb-6{
   margin-bottom: 1.5rem;
 }
@@ -3520,9 +3523,6 @@ html {
 }
 .ml-3{
   margin-left: 0.75rem;
-}
-.mr-1{
-  margin-right: 0.25rem;
 }
 .mb-1{
   margin-bottom: 0.25rem;
@@ -4766,10 +4766,6 @@ html {
   padding-top: 0.5rem;
   padding-bottom: 0.5rem;
 }
-.px-8{
-  padding-left: 2rem;
-  padding-right: 2rem;
-}
 .px-5{
   padding-left: 1.25rem;
   padding-right: 1.25rem;
@@ -4793,6 +4789,10 @@ html {
 .py-8{
   padding-top: 2rem;
   padding-bottom: 2rem;
+}
+.px-8{
+  padding-left: 2rem;
+  padding-right: 2rem;
 }
 .py-5{
   padding-top: 1.25rem;
@@ -4936,21 +4936,13 @@ html {
 .font-mono{
   font-family: ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, "Liberation Mono", "Courier New", monospace;
 }
-.text-xs{
-  font-size: 0.75rem;
-  line-height: 1rem;
-}
 .text-sm{
   font-size: 0.875rem;
   line-height: 1.25rem;
 }
-.text-xl{
-  font-size: 1.25rem;
-  line-height: 1.75rem;
-}
-.text-5xl{
-  font-size: 3rem;
-  line-height: 1;
+.text-xs{
+  font-size: 0.75rem;
+  line-height: 1rem;
 }
 .text-base{
   font-size: 1rem;
@@ -4959,6 +4951,10 @@ html {
 .text-4xl{
   font-size: 2.25rem;
   line-height: 2.5rem;
+}
+.text-xl{
+  font-size: 1.25rem;
+  line-height: 1.75rem;
 }
 .text-lg{
   font-size: 1.125rem;
@@ -6732,6 +6728,10 @@ html {
     margin-bottom: -1px;
   }
 
+  .sm\:mr-3{
+    margin-right: 0.75rem;
+  }
+
   .sm\:ml-3{
     margin-left: 0.75rem;
   }
@@ -7104,6 +7104,11 @@ html {
     text-align: left;
   }
 
+  .sm\:text-xl{
+    font-size: 1.25rem;
+    line-height: 1.75rem;
+  }
+
   .sm\:text-5xl{
     font-size: 3rem;
     line-height: 1;
@@ -7112,11 +7117,6 @@ html {
   .sm\:text-sm{
     font-size: 0.875rem;
     line-height: 1.25rem;
-  }
-
-  .sm\:text-xl{
-    font-size: 1.25rem;
-    line-height: 1.75rem;
   }
 
   .sm\:leading-relaxed{
@@ -7472,9 +7472,19 @@ html {
     padding: 1.5rem;
   }
 
+  .md\:px-8{
+    padding-left: 2rem;
+    padding-right: 2rem;
+  }
+
   .md\:py-48{
     padding-top: 12rem;
     padding-bottom: 12rem;
+  }
+
+  .md\:px-4{
+    padding-left: 1rem;
+    padding-right: 1rem;
   }
 
   .md\:px-12{
@@ -10485,6 +10495,35 @@ select {
 .aspect-h-1 {
   --tw-aspect-h: 1;
 }
+.filament-badge-danger {
+  display: inline-flex;
+  min-height: 20px;
+  align-items: center;
+  justify-content: center;
+}
+.filament-badge-danger > :not([hidden]) ~ :not([hidden]) {
+  --tw-space-x-reverse: 0;
+  margin-right: calc(0.25rem * var(--tw-space-x-reverse));
+  margin-left: calc(0.25rem * calc(1 - var(--tw-space-x-reverse)));
+}
+.filament-badge-danger {
+  white-space: nowrap;
+  border-radius: 0.75rem;
+  background-color: rgb(244 63 94 / 0.1);
+  padding-left: 0.5rem;
+  padding-right: 0.5rem;
+  padding-top: 0.125rem;
+  padding-bottom: 0.125rem;
+  font-size: 0.875rem;
+  line-height: 1.25rem;
+  font-weight: 500;
+  letter-spacing: -0.025em;
+  --tw-text-opacity: 1;
+  color: rgb(190 18 60 / var(--tw-text-opacity));
+}
+[dir="rtl"] .filament-badge-danger > :not([hidden]) ~ :not([hidden]) {
+  --tw-space-x-reverse: 1;
+}
 .filament-forms-field-wrapper-label {
   font-weight: 500;
   opacity: 1;
@@ -10848,8 +10887,8 @@ select {
   margin-left: -0.75rem;
   margin-right: -0.75rem;
 }
-.mr-3 {
-  margin-right: 0.75rem;
+.mr-1 {
+  margin-right: 0.25rem;
 }
 .mr-2 {
   margin-right: 0.5rem;
@@ -10884,6 +10923,9 @@ select {
 .mb-2 {
   margin-bottom: 0.5rem;
 }
+.mr-3 {
+  margin-right: 0.75rem;
+}
 .mb-6 {
   margin-bottom: 1.5rem;
 }
@@ -10904,9 +10946,6 @@ select {
 }
 .ml-3 {
   margin-left: 0.75rem;
-}
-.mr-1 {
-  margin-right: 0.25rem;
 }
 .mb-1 {
   margin-bottom: 0.25rem;
@@ -12150,10 +12189,6 @@ select {
   padding-top: 0.5rem;
   padding-bottom: 0.5rem;
 }
-.px-8 {
-  padding-left: 2rem;
-  padding-right: 2rem;
-}
 .px-5 {
   padding-left: 1.25rem;
   padding-right: 1.25rem;
@@ -12177,6 +12212,10 @@ select {
 .py-8 {
   padding-top: 2rem;
   padding-bottom: 2rem;
+}
+.px-8 {
+  padding-left: 2rem;
+  padding-right: 2rem;
 }
 .py-5 {
   padding-top: 1.25rem;
@@ -12320,21 +12359,13 @@ select {
 .font-mono {
   font-family: ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, "Liberation Mono", "Courier New", monospace;
 }
-.text-xs {
-  font-size: 0.75rem;
-  line-height: 1rem;
-}
 .text-sm {
   font-size: 0.875rem;
   line-height: 1.25rem;
 }
-.text-xl {
-  font-size: 1.25rem;
-  line-height: 1.75rem;
-}
-.text-5xl {
-  font-size: 3rem;
-  line-height: 1;
+.text-xs {
+  font-size: 0.75rem;
+  line-height: 1rem;
 }
 .text-base {
   font-size: 1rem;
@@ -12343,6 +12374,10 @@ select {
 .text-4xl {
   font-size: 2.25rem;
   line-height: 2.5rem;
+}
+.text-xl {
+  font-size: 1.25rem;
+  line-height: 1.75rem;
 }
 .text-lg {
   font-size: 1.125rem;
@@ -14125,6 +14160,10 @@ html {
     margin-bottom: -1px;
   }
 
+  .sm\:mr-3 {
+    margin-right: 0.75rem;
+  }
+
   .sm\:ml-3 {
     margin-left: 0.75rem;
   }
@@ -14497,6 +14536,11 @@ html {
     text-align: left;
   }
 
+  .sm\:text-xl {
+    font-size: 1.25rem;
+    line-height: 1.75rem;
+  }
+
   .sm\:text-5xl {
     font-size: 3rem;
     line-height: 1;
@@ -14505,11 +14549,6 @@ html {
   .sm\:text-sm {
     font-size: 0.875rem;
     line-height: 1.25rem;
-  }
-
-  .sm\:text-xl {
-    font-size: 1.25rem;
-    line-height: 1.75rem;
   }
 
   .sm\:leading-relaxed {
@@ -14865,9 +14904,19 @@ html {
     padding: 1.5rem;
   }
 
+  .md\:px-8 {
+    padding-left: 2rem;
+    padding-right: 2rem;
+  }
+
   .md\:py-48 {
     padding-top: 12rem;
     padding-bottom: 12rem;
+  }
+
+  .md\:px-4 {
+    padding-left: 1rem;
+    padding-right: 1rem;
   }
 
   .md\:px-12 {

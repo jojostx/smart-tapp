@@ -6,6 +6,7 @@
     "license": "MIT",
     "require": {
         "php": "^8.0.2",
+        "alajusticia/laravel-expirable": "^1.6",
         "bmatovu/multi-auth": "^11.0",
         "doctrine/dbal": "^3.3",
         "dyrynda/laravel-model-uuid": "^6.6",
