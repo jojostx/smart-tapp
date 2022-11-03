@@ -30,7 +30,7 @@ class ParkingLotPolicy
      */
     public function viewAny(User $user)
     {
-        return $user->isAdmin();
+        return $user->isAdmin() && $user->isActive();
     }
 
     /**
@@ -65,8 +65,8 @@ class ParkingLotPolicy
      */
     public function update(User $user, ParkingLot $parkingLot)
     {
-        // can only update parking that are assigned to them and can only update status to filled or open
-        return $user->isAdmin() && $user->administersParkingLot($parkingLot);
+        // can only update parking lots that the have non-expired admin privilege over
+        return $user->isAdmin() && $user->canAdminParkingLot($parkingLot);
     }
 
     /**

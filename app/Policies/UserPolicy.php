@@ -29,7 +29,7 @@ class UserPolicy
      */
     public function viewAny(User $user)
     {
-        return false;
+        return $user->isAdmin() && $user->isActive();
     }
 
     /**

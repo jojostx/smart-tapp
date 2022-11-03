@@ -31,7 +31,7 @@ class VehiclePolicy
      */
     public function viewAny(User $user)
     {
-        return $user->isAdmin();
+        return $user->isAdmin() && $user->isActive();
     }
 
     /**
