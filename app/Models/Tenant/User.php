@@ -9,11 +9,13 @@ use App\Notifications\Tenant\User\SetPassword;
 use Dyrynda\Database\Support\BindsOnUuid;
 use Dyrynda\Database\Support\GeneratesUuid;
 use Illuminate\Contracts\Auth\MustVerifyEmail;
+use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\Casts\Attribute;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Relations\BelongsToMany;
 use Illuminate\Foundation\Auth\User as Authenticatable;
 use Illuminate\Notifications\Notifiable;
+use Illuminate\Support\Carbon;
 use Illuminate\Support\Facades\Password;
 use Laravel\Sanctum\HasApiTokens;
 use Spatie\Permission\Traits\HasRoles;
@@ -213,15 +215,69 @@ class User extends Authenticatable
     }
 
     /**
-     * checks if the parking lot is assigned to the admin user.
+     * checks if the parking lot is assigned to the user 
+     * (expirable or non-expirable admin privilege).
      * 
      * @param \App\Models\Tenant\ParkingLot $parkingLot
      * 
      * @return bool
      */
-    public function administersParkingLot(ParkingLot $parkingLot): bool
+    public function isAdminOfParkingLot(ParkingLot $parkingLot): bool
     {
-        return $this->parkingLots()->where('parking_lots.id', $parkingLot->getKey())->exists();
+        return $this->parkingLots()
+            ->where('parking_lots.id', $parkingLot->getKey())
+            ->exists();
+    }
+
+    /**
+     * checks if the user is a main admin of the parking lot
+     * (non-expirable admin privilege).
+     * 
+     * @param \App\Models\Tenant\ParkingLot $parkingLot
+     * 
+     * @return bool
+     */
+    public function isMainAdminOfParkingLot(ParkingLot $parkingLot): bool
+    {
+        return $this->parkingLots()
+            ->wherePivotNull('expires_at')
+            ->where('parking_lots.id', $parkingLot->getKey())
+            ->exists();
+    }
+
+    /**
+     * checks if the user is a sub admin of the parking lot
+     * (expirable admin privilege).
+     * 
+     * @param \App\Models\Tenant\ParkingLot $parkingLot
+     * 
+     * @return bool
+     */
+    public function isSubAdminOfParkingLot(ParkingLot $parkingLot): bool
+    {
+        return $this->parkingLots()
+            ->wherePivotNotNull('expires_at')
+            ->where('parking_lots.id', $parkingLot->getKey())
+            ->exists();
+    }
+
+    /**
+     * checks if the user's privilege is not expired or eternal
+     * 
+     * @param \App\Models\Tenant\ParkingLot $parkingLot
+     * 
+     * @return bool
+     */
+    public function canAdminParkingLot(ParkingLot $parkingLot): bool
+    {
+        return $this->parkingLots()
+            ->where('parking_lots.id', $parkingLot->getKey())
+            ->where(function (Builder $query) {
+                return $query
+                    ->whereNull('administrations.expires_at')
+                    ->orWhere('administrations.expires_at', '>=', Carbon::now());
+            })
+            ->exists();
     }
 
     /**
@@ -229,6 +285,9 @@ class User extends Authenticatable
      */
     public function parkingLots(): BelongsToMany
     {
-        return $this->belongsToMany(ParkingLot::class)->withTimestamps();
+        return $this->belongsToMany(ParkingLot::class, 'administrations')
+            ->as('administration')
+            ->withPivot('expires_at')
+            ->withTimestamps();
     }
 }

@@ -2,7 +2,6 @@
 
 namespace App\Models\Tenant;
 
-use App\Enums\Models\ParkingLotStatus;
 use App\Traits\ParkingLotStatusManageable;
 use Dyrynda\Database\Support\BindsOnUuid;
 use Dyrynda\Database\Support\GeneratesUuid;
@@ -71,6 +70,9 @@ class ParkingLot extends Model
      */
     public function administrators(): BelongsToMany
     {
-        return $this->belongsToMany(User::class)->withTimestamps();
+        return $this->belongsToMany(User::class, 'administrations')
+            ->as('administration')
+            ->withPivot('expires_at')
+            ->withTimestamps();
     }
 }
