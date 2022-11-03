@@ -42,7 +42,7 @@ class ParkingLotPolicy
      */
     public function view(User $user, ParkingLot $parkingLot)
     {
-        return $user->isAdmin();
+        return $user->isAdmin() && $user->isActive() && $user->canAdminParkingLot($parkingLot);
     }
 
     /**
