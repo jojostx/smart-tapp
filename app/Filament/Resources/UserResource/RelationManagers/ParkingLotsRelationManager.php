@@ -104,7 +104,6 @@ class ParkingLotsRelationManager extends RelationManager
                     Tables\Actions\Action::make('expire')
                         ->button()
                         ->hidden(function (ParkingLot $record) {
-                            \dd($record, $record->administration->pivotParent->isAdminOfParkingLot($record));
                             /** @var \App\Models\Tenant\Administration|null */
                             $administration = Administration::withExpired()->where([
                                 ['user_id', '=', $record->administration->user_id],
