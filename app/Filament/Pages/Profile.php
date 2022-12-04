@@ -2,18 +2,22 @@
 
 namespace App\Filament\Pages;
 
+use Closure;
 use App\Models\Tenant\User;
 use Filament\Forms\Components\Grid;
-use Filament\Forms\Components\Section;
 use Filament\Forms\Components\TextInput;
 use Filament\Pages\Page;
 use Illuminate\Database\Eloquent\Model;
-use Illuminate\Validation\Rules\Password;
-use Filament\Pages\Actions;
 use App\Filament\Forms\Components\Password as FilamentPasswordRevealPassword;
-use App\Filament\Forms\Components\PhoneNumberInput;
+use Filament\Facades\Filament;
 use Filament\Forms\Components\Card;
 use Filament\Forms\Components\Placeholder;
+use Filament\Notifications\Notification;
+use Illuminate\Auth\Events\PasswordReset;
+use Illuminate\Support\Facades\Auth;
+use Illuminate\Support\Facades\DB;
+use Illuminate\Support\Facades\Hash;
+use Illuminate\Validation\Rule;
 
 class Profile extends Page
 {
@@ -32,10 +36,15 @@ class Profile extends Page
 
     public function mount(): void
     {
-        $this->form->fill([
-            'name'  =>  $this->getFormModel()->name,
-            'email' =>  $this->getFormModel()->email,
-            'phone_number' =>  $this->getFormModel()->phone_number,
+        $this->personalInfoForm->fill([
+            'name' => $this->getFormModel()->name,
+            'email' => $this->getFormModel()->email,
+            'phone_number' => $this->getFormModel()->phone_number,
+        ]);
+
+        $this->passwordInfoForm->fill([
+            'new_password' => '',
+            'new_password_confirmation' => '',
         ]);
     }
 
@@ -61,104 +70,189 @@ class Profile extends Page
         ];
     }
 
-    protected function getFormSchema(): array
+    protected function getPersonalInfoFormSchema(): array
     {
         return [
-            Grid::make()->schema([
-                Grid::make()
-                    ->schema([
-                        Section::make('General Information')
-                            ->columns(1)
-                            ->schema([
-                                TextInput::make('name')
-                                    ->label('Name')
-                                    ->required(),
-                                TextInput::make('email')
-                                    ->label('Email')
-                                    ->required(),
-                                PhoneNumberInput::make('phone_number')
-                                    ->label('Phone')
-                                    ->required()
-                                    ->reactive()
-                                    ->allowedCountries(['NG']),
-                            ]),
-                        Section::make('Password Information')
-                            ->columns(1)
-                            ->schema([
-                                FilamentPasswordRevealPassword::make('current_password')
-                                    ->label('Current Password')
-                                    ->password()
-                                    ->rules(['required_with:new_password'])
-                                    ->currentPassword()
-                                    ->placeholder('••••••••')
-                                    ->autocomplete('off')
-                                    ->columnSpan(1),
-                                FilamentPasswordRevealPassword::make('new_password')
-                                    ->label('New Password')
-                                    ->generatable()
-                                    ->passwordLength(12)
-                                    ->passwordUsesNumbers()
-                                    ->placeholder('••••••••')
-                                    ->passwordUsesSymbols()
-                                    ->rules(['confirmed', Password::defaults()])
-                                    ->autocomplete('new-password'),
-                                FilamentPasswordRevealPassword::make('new_password_confirmation')
-                                    ->label('Confirm Password')
-                                    ->password()
-                                    ->placeholder('••••••••')
-                                    ->rules([
-                                        'required_with:new_password',
-                                    ])
-                                    ->autocomplete('new-password'),
-                            ]),
-                    ])
-                    ->columnSpan([
-                        'sm' => 2,
-                    ]),
-                Card::make()
-                    ->schema([
-                        Placeholder::make('email_verified_at')
-                            ->label('Email verified at')
-                            ->content(fn (?User $record): string => $record ? ($record->email_verified_at?->diffForHumans() ?? '-') : '-'),
-                        Placeholder::make('phone_verified_at')
-                            ->label('Phone verified at')
-                            ->content(fn (?User $record): string => $record ? ($record->phone_verified_at?->diffForHumans() ?? '-') : '-'),
-                        Placeholder::make('updated_at')
-                            ->label('Last modified at')
-                            ->content(fn (?User $record): string => $record ? $record->updated_at->diffForHumans() : '-'),
-                        Placeholder::make('created_at')
-                            ->label('Created at')
-                            ->content(fn (?User $record): string => $record ? $record->created_at->diffForHumans() : '-')
-                    ])
-                    ->columns(2)
-                    ->columnSpan(2),
-            ])->columns([
-                'sm' => 4,
-                'lg' => 4,
-            ]),
-
+            Grid::make([
+                'default' => 1
+            ])
+                ->schema([
+                    TextInput::make('name')
+                        ->label('Name')
+                        ->string()
+                        ->maxLength(120)
+                        ->required(),
+                    TextInput::make('email')
+                        ->label('Email')
+                        ->helperText(
+                            'To change your email you need to verify the new email address that you provide.
+                            An email containing verification instructions will be sent to the provided email address.'
+                        )
+                        ->required()
+                        ->maxLength(255)
+                        ->unique('pending_user_emails', 'email')
+                        ->unique('users', 'email', $this->getFormModel())
+                        ->email(),
+                    TextInput::make('phone_number')
+                        ->label('Phone Number')
+                        ->required()
+                        ->reactive()
+                        ->unique('users', 'phone_number', ignoreRecord: true)
+                        ->tel()
+                        ->rule(Rule::phone()->country(['NG'])),
+                ]),
         ];
     }
 
-    public function submit(): void
+    protected function getPlaceholderInfoFormSchema(): array
     {
-        \dd($this->validate());
-        // $data = $this->form->getState();
+        return [
+            Card::make()
+                ->schema([
+                    Placeholder::make('email_verified_at')
+                        ->label('Email verified at')
+                        ->content(fn (?User $record): string => $record ? ($record->email_verified_at?->diffForHumans() ?? '-') : '-'),
+                    Placeholder::make('phone_verified_at')
+                        ->label('Phone verified at')
+                        ->content(fn (?User $record): string => $record ? ($record->phone_verified_at?->diffForHumans() ?? '-') : '-'),
+                    Placeholder::make('updated_at')
+                        ->label('Last modified at')
+                        ->content(fn (?User $record): string => $record ? $record->updated_at->diffForHumans() : '-'),
+                    Placeholder::make('created_at')
+                        ->label('Created at')
+                        ->content(fn (?User $record): string => $record ? $record->created_at->diffForHumans() : '-')
+                ])
+                ->columns(2)
+                ->columnSpan(2),
+        ];
+    }
 
-        // $state = array_filter([
-        //     'name'     => $data['name'],
-        //     'email'    => $data['email'],
-        //     'password' => $data['new_password'] ? Hash::make($data['new_password']) : null,
-        // ]);
+    protected function getPasswordInfoFormSchema(): array
+    {
+        return [
+            Grid::make([
+                'default' => 1,
+            ])
+                ->schema([
+                    FilamentPasswordRevealPassword::make('current_password')
+                        ->label('Current Password')
+                        ->placeholder('••••••••')
+                        ->rules(['required_with:new_password'])
+                        ->currentPassword()
+                        ->autocomplete('off'),
+                    FilamentPasswordRevealPassword::make('new_password')
+                        ->label('New Password')
+                        ->placeholder('••••••••')
+                        ->required()
+                        ->different('current_password')
+                        ->generatable()
+                        ->maxLength(100)
+                        ->passwordLength(10)
+                        ->passwordUsesNumbers()
+                        ->passwordUsesSymbols()
+                        ->confirmed()
+                        ->autocomplete('new-password'),
+                    FilamentPasswordRevealPassword::make('new_password_confirmation')
+                        ->label('Confirm Password')
+                        ->placeholder('••••••••')
+                        ->passwordLength(10)
+                        ->requiredWith('new_password')
+                        ->autocomplete('new-password'),
+                ]),
+        ];
+    }
 
-        // $this->getFormModel()->update($state);
+    protected function getForms(): array
+    {
+        $authUser = $this->getFormModel();
 
-        // if ($data['new_password']) {
-        //     // @phpstan-ignore-next-line
-        //     Filament::auth()->login($this->getFormModel(), (bool)$this->getFormModel()->getRememberToken());
-        // }
+        return [
+            'personalInfoForm' => $this->makeForm()
+                ->schema($this->getPersonalInfoFormSchema())
+                ->model($authUser),
 
-        // $this->notify('success', strval(__('filament::resources/pages/edit-record.messages.saved')));
+            'placeholderInfoForm' => $this->makeForm()
+                ->schema($this->getPlaceholderInfoFormSchema())
+                ->model($authUser),
+
+            'passwordInfoForm' => $this->makeForm()
+                ->schema($this->getPasswordInfoFormSchema())
+                ->model($authUser),
+        ];
+    }
+
+    public function savePersonalInfo(): void
+    {
+        $data = $this->personalInfoForm->getState();
+        $email_changed = isset($data['email']) && $data['email'] != $this->getFormModel()->email;
+
+        // save phone and name attribute
+        $saved = $this->getFormModel()->fill([
+            'name' => $data['name'],
+            'phone_number' => $data['phone_number'],
+        ])->save();
+
+        // Create a pending user email
+        $pending_email = $this->getFormModel()->newEmail($data['email']);
+
+        $success_message = 'Details saved successfully. ';
+
+        if ($email_changed && $pending_email) {
+            $success_message .= 'Please check your inbox to verify the new email.';
+        }
+
+        $saved && $this->showSuccessNotification($success_message);
+    }
+
+    public function savePasswordInfo(): void
+    {
+        if ($tenant = \tenant()) {
+            /** @var \Illuminate\Contracts\Auth\Authenticatable|Model */
+            $authUser = $this->getFormModel();
+            $new_password = Hash::make($this->passwordInfoForm->getState()['new_password']);
+
+            $saved = DB::transaction(function () use ($authUser, $tenant, $new_password) {
+                return $authUser->forceFill([
+                    'password' => $new_password,
+                    'remember_token' => str()->random(60),
+                ])->save()
+                &&
+                $tenant->forceFill([
+                    'password' => $new_password,
+                    'remember_token' => str()->random(60),
+                ])->save();
+            });
+
+            if ($saved) {
+                Auth::guard('web')->logout();
+                session()->invalidate();
+                session()->regenerateToken();
+
+                Filament::auth()->login($authUser, (bool) $authUser?->getRememberToken());
+
+                event(new PasswordReset($authUser));
+
+                $this->showSuccessNotification('Password updated successfully.');
+            }
+        }
+    }
+
+    protected function showSuccessNotification(string|Closure|null $body)
+    {
+        Notification::make('save-success-' . str()->random(5))
+            ->body($body)
+            ->success()
+            ->seconds(10)
+            ->send();
+    }
+
+    protected function showFailureNotification(string|Closure|null $body)
+    {
+        Notification::make('save-failed-' . str()->random(5))
+            ->body($body)
+            ->danger()
+            ->seconds(10)
+            ->send();
     }
 }
 
