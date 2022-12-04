@@ -40,7 +40,7 @@ trait WithDomainValidation
     }
 
     if (filled($this->domain) && is_string($this->domain)) {
-      $attributes['domain'] = strtolower($this->domain) . '.' . config('tenancy.central_domains')[0];
+      $attributes['domain'] = strtolower($this->domain) . '.' . config('tenancy.central_domains.main');
     }
 
     return $attributes;
