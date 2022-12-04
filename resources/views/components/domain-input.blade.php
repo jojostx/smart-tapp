@@ -1,3 +1,6 @@
+@php
+  $has_error = $errors->has('fqsd') || $errors->has('domain');
+@endphp
 <div class="mt-4">
   <div class="flex items-baseline">
     <x-label for="domain" :value="__('Domain')" />
@@ -10,9 +13,13 @@
     </div>
   </div>
 
-  <x-input-group-end wire:model.lazy="domain" x-data="" :x-mask="'a' . str_repeat('*', config('tenancy.subdomain_maxlength') - 1)" id="domain" placeholder="(Ex. acme)" name="domain" suffix="{{ '.' . config('tenancy.central_domains')[0] }}" :maxlength="config('tenancy.subdomain_maxlength')" :value="old('domain')" required />
+  <x-input-group-end :has_error="$has_error" wire:model.lazy="domain" x-data="" :x-mask="'a' . str_repeat('*', config('tenancy.subdomain_maxlength') - 1)" id="domain" placeholder="(Ex. acme)" name="domain" suffix="{{ '.' . config('tenancy.central_domains.main') }}" :maxlength="config('tenancy.subdomain_maxlength')" :value="old('domain')" required />
+  
+  @if ($errors->has('fqsd'))
+    <p class="mt-2 text-sm text-red-600">{{ $errors->first('fqsd') }}</p>
+  @endif
 
-  @if ($errors->has('domain') || $errors->has('fqsd'))
-  <p class="mt-2 text-sm text-red-600">{{ $errors->first('domain') }}</p>
+  @if ($errors->has('domain'))
+    <p class="mt-2 text-sm text-red-600">{{ $errors->first('domain') }}</p>
   @endif
 </div>

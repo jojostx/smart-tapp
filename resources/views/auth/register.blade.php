@@ -32,7 +32,7 @@
                     </div>
                 </div>
 
-                <x-input-group-end x-data="" :x-mask="'a' . str_repeat('*', config('tenancy.subdomain_maxlength') - 1)" id="domain" placeholder="(Ex. acme)" name="domain" suffix="{{ '.' . config('tenancy.central_domains')[0] }}" :maxlength="config('tenancy.subdomain_maxlength')" :value="old('domain')" required />
+                <x-input-group-end x-data="" :x-mask="'a' . str_repeat('*', config('tenancy.subdomain_maxlength') - 1)" id="domain" placeholder="(Ex. acme)" name="domain" suffix="{{ '.' . config('tenancy.central_domains.main') }}" :maxlength="config('tenancy.subdomain_maxlength')" :value="old('domain')" required />
             </div>
 
 

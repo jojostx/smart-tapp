@@ -59,7 +59,7 @@ class Register extends Component
         $this->fqsd = $this->domain;
         
         if (filled($this->fqsd) && \is_string($this->fqsd)) {
-            $attributes['fqsd'] = strtolower($this->fqsd) . '.' . config('tenancy.central_domains')[0];
+            $attributes['fqsd'] = strtolower($this->fqsd) . '.' . config('tenancy.central_domains.main');
         }
         
         return $attributes;
