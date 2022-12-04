@@ -2,7 +2,7 @@
 
 namespace App\Models\Tenant;
 
-use App\Concerns\Models\CanSendAccessActivationNotification;
+use App\Contracts\Models\CanSendAccessActivationNotification;
 use App\Traits\AccessActivationNotifiable;
 use App\Traits\AccessStatusManageable;
 use Dyrynda\Database\Support\BindsOnUuid;
