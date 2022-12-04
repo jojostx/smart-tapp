@@ -109,7 +109,7 @@ if (!function_exists('flattenWithKeys')) {
       if ((is_array($v) || is_object($v)) && !empty($v)) $result = flattenWithKeys((array) $v, $nestingDelimiter, $root . $k . $nestingDelimiter, $result);
       else $result[$root . $k] = $v;
     }
-    
+
     return $result;
   }
 }

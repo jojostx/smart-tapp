@@ -4,7 +4,7 @@ namespace App\Providers;
 
 use App\Http\Responses\Tenant\Auth\LogoutResponse as AuthLogoutResponse;
 use Filament\Facades\Filament;
-use Filament\Http\Responses\Auth\LogoutResponse;
+use Filament\Http\Responses\Auth\Contracts\LogoutResponse;
 use Illuminate\Support\Collection;
 use Illuminate\Support\Facades\Event;
 use Illuminate\Support\ServiceProvider;
@@ -40,9 +40,9 @@ class AppServiceProvider extends ServiceProvider
         Filament::serving(function () {
             Filament::registerNavigationGroups([
                 'Parking',
-                // 'User Management',
-                // 'Settings',
             ]);
         });
+
+        $this->app->bind(LogoutResponse::class, AuthLogoutResponse::class);
     }
 }
