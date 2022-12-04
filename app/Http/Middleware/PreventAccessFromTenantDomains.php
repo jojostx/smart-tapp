@@ -23,7 +23,7 @@ class PreventAccessFromTenantDomains
     /** @var callable */
     protected $central404;
 
-        /**
+    /**
      * The application instance.
      *
      * @var \Illuminate\Contracts\Foundation\Application
