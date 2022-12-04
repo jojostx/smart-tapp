@@ -5,6 +5,7 @@ namespace App\Filament\Livewire\Auth;
 use App\Filament\Traits\WithDomainValidation;
 use App\Models\Tenant\User;
 use DanHarrin\LivewireRateLimiting\WithRateLimiting;
+use Illuminate\Support\Facades\Cookie;
 use Illuminate\Support\Facades\Hash;
 use Livewire\Component;
 
@@ -39,7 +40,7 @@ class Login extends Component
     public function mount()
     {
         $this->email = request()->query('email', '');
-        
+
         $this->fill([
             'domain' => $this->currentTenant?->domain ?? '',
         ]);
@@ -77,6 +78,11 @@ class Login extends Component
 
         $token = tenancy()->impersonate($tenant, $user->id, $this->redirectUrl);
         $domain = $tenant->domain;
+
+        // $central_domain = '.' . \config('tenancy.central_domains.main');
+        // $tenant_route = $domain . '/' . $this->redirectUrl;
+
+        // Cookie::queue('impersonated', $tenant_route, 2628000, null, $central_domain);
 
         return redirect("https://$domain/impersonate/{$token->token}");
     }
