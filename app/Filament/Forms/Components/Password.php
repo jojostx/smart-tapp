@@ -5,6 +5,7 @@ namespace App\Filament\Forms\Components;
 use Closure;
 use Filament\Forms\Components\TextInput;
 use Illuminate\Support\Str;
+use Illuminate\Validation\Rules\Password as RulesPassword;
 
 class Password extends TextInput
 {
@@ -26,9 +27,32 @@ class Password extends TextInput
 
     protected int $passwordMinLen = 8;
 
-    protected bool $passwordUsesNumbers = true;
+    protected bool $passwordUsesLetters = true;
 
-    protected bool $passwordUsesSymbols = true;
+    protected bool $passwordUsesNumbers = false;
+
+    protected bool $passwordUsesSymbols = false;
+
+    public function getValidationRules(): array
+    {
+        $rule = RulesPassword::min($this->passwordMinLen);
+
+        if ($this->passwordUsesLetters) {
+            $rule = $rule->letters();
+        }
+
+        if ($this->passwordUsesNumbers) {
+            $rule = $rule->numbers();
+        }
+
+        if ($this->passwordUsesSymbols) {
+            $rule = $rule->symbols();
+        }
+
+        $this->rule($rule);
+
+        return parent::getValidationRules();
+    }
 
     public function generatable(bool|Closure $condition = true): static
     {
@@ -57,6 +81,12 @@ class Password extends TextInput
     public function passwordLength(int $len): static
     {
         $this->passwordMinLen = $len;
+        return $this;
+    }
+
+    public function passwordUsesLetters(bool $use = true): static
+    {
+        $this->passwordUsesLetters = $use;
         return $this;
     }
 
@@ -151,5 +181,3 @@ class Password extends TextInput
         return Str::of($this->getId())->replace(".", "_")->prepend('input_')->studly()->snake()->toString();
     }
 }
-
-

@@ -14,8 +14,8 @@ return [
      * Only relevant if you're using the domain or subdomain identification middleware.
      */
     'central_domains' => [
-        env('TENANCY_CENTRAL_DOMAIN'),
-        env('TENANCY_CENTRAL_ADMIN_DOMAIN'),
+        'main' => env('TENANCY_CENTRAL_DOMAIN'),
+        'sub1' => env('TENANCY_CENTRAL_ADMIN_DOMAIN'),
     ],
 
     'tenancy_middleware' => App\Http\Middleware\InitializeTenancyByDomain::class,

@@ -2,16 +2,28 @@
     "name": "laravel/laravel",
     "type": "project",
     "description": "The Laravel Framework.",
-    "keywords": ["framework", "laravel"],
     "license": "MIT",
+    "keywords": ["framework", "laravel"],
+    "repositories": {
+        "larasubs": {
+            "type": "path",
+            "url": "packages/jojostx/larasubs",
+            "options": {
+                "symlink": true
+            }
+        }
+    },
     "require": {
         "php": "^8.0.2",
+        "abanoubnassem/filament-phone-field": "^0.0.1",
+        "akaunting/laravel-money": "^3.1",
         "alajusticia/laravel-expirable": "^1.6",
         "bmatovu/multi-auth": "^11.0",
         "doctrine/dbal": "^3.3",
         "dyrynda/laravel-model-uuid": "^6.6",
         "filament/filament": "^2.13",
         "guzzlehttp/guzzle": "^7.2",
+        "jojostx/larasubs": "@dev",
         "laravel-frontend-presets/tall": "^4.2",
         "laravel-notification-channels/africastalking": "^3.2",
         "laravel/framework": "^9.11",

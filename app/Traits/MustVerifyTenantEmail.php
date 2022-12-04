@@ -11,6 +11,7 @@ use Illuminate\Support\Facades\Lang;
 trait MustVerifyTenantEmail
 {
   use HasOTP;
+
   /**
    * Determine if the user has verified their email address.
    *
@@ -62,7 +63,7 @@ trait MustVerifyTenantEmail
       return (new MailMessage)
         ->subject(config('app.mail_subject_prefix') . ' - ' . Lang::get('Verify Email Address'))
         ->greeting('Hello!')
-        ->line("Thank you for choosing " . config('app.name', 'Smart-tapp') . ", Use the following OTP to complete your Sign Up procedures. OTP is valid for 5 minutes")
+        ->line("Thank you for choosing " . config('app.name', 'Smart-tapp') . ", Use the following OTP to complete your Sign Up procedures. OTP is valid for 10 minutes")
         ->line(Lang::get('Your verification OTP is'))
         ->line($otp)
         ->line(Lang::get('If you did not create an account, no further action is required.'));

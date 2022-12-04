@@ -2,6 +2,7 @@
 
 namespace App\Models\Tenant;
 
+use App\Traits\MustVerifyNewEmail;
 use App\Enums\Models\UserAccountStatus;
 use App\Enums\Roles\UserRole;
 use App\Notifications\Tenant\User\ResetPassword;
@@ -23,10 +24,9 @@ use Spatie\Permission\Traits\HasRoles;
 /**
  * @mixin IdeHelperUser
  */
-class User extends Authenticatable
+class User extends Authenticatable implements MustVerifyEmail
 {
-    use HasApiTokens, HasFactory,  GeneratesUuid, BindsOnUuid, Notifiable, HasRoles;
-
+    use MustVerifyNewEmail, HasApiTokens, HasFactory,  GeneratesUuid, BindsOnUuid, Notifiable, HasRoles;
     /**
      * The attributes that are mass assignable.
      *

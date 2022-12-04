@@ -2,11 +2,11 @@
 
 declare(strict_types=1);
 
+use App\Filament\Livewire\Auth\VerifyNewEmail;
 use App\Filament\Livewire\Tenant\Access\Dashboard;
 use App\Filament\Livewire\Tenant\Access\QrcodeScanner;
 use App\Http\Middleware\InitializeTenancyByDomain;
 use Illuminate\Support\Facades\Route;
-use Illuminate\Http\Request;
 use Stancl\Tenancy\Features\UserImpersonation;
 use Stancl\Tenancy\Middleware\PreventAccessFromCentralDomains;
 
@@ -29,9 +29,12 @@ Route::middleware([
     InitializeTenancyByDomain::class,
     PreventAccessFromCentralDomains::class,
 ])->group(function () {
-    Route::get('/', function (Request $request) {
-        dd('ok');
-    })->name('access.home');
+    // Route::get('/', function (Request $request) {
+    //     dd('ok');
+    // })->name('access.home');
+    Route::get('pending-email/verify/{token}', VerifyNewEmail::class)
+        ->name('pending-email.verify')
+        ->middleware(['signed']);
 
     Route::prefix('access')->name('access.')->group(function () {
         Route::get('/{access}/scan', QrcodeScanner::class)
@@ -57,10 +60,6 @@ Route::middleware([
 
     Route::get('/impersonate/{token}', function ($token) {
         $redirectResponse = UserImpersonation::makeResponse($token);
-
-        if ($redirectResponse->getTargetUrl()) {
-            session(['impersonated' => true, 'targetUrl' => $redirectResponse->getTargetUrl()]);
-        }
 
         return $redirectResponse;
     });
