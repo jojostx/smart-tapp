@@ -5,6 +5,7 @@ use App\Filament\Livewire\Auth\PasswordRequest;
 use App\Filament\Livewire\Auth\Register;
 use App\Filament\Livewire\Auth\Verify;
 use App\Http\Controllers\HandleAfricasTalkingWebhookReport;
+use App\Http\Controllers\Subscription\PlanController;
 use Illuminate\Support\Facades\Route;
 
 /*
@@ -19,6 +20,10 @@ use Illuminate\Support\Facades\Route;
 */
 
 Route::view('/', 'welcome')->name('home');
+
+Route::group(['prefix' => 'plans', 'as' => 'plans.'], function () {
+    Route::get('/pricing', [PlanController::class, 'index'])->name('pricing');
+});
 
 Route::middleware(['web', 'guest'])
     ->withoutMiddleware('cookie_consent')
