@@ -15,6 +15,7 @@ use Filament\Tables;
 use Filament\Tables\Filters\TernaryFilter;
 use Illuminate\Database\Eloquent\Model;
 use App\Filament\Resources\DriverResource\RelationManagers;
+use AbanoubNassem\FilamentPhoneField\Forms\Components\PhoneInput;
 use App\Filament\Traits\WithCurrentPasswordField;
 use Filament\Tables\Actions\ActionGroup;
 use Illuminate\Database\Eloquent\SoftDeletingScope;
@@ -157,9 +158,20 @@ class DriverResource extends Resource
     {
         return Section::make(__('Driver Details'))
             ->schema([
-                Forms\Components\TextInput::make('email')->email()->required(),
-                PhoneNumberInput::make('phone_number')->required()->reactive()->allowedCountries(['NG']),
-                Forms\Components\Placeholder::make('location')->label('Location')->content('Nigeria (NGN)'),
+                Forms\Components\TextInput::make('email')
+                    ->email()
+                    ->required(),
+                // PhoneNumberInput::make('phone_number')
+                //     ->required()
+                //     ->reactive()
+                //     ->allowedCountries(['NG']),
+                PhoneInput::make('phone_number')
+                    ->required()
+                    ->reactive()
+                    ->initialCountry('NG'),
+                Forms\Components\Placeholder::make('location')
+                    ->label('Location')
+                    ->content('Nigeria (NGN)'),
             ]);
     }
 }

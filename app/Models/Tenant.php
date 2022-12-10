@@ -9,13 +9,14 @@ use Stancl\Tenancy\Database\Concerns\HasDatabase;
 use Stancl\Tenancy\Database\Concerns\HasDomains;
 use App\Traits\MustVerifyTenantEmail;
 use Illuminate\Notifications\Notifiable;
+use Jojostx\Larasubs\Models\Concerns\HasSubscriptions;
 
 /**
  * @mixin IdeHelperTenant
  */
 class Tenant extends BaseTenant implements TenantWithDatabase, MustVerifyEmail
 {
-    use HasDatabase, MustVerifyTenantEmail, HasDomains, Notifiable;
+    use HasDatabase, MustVerifyTenantEmail, HasDomains, Notifiable, HasSubscriptions;
 
     /**
      * The attributes that are mass assignable.
