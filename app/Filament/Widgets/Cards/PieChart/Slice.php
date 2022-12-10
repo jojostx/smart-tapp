@@ -8,7 +8,7 @@ use Illuminate\View\Component;
 
 class Slice extends Component implements Htmlable
 {
-    protected ?int $decimals = 2;
+    protected ?int $decimals = 1;
 
     protected ?string $color = null;
 

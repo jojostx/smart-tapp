@@ -1,5 +1,6 @@
 <?php
 
+use App\Filament\Widgets\SmarttappInfoWidget;
 use App\Http\Middleware\EnsureAccountIsNotDeactivated;
 use App\Http\Middleware\RedirectIfAuthenticated;
 use Filament\Http\Middleware\Authenticate;
@@ -144,7 +145,7 @@ return [
         'path' => app_path('Filament/Widgets'),
         'register' => [
             Widgets\AccountWidget::class,
-            Widgets\FilamentInfoWidget::class,
+            SmarttappInfoWidget::class,
         ],
     ],
 
