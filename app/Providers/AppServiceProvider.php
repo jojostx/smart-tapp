@@ -37,12 +37,6 @@ class AppServiceProvider extends ServiceProvider
             \Spatie\Permission\PermissionRegistrar::$cacheKey = 'spatie.permission.cache.tenant.' . $event->tenancy->tenant->id;
         });
 
-        Filament::serving(function () {
-            Filament::registerNavigationGroups([
-                'Parking',
-            ]);
-        });
-
         $this->app->bind(LogoutResponse::class, AuthLogoutResponse::class);
     }
 }
