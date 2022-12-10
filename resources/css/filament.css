@@ -18,7 +18,7 @@ html {
         @apply inline-flex items-center justify-center space-x-1 rtl:space-x-reverse min-h-[20px] px-2 py-0.5 text-sm font-medium tracking-tight rounded-xl whitespace-nowrap text-danger-700 bg-danger-500/10;
     }
     .filament-forms-field-wrapper-label {
-        @apply opacity-100 font-medium;
+        @apply font-medium opacity-100;
     }
     .filament-forms-range-component {
         width: calc(100% - (75px));

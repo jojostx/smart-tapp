@@ -4,7 +4,7 @@
         "Read more about it at https://getcomposer.org/doc/01-basic-usage.md#installing-dependencies",
         "This file is @generated automatically"
     ],
-    "content-hash": "9ef11a4b844ed24cac27e88afe6c38cc",
+    "content-hash": "ebbdc58d6ae061403eb679a144faa004",
     "packages": [
         {
             "name": "abanoubnassem/filament-phone-field",
@@ -1851,6 +1851,91 @@
             "time": "2022-12-02T11:11:26+00:00"
         },
         {
+            "name": "flowframe/laravel-trend",
+            "version": "dev-hotfix",
+            "source": {
+                "type": "git",
+                "url": "https://github.com/jojostx/laravel-trend.git",
+                "reference": "0a585bf8811fc4f3ee7a65d5e4e418158e94a819"
+            },
+            "dist": {
+                "type": "zip",
+                "url": "https://api.github.com/repos/jojostx/laravel-trend/zipball/0a585bf8811fc4f3ee7a65d5e4e418158e94a819",
+                "reference": "0a585bf8811fc4f3ee7a65d5e4e418158e94a819",
+                "shasum": ""
+            },
+            "require": {
+                "illuminate/contracts": "^8.37|^9",
+                "php": "^8.0",
+                "spatie/laravel-package-tools": "^1.4.3"
+            },
+            "require-dev": {
+                "nunomaduro/collision": "^5.3|^6.1",
+                "orchestra/testbench": "^6.15|^7.0",
+                "pestphp/pest": "^1.18",
+                "pestphp/pest-plugin-laravel": "^1.1",
+                "spatie/laravel-ray": "^1.23",
+                "vimeo/psalm": "^4.8"
+            },
+            "type": "library",
+            "extra": {
+                "laravel": {
+                    "providers": [
+                        "Flowframe\\Trend\\TrendServiceProvider"
+                    ],
+                    "aliases": {
+                        "Trend": "Flowframe\\Trend\\TrendFacade"
+                    }
+                }
+            },
+            "autoload": {
+                "psr-4": {
+                    "Flowframe\\Trend\\": "src",
+                    "Flowframe\\Trend\\Database\\Factories\\": "database/factories"
+                }
+            },
+            "autoload-dev": {
+                "psr-4": {
+                    "Flowframe\\Trend\\Tests\\": "tests"
+                }
+            },
+            "scripts": {
+                "test": [
+                    "./vendor/bin/pest --no-coverage"
+                ],
+                "test-coverage": [
+                    "vendor/bin/phpunit --coverage-html coverage"
+                ]
+            },
+            "license": [
+                "MIT"
+            ],
+            "authors": [
+                {
+                    "name": "Lars Klopstra",
+                    "email": "lars@flowframe.nl",
+                    "role": "Developer"
+                }
+            ],
+            "description": "Easily generate model trends",
+            "homepage": "https://github.com/flowframe/laravel-trend",
+            "keywords": [
+                "Flowframe",
+                "laravel",
+                "laravel-trend"
+            ],
+            "support": {
+                "source": "https://github.com/jojostx/laravel-trend/tree/hotfix"
+            },
+            "funding": [
+                {
+                    "type": "github",
+                    "url": "https://github.com/larsklopstra"
+                }
+            ],
+            "time": "2022-12-05T09:59:36+00:00"
+        },
+        {
             "name": "fruitcake/php-cors",
             "version": "v1.2.0",
             "source": {
@@ -2446,7 +2531,7 @@
             "dist": {
                 "type": "path",
                 "url": "packages/jojostx/larasubs",
-                "reference": "cb7d5972900932f1365eae39f0530b108d038b08"
+                "reference": "856f9174dd2bf30324dcd66c2083bd0f1bb60799"
             },
             "require": {
                 "illuminate/console": "^8.0|^9.0",
@@ -11800,10 +11885,18 @@
             "time": "2022-02-10T15:08:40+00:00"
         }
     ],
-    "aliases": [],
+    "aliases": [
+        {
+            "package": "flowframe/laravel-trend",
+            "version": "dev-hotfix",
+            "alias": "2.4.5",
+            "alias_normalized": "2.4.5.0"
+        }
+    ],
     "minimum-stability": "dev",
     "stability-flags": {
-        "jojostx/larasubs": 20
+        "jojostx/larasubs": 20,
+        "flowframe/laravel-trend": 20
     },
     "prefer-stable": true,
     "prefer-lowest": false,

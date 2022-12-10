@@ -11,10 +11,16 @@
             "options": {
                 "symlink": true
             }
+        },
+        "laravel-trend": {
+            "type": "vcs",
+            "url": "https://github.com/jojostx/laravel-trend.git"
         }
     },
     "require": {
         "php": "^8.0.2",
+        "jojostx/larasubs": "@dev",
+        "flowframe/laravel-trend": "dev-hotfix as 2.4.5",
         "abanoubnassem/filament-phone-field": "^0.0.1",
         "akaunting/laravel-money": "^3.1",
         "alajusticia/laravel-expirable": "^1.6",
@@ -23,7 +29,6 @@
         "dyrynda/laravel-model-uuid": "^6.6",
         "filament/filament": "^2.13",
         "guzzlehttp/guzzle": "^7.2",
-        "jojostx/larasubs": "@dev",
         "laravel-frontend-presets/tall": "^4.2",
         "laravel-notification-channels/africastalking": "^3.2",
         "laravel/framework": "^9.11",
