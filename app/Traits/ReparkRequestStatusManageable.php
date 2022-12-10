@@ -4,6 +4,7 @@ namespace App\Traits;
 
 use App\Enums\Models\ReparkRequestStatus;
 use Illuminate\Database\Eloquent\Builder;
+use Illuminate\Support\Collection;
 
 trait ReparkRequestStatusManageable
 {
@@ -80,6 +81,26 @@ trait ReparkRequestStatusManageable
   public function scopeWhereResolved(Builder $query)
   {
     return $query->where('status', ReparkRequestStatus::RESOLVED->value);
+  }
+
+  /**
+   * returns a collection of the count of all the repark request based on the status
+   * e.g: ``['total_count' => 10, 'unresolved_count' => 2, 'resolving_count' => 4, 'resolved_count' => 4]``
+   * 
+   * @return Collection
+   */
+  public static function getStatusesCount(): Collection
+  {
+    $unresolved = ReparkRequestStatus::UNRESOLVED->value;
+    $resolving = ReparkRequestStatus::RESOLVING->value;
+    $resolved = ReparkRequestStatus::RESOLVED->value;
+
+    return static::toBase()
+      ->selectRaw("count(*) as total_count")
+      ->selectRaw("count(IF(status = '$unresolved', 1, null)) as unresolved_count")
+      ->selectRaw("count(IF(status = '$resolving', 1, null)) as resolving_count")
+      ->selectRaw("count(IF(status = '$resolved', 1, null)) as resolved_count")
+      ->get();
   }
 
   /**

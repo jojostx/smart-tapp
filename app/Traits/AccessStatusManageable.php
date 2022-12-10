@@ -10,12 +10,12 @@ trait AccessStatusManageable
 {
 	use AccessActivationNotifiable;
 
-	public function getQueryFragmentForElapsedCheck()
+	public static function getQueryFragmentForElapsedCheck(): string
 	{
 		return 'DATE_ADD(issued_at, INTERVAL IFNULL(expiry_period, 0) MINUTE)';
 	}
 
-	public function getQueryFragmentForInvalidCheck()
+	public static function getQueryFragmentForInvalidCheck(): string
 	{
 		return 'DATE_SUB(TIMESTAMPADD(DAY, `validity_period`, `issued_at`), INTERVAL IFNULL(`expiry_period`, 0) MINUTE)';
 	}
@@ -33,23 +33,23 @@ trait AccessStatusManageable
 	{
 		$status = is_string($type) ? AccessStatus::from($type) : $type;
 
-		$elapsedFragment = $this->getQueryFragmentForElapsedCheck();
-		$invalidFragment = $this->getQueryFragmentForInvalidCheck();
+		$elapsed_fragment = static::getQueryFragmentForElapsedCheck();
+		$invalid_fragment = static::getQueryFragmentForInvalidCheck();
 
 		$query = match ($status) {
 			AccessStatus::EXPIRED => $query->where('expiry_period', '!=', 0)
-				->whereRaw("now() > {$elapsedFragment}")
-				->whereRaw("now() < {$invalidFragment}"),
+				->whereRaw("now() > {$elapsed_fragment}")
+				->whereRaw("now() < {$invalid_fragment}"),
 
 			AccessStatus::ISSUED => $query->where('expiry_period', '!=', 0)
-				->whereRaw("now() < {$elapsedFragment}")
-				->whereRaw("now() < {$invalidFragment}"),
+				->whereRaw("now() < {$elapsed_fragment}")
+				->whereRaw("now() < {$invalid_fragment}"),
 
 			AccessStatus::ACTIVE => $query->where('expiry_period', '=', 0)
-				->whereRaw("now() < {$invalidFragment}"),
+				->whereRaw("now() < {$invalid_fragment}"),
 
 			AccessStatus::INACTIVE => $query->where('expiry_period', '=', 0)
-				->whereRaw("now() > {$invalidFragment}"),
+				->whereRaw("now() > {$invalid_fragment}"),
 
 			default => $query
 		};
@@ -65,12 +65,12 @@ trait AccessStatusManageable
 	 */
 	public function scopeWhereIssued(Builder $query)
 	{
-		$elapsedFragment = $this->getQueryFragmentForElapsedCheck();
-		$invalidFragment = $this->getQueryFragmentForInvalidCheck();
+		$elapsed_fragment = static::getQueryFragmentForElapsedCheck();
+		$invalid_fragment = static::getQueryFragmentForInvalidCheck();
 
 		return $query->where('expiry_period', '!=', 0)
-			->whereRaw("now() < {$elapsedFragment}")
-			->whereRaw("now() < {$invalidFragment}");
+			->whereRaw("now() < {$elapsed_fragment}")
+			->whereRaw("now() < {$invalid_fragment}");
 	}
 
 	/**
@@ -81,12 +81,12 @@ trait AccessStatusManageable
 	 */
 	public function scopeWhereExpired(Builder $query)
 	{
-		$elapsedFragment = $this->getQueryFragmentForElapsedCheck();
-		$invalidFragment = $this->getQueryFragmentForInvalidCheck();
+		$elapsed_fragment = static::getQueryFragmentForElapsedCheck();
+		$invalid_fragment = static::getQueryFragmentForInvalidCheck();
 
 		return $query->where('expiry_period', '!=', 0)
-			->whereRaw("now() > {$elapsedFragment}")
-			->whereRaw("now() < {$invalidFragment}");
+			->whereRaw("now() > {$elapsed_fragment}")
+			->whereRaw("now() < {$invalid_fragment}");
 	}
 
 	/**
@@ -97,10 +97,10 @@ trait AccessStatusManageable
 	 */
 	public function scopeWhereActive(Builder $query)
 	{
-		$invalidFragment = $this->getQueryFragmentForInvalidCheck();
+		$invalid_fragment = static::getQueryFragmentForInvalidCheck();
 
 		return $query->where('expiry_period', '=', 0)
-			->whereRaw("now() < {$invalidFragment}");
+			->whereRaw("now() < {$invalid_fragment}");
 	}
 
 	/**
@@ -111,10 +111,10 @@ trait AccessStatusManageable
 	 */
 	public function scopeWhereInactive(Builder $query)
 	{
-		$invalidFragment = $this->getQueryFragmentForInvalidCheck();
+		$invalid_fragment = static::getQueryFragmentForInvalidCheck();
 
 		return $query->where('expiry_period', '=', 0)
-			->whereRaw("now() > {$invalidFragment}");
+			->whereRaw("now() > {$invalid_fragment}");
 	}
 
 	/**
@@ -125,11 +125,11 @@ trait AccessStatusManageable
 	 */
 	public function scopeWhereNotInactive(Builder $query)
 	{
-		$invalidFragment = $this->getQueryFragmentForInvalidCheck();
+		$invalid_fragment = static::getQueryFragmentForInvalidCheck();
 
-		return $query->whereNot(function ($query) use ($invalidFragment) {
+		return $query->whereNot(function ($query) use ($invalid_fragment) {
 			$query->where('expiry_period', '=', 0)
-				->whereRaw("now() > {$invalidFragment}");
+				->whereRaw("now() > {$invalid_fragment}");
 		});
 	}
 
@@ -180,6 +180,33 @@ trait AccessStatusManageable
 				return AccessStatus::INACTIVE;
 			},
 		);
+	}
+
+	/**
+	 * returns a collection of the count of all the accesses based on the status
+	 * e.g: ``['total_count' => 10, 'expired_count' => 2, 'issued_count' => 4, 'active_count' => 4, 'inactive_count' => 0]``
+	 * 
+	 * @return Collection
+	 */
+	public static function getStatusesCount()
+	{
+		$empty_expiry_fragment = "(expiry_period = 0)";
+		$filled_expiry_fragment = "(expiry_period != 0)";
+		$elapsed_fragment = static::getQueryFragmentForElapsedCheck();
+		$invalid_fragment = static::getQueryFragmentForInvalidCheck();
+
+		$expired_query = "(($filled_expiry_fragment) AND (NOW() > $elapsed_fragment) AND (NOW() < $invalid_fragment))";
+		$issued_query = "(($filled_expiry_fragment) AND (NOW() < $elapsed_fragment) AND (NOW() < $invalid_fragment))";
+		$active_query = "(($empty_expiry_fragment) AND (NOW() < $invalid_fragment))";
+		$inactive_query = "(($empty_expiry_fragment) AND (NOW() > $invalid_fragment))";
+
+		return static::toBase()
+			->selectRaw("count(*) as total_count")
+			->selectRaw("count(IF($expired_query, 1, null)) as expired_count")
+			->selectRaw("count(IF($issued_query, 1, null)) as issued_count")
+			->selectRaw("count(IF($active_query, 1, null)) as active_count")
+			->selectRaw("count(IF($inactive_query, 1, null)) as inactive_count")
+			->get();
 	}
 
 	/**
