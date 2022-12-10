@@ -101,7 +101,7 @@
 
   <!-- contact support -->
   <div x-data="{
-      open: true,
+      open: false,
       sendMessage: function() {
           const chatbox = $refs.chatbox;
           const chatboxInput = $refs.chatbox_input;
@@ -117,7 +117,7 @@
           const bubble = `
             <div class='flex flex-row-reverse mb-4'>
               <div class='flex flex-col items-center flex-none ml-4 space-y-1'>
-                <img class='w-6 h-6 rounded-full' src='https://images.unsplash.com/photo-1491528323818-fdd1faba62cc?ixlib=rb-1.2.1&ixid=eyJhcHBfaWQiOjEyMDd9&auto=format&fit=facearea&facepad=2&w=256&h=256&q=80' />
+                <svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' class='w-6 h-6 rounded-full'><path fill='none' d='M0 0h24v24H0z'/><path d='M12 22C6.477 22 2 17.523 2 12S6.477 2 12 2s10 4.477 10 10-4.477 10-10 10zm0-2a8 8 0 1 0 0-16 8 8 0 0 0 0 16zm-5-8h2a3 3 0 0 0 6 0h2a5 5 0 0 1-10 0z'/></svg>
                 <span class='block text-xs'>You</span>
               </div>
               <div class='relative flex-1 mb-2'>
@@ -130,29 +130,31 @@
           chatbox.insertAdjacentHTML('beforeend', bubble);
           chatbox.scrollTop = chatbox.scrollHeight;
       }
-    }" 
-    @keyup.escape.window="open = false">
-    <div class="fixed bottom-0 right-0 z-50 overflow-hidden md:mr-4 md:mb-4" style="min-width: 400px;">
+    }" @keyup.escape.window="open = false">
+    <div class="fixed bottom-0 right-0 z-50 overflow-hidden md:mr-4 md:mb-4">
       <div class="relative flex flex-col items-end mb-4 mr-4 space-y-4">
-        <div id="chat_modal" x-show="open" @click.outside="open = false" x-trap="open" x-cloak class="flex flex-col bg-white border shadow-xl dark:bg-gray-800 sm:rounded-lg w-80 h-96">
+        <div id="chat_modal" x-show="open" @click.outside="open = false" x-trap="open" x-cloak class="flex flex-col bg-white border shadow-xl dark:bg-gray-800 sm:rounded-lg w-80">
           <nav class="p-2 space-y-2 border-b divide-y shadow">
             <div class="flex items-center justify-between">
               <!-- user info -->
               <div class="flex items-center">
-                <img class="w-8 h-8 rounded-full" src="https://images.unsplash.com/photo-1491528323818-fdd1faba62cc?ixlib=rb-1.2.1&ixid=eyJhcHBfaWQiOjEyMDd9&auto=format&fit=facearea&facepad=2&w=256&h=256&q=80" />
+                <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" class="w-8 h-8">
+                  <path fill="none" d="M0 0h24v24H0z" />
+                  <path d="M19.938 8H21a2 2 0 0 1 2 2v4a2 2 0 0 1-2 2h-1.062A8.001 8.001 0 0 1 12 23v-2a6 6 0 0 0 6-6V9A6 6 0 1 0 6 9v7H3a2 2 0 0 1-2-2v-4a2 2 0 0 1 2-2h1.062a8.001 8.001 0 0 1 15.876 0zM3 10v4h1v-4H3zm17 0v4h1v-4h-1zM7.76 15.785l1.06-1.696A5.972 5.972 0 0 0 12 15a5.972 5.972 0 0 0 3.18-.911l1.06 1.696A7.963 7.963 0 0 1 12 17a7.963 7.963 0 0 1-4.24-1.215z" />
+                </svg>
                 <div class="pl-2">
-                  <p class="font-semibold">John Doe</p>
+                  <p class="font-semibold">{{ $issuer->name ?? 'John Doe' }}</p>
                   <p class="text-xs text-gray-600">Support Agent</p>
                 </div>
               </div>
               <!-- end user info -->
-  
+
               <!-- chat box action -->
               <div>
-                <a class="inline-flex p-2 rounded-full hover:bg-primary-50" href="tel:+23437198917">
+                <a class="inline-flex p-2 rounded-full hover:bg-primary-50" href="tel:{{ $issuer->phone_number_e164 }}">
                   <x-heroicon-o-phone class="w-6 h-6" />
                 </a>
-                
+
                 <button @click="open = false" class="inline-flex p-2 rounded-full hover:bg-primary-50" type="button">
                   <x-heroicon-o-x class="w-6 h-6" />
                 </button>
@@ -162,7 +164,10 @@
             <div class="pt-2">
               <span class="flex text-xs text-gray-600">
                 <span>
-                  <svg class="w-4 h-4" viewBox="0 0 14 14" fill="none" xmlns="http://www.w3.org/2000/svg"><path clip-rule="evenodd" d="M7 13A6 6 0 107 1a6 6 0 000 12z" stroke="#A2A2A2" stroke-linecap="round" stroke-linejoin="round"/><path d="M7 9.999v-3.5a.5.5 0 00-.5-.5h-1m.75-2.5a.25.25 0 110 .5.25.25 0 010-.5M5.5 10h3" stroke="#A2A2A2" stroke-linecap="round" stroke-linejoin="round"/></svg>
+                  <svg class="w-4 h-4" viewBox="0 0 14 14" fill="none" xmlns="http://www.w3.org/2000/svg">
+                    <path clip-rule="evenodd" d="M7 13A6 6 0 107 1a6 6 0 000 12z" stroke="#A2A2A2" stroke-linecap="round" stroke-linejoin="round" />
+                    <path d="M7 9.999v-3.5a.5.5 0 00-.5-.5h-1m.75-2.5a.25.25 0 110 .5.25.25 0 010-.5M5.5 10h3" stroke="#A2A2A2" stroke-linecap="round" stroke-linejoin="round" />
+                  </svg>
                 </span>
                 <span>
                   &nbsp;Typically responds within 30 mins
@@ -172,8 +177,8 @@
           </nav>
 
           <!-- <div x-ref="chatbox" class="flex-1 px-4 py-4 space-y-4 overflow-y-auto"> -->
-            <!-- chat message -->
-            <!-- <div class="flex">
+          <!-- chat message -->
+          <!-- <div class="flex">
               <div class="flex flex-col items-center flex-none mr-4 space-y-1">
                 <img class="w-6 h-6 rounded-full" src="https://images.unsplash.com/photo-1491528323818-fdd1faba62cc?ixlib=rb-1.2.1&ixid=eyJhcHBfaWQiOjEyMDd9&auto=format&fit=facearea&facepad=2&w=256&h=256&q=80" />
               </div>
@@ -182,10 +187,10 @@
                 <span class="text-xs leading-none text-primary-600">2 min ago</span>
               </div>
             </div> -->
-            <!-- end chat message -->
+          <!-- end chat message -->
 
-            <!-- chat message -->
-            <!-- <div class="flex flex-row-reverse">
+          <!-- chat message -->
+          <!-- <div class="flex flex-row-reverse">
               <div class="flex flex-col items-center flex-none ml-4 space-y-1">
                 <img class="w-6 h-6 rounded-full" src="https://images.unsplash.com/photo-1491528323818-fdd1faba62cc?ixlib=rb-1.2.1&ixid=eyJhcHBfaWQiOjEyMDd9&auto=format&fit=facearea&facepad=2&w=256&h=256&q=80" />
                 <span class='block text-xs'>You</span>
@@ -195,10 +200,10 @@
                 <span class="text-xs leading-none text-gray-600">2 min ago</span>
               </div>
             </div> -->
-            <!-- end chat message -->
-            
-            <!-- chat message -->
-            <!-- <div class="flex">
+          <!-- end chat message -->
+
+          <!-- chat message -->
+          <!-- <div class="flex">
               <div class="flex flex-col items-center flex-none mr-4 space-y-1">
                 <img class="w-6 h-6 rounded-full" src="https://images.unsplash.com/photo-1491528323818-fdd1faba62cc?ixlib=rb-1.2.1&ixid=eyJhcHBfaWQiOjEyMDd9&auto=format&fit=facearea&facepad=2&w=256&h=256&q=80" />
               </div>
@@ -207,10 +212,10 @@
                 <span class="text-xs leading-none text-primary-600">2 min ago</span>
               </div>
             </div> -->
-            <!-- end chat message -->
-            
-            <!-- chat message -->
-            <!-- <div class="flex flex-row-reverse">
+          <!-- end chat message -->
+
+          <!-- chat message -->
+          <!-- <div class="flex flex-row-reverse">
               <div class="flex flex-col items-center flex-none ml-4 space-y-1">
                 <img class="w-6 h-6 rounded-full" src="https://images.unsplash.com/photo-1491528323818-fdd1faba62cc?ixlib=rb-1.2.1&ixid=eyJhcHBfaWQiOjEyMDd9&auto=format&fit=facearea&facepad=2&w=256&h=256&q=80" />
                 <span class='block text-xs'>You</span>
@@ -220,21 +225,21 @@
                 <span class="text-xs leading-none text-gray-600">2 min ago</span>
               </div>
             </div> -->
-            <!-- end chat message -->
+          <!-- end chat message -->
           <!-- </div> -->
 
           <!-- <div class="flex items-center p-3 space-x-2 border-t"> -->
-            <!-- <div class="w-full">
+          <!-- <div class="w-full">
               <input x-ref="chatbox_input" @keyup.enter="sendMessage" class="w-full border border-gray-300 rounded-md" type="text" value="" placeholder="Aa" autofocus />
             </div> -->
 
-            <!-- chat send action -->
-            <!-- <div>
+          <!-- chat send action -->
+          <!-- <div>
               <button @click="sendMessage" class="inline-flex p-2 rounded-full hover:bg-primary-50" type="button">
                 <x-heroicon-o-paper-airplane class="w-6 h-6 rotate-90 rounded-full" />
               </button>
             </div> -->
-            <!-- end chat send action -->
+          <!-- end chat send action -->
           <!-- </div> -->
         </div>
 
