@@ -26,7 +26,7 @@
             <form wire:submit.prevent="authenticate">
                 @if (blank($this->currentTenant))
                 <!-- Domain -->
-                <x-domain-input />
+                <x-domain-input :wire_lazy="true"/>
                 @endif
 
                 <!-- Email Address -->

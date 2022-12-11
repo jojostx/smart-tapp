@@ -36,7 +36,7 @@
     </ul>
 
     <div class="mt-12 text-center">
-        <a href="{{ route('register') }}?plan={{ $plan->slug }}" class="flex items-center justify-center w-full py-3 text-sm font-medium text-white uppercase rounded-lg bg-primary-600 hover:bg-primary-700 focus:ring-4 focus:outline-none focus:ring-primary-300">
+        <a href="{{ $getRoute() }}" class="flex items-center justify-center w-full py-3 text-sm font-medium text-white uppercase rounded-lg bg-primary-600 hover:bg-primary-700 focus:ring-4 focus:outline-none focus:ring-primary-300">
             Start now
         </a>
     </div>

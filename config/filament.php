@@ -2,6 +2,7 @@
 
 use App\Filament\Widgets\SmarttappInfoWidget;
 use App\Http\Middleware\EnsureAccountIsNotDeactivated;
+use App\Http\Middleware\FilamentRedirectIfAuthenticated;
 use App\Http\Middleware\RedirectIfAuthenticated;
 use Filament\Http\Middleware\Authenticate;
 use Filament\Http\Middleware\DispatchServingFilamentEvent;
@@ -342,7 +343,8 @@ return [
             MirrorConfigToSubpackages::class,
 
             // custom middleware & middleware from third party packages
-            RedirectIfAuthenticated::class,
+            FilamentRedirectIfAuthenticated::class,
+          
             'universal',
             PreventAccessFromCentralDomains::class,
             App\Http\Middleware\InitializeTenancyByDomain::class

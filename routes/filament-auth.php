@@ -4,6 +4,8 @@ use App\Filament\Livewire\Auth\AccountDeactivated;
 use Illuminate\Support\Facades\Route;
 use App\Filament\Livewire\Auth\PasswordRequest;
 use App\Filament\Livewire\Auth\PasswordReset;
+use App\Filament\Livewire\Auth\VerifyNewEmail;
+use App\Http\Controllers\Subscription\CheckoutController;
 
 /*
 |--------------------------------------------------------------------------
@@ -18,12 +20,27 @@ use App\Filament\Livewire\Auth\PasswordReset;
 
 Route::name('filament.')
   ->group(function (): void {
-    Route::get('password/request', PasswordRequest::class)
-      ->name('auth.password.request');
+    // filamentRedirectifauth {must not be logged in to access}
+    Route::middleware(config('filament.middleware.base'))->group(function () {
+      Route::get('password/reset/{token}', PasswordReset::class)
+        ->name('auth.password.reset');
 
-    Route::get('password/reset/{token}', PasswordReset::class)
-      ->name('auth.password.reset');
+      Route::get('password/request', PasswordRequest::class)
+        ->name('auth.password.request');
 
-    Route::get('account-deactivated', AccountDeactivated::class)
-      ->name('auth.account.deactivated');
+      Route::get('pending-email/verify/{token}', VerifyNewEmail::class)
+        ->name('auth.pending-email.verify')
+        ->middleware(['signed']);
+    });
+
+    Route::middleware(config('filament.middleware.auth'))->group(function () {
+      Route::get('account-deactivated', AccountDeactivated::class)
+        ->name('auth.account.deactivated');
+
+      Route::prefix('plans')->as('plans.')->group(function () {
+        Route::get('/checkout', [CheckoutController::class, 'index'])->name('checkout');
+        Route::post('/checkout', [CheckoutController::class, 'create'])->name('checkout.create');
+        Route::post('/checkout/update', [CheckoutController::class, 'update'])->name('checkout.update');
+      });
+    });
   });

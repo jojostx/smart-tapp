@@ -3,7 +3,10 @@
 namespace App\Filament\Pages;
 
 use App\Models\Tenant\User;
+use App\Repositories\PlanRepository;
 use Filament\Pages\Page;
+use Illuminate\Support\Collection;
+use Jojostx\Larasubs\Models\Plan;
 
 class Settings extends Page
 {    
@@ -23,6 +26,16 @@ class Settings extends Page
     protected static function shouldRegisterNavigation(): bool
     {
         return self::canAccessPage();
+    }
+
+    public function getPlansProperty(): Collection
+    {
+        return app(PlanRepository::class)->getActive();
+    }
+
+    public function getParamsProperty(): array
+    {
+        return ['tenant' => \tenant()->getTenantKey()];
     }
 
     public function mount(): void

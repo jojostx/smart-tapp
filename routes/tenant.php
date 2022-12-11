@@ -2,7 +2,7 @@
 
 declare(strict_types=1);
 
-use App\Filament\Livewire\Auth\VerifyNewEmail;
+use App\Http\Controllers\Subscription\CheckoutController;
 use App\Filament\Livewire\Tenant\Access\Dashboard;
 use App\Filament\Livewire\Tenant\Access\QrcodeScanner;
 use App\Http\Middleware\InitializeTenancyByDomain;
@@ -29,14 +29,7 @@ Route::middleware([
     InitializeTenancyByDomain::class,
     PreventAccessFromCentralDomains::class,
 ])->group(function () {
-    // Route::get('/', function (Request $request) {
-    //     dd('ok');
-    // })->name('access.home');
-    Route::get('pending-email/verify/{token}', VerifyNewEmail::class)
-        ->name('pending-email.verify')
-        ->middleware(['signed']);
-
-    Route::prefix('access')->name('access.')->group(function () {
+    Route::group(['prefix' => 'access', 'as' => 'access.'], function () {
         Route::get('/{access}/scan', QrcodeScanner::class)
             ->name('scan');
 
