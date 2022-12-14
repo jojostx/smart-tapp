@@ -29,7 +29,7 @@ trait WithDomainValidation
   protected function getDomainRule(): array
   {
     return [
-      'domain' => ['required', 'exists:' . config('database.connections.mysql.driver') . '.domains,domain']
+      'domain' => ['required', 'exists:' . getCentralConnection() . '.domains,domain']
     ];
   }
 
