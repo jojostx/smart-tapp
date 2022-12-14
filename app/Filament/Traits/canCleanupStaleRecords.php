@@ -12,11 +12,11 @@ trait CanCleanupStaleRecords
    *
    * @param \Illuminate\Database\Eloquent\Model $model
    * @param array $related
-   * @param int|false $timeToConsiderStale
+   * @param int|false $daysToConsiderStale
    *  
    * @return bool
    */
-  public static function cleanupstaleRecords(Model $model, array $related = [], int|false $timeToConsiderStale = 1)
+  public static function cleanupstaleRecords(Model $model, array $related = [], int|false $daysToConsiderStale = 1)
   {
     if (blank($related)) {
       return false;
@@ -30,9 +30,9 @@ trait CanCleanupStaleRecords
       }
     }
 
-    if (intval($timeToConsiderStale) > 0) {
-      $query = $query->whereDoesntHave('accesses', function (Builder $query) use ($timeToConsiderStale) {
-        $query->where('created_at', '<', now()->subDays($timeToConsiderStale));
+    if (intval($daysToConsiderStale) > 0) {
+      $query = $query->whereDoesntHave('accesses', function (Builder $query) use ($daysToConsiderStale) {
+        $query->where('created_at', '<', now()->subDays($daysToConsiderStale));
       });
     } else {
       $query = $query->doesntHave('accesses');
