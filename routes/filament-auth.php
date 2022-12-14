@@ -40,7 +40,7 @@ Route::name('filament.')
       Route::prefix('plans')->as('plans.')->group(function () {
         Route::get('/checkout', [CheckoutController::class, 'index'])->name('checkout');
         Route::post('/checkout', [CheckoutController::class, 'create'])->name('checkout.create');
-        Route::post('/checkout/update', [CheckoutController::class, 'update'])->name('checkout.update');
+        Route::get('/checkout/update', [CheckoutController::class, 'update'])->name('checkout.update');
       });
     });
   });
