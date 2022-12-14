@@ -16,7 +16,7 @@ class PlanRepository
 
     protected static function getCentralConnection(): string
     {
-        return config('tenancy.database.central_connection');
+        return getCentralConnection();
     }
 
     public function all(): Collection
@@ -27,6 +27,26 @@ class PlanRepository
     public function getActive(): Collection
     {
         return Plan::on($this->centralConnection)->whereActive()->get();
+    }
+
+    public function getActiveExceptFree(): Collection
+    {
+        $query = Plan::on($this->centralConnection);
+
+        return $query->where('price', '>', 0)->whereActive()->get();
+    }
+
+    public function getActiveExcept(string|array $slug): Collection
+    {
+        $query = Plan::on($this->centralConnection);
+
+        if (is_array($slug) && \filled($slug)) {
+            $slugs = \array_values($slug);
+
+            return $query->whereNotIn('slug', $slugs)->whereActive()->get();
+        }
+
+        return $query->whereNot('slug', $slug)->whereActive()->get();
     }
 
     public function getBySlug(string $slug): ?Plan
