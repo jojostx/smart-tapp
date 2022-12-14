@@ -3,7 +3,16 @@
 @section('content')
 
 <section>
-  <form method="POST" action="{{ route('filament.plans.checkout.create') }}" id="paymentForm" x-data="{ open : false }" class="grid h-screen grid-cols-1 md:grid-cols-2 auto-rows-min md:auto-rows-auto">
+  <form 
+    id="paymentForm"
+    method="POST" 
+    action="{{ route('filament.plans.checkout.create') }}" 
+    x-data="{ open : {{ $errors->any() ? 'true' : 'false' }} }"
+    @if (session()->has("checkout_error"))
+      x-init="$nextTick(() => { $dispatch('open-alert', { color: 'danger', message: '{{ session()->get('checkout_error') }}', 'timeout': 20000 }) })" 
+    @endif
+    class="grid h-screen grid-cols-1 md:grid-cols-2 auto-rows-min md:auto-rows-auto"
+    >
     @csrf
 
     <div class="grid order-last grid-cols-1 bg-white md:order-first lg:grid-cols-12">
@@ -23,46 +32,57 @@
               <x-heroicon-o-chevron-down ::class="{ 'rotate-180' : open }" class="w-4 h-4 transition-all duration-200 " />
             </button>
             <div x-show="open" x-cloak class="mt-4 space-y-4">
-              <!-- Organization Name -->
+              <!-- organization name -->
               <div>
                 <x-label for="organization" :value="__('Organization name')" />
 
-                <x-input name="organization" id="organization" type="text" class="block w-full mt-1 appearance-none" placeholder="e.g. Acme Ltd" :value="old('organization')" />
+                <x-input name="organization" id="organization" class="block w-full mt-1" placeholder="e.g. Acme Ltd" :value="old('organization') ?? $billingInfo->organization" />
 
                 @error('organization')
                 <p class="mt-2 text-sm text-red-600">{{ $message }}</p>
                 @enderror
               </div>
 
-              <!-- Name -->
+              <!-- name -->
               <div>
                 <x-label for="name" :value="__('Full name')" />
 
-                <x-input name="name" id="name" class="block w-full mt-1" placeholder="e.g. John Doe" type="text" :value="old('name')" />
+                <x-input name="name" id="name" class="block w-full mt-1" placeholder="e.g. John Doe" :value="old('name') ?? $billingInfo->name" />
 
                 @error('name')
                 <p class="mt-2 text-sm text-red-600">{{ $message }}</p>
                 @enderror
               </div>
 
-              <!-- Phone Number -->
+              <!-- tax number -->
               <div>
-                <x-label for="phone_number" :value="__('Phone number')" />
+                <x-label for="tax_number" :value="__('Tax number')" />
 
-                <x-input name="phone_number" id="phone_number" class="block w-full mt-1" placeholder="e.g. +2348034081380" type="tel" :value="old('phone_number')" />
+                <x-input name="tax_number" id="tax_number" class="block w-full mt-1" placeholder="NG323844" :value="old('tax_number') ?? $billingInfo->tax_number" />
 
-                @error('phone_number')
+                @error('tax_number')
                 <p class="mt-2 text-sm text-red-600">{{ $message }}</p>
                 @enderror
               </div>
 
-              <!-- Full address -->
+              <!-- address -->
               <div>
-                <x-label for="full_address" :value="__('Full address')" />
+                <x-label for="address" :value="__('Full address')" />
 
-                <x-input name="full_address" id="full_address" class="block w-full mt-1" placeholder="e.g. 123 Code Road, 12345" type="text" :value="old('full_address')" />
+                <x-input name="address" id="address" class="block w-full mt-1" placeholder="e.g. 123 Code Road, 12345" type="text" :value="old('address') ?? $billingInfo->address" />
 
-                @error('full_address')
+                @error('address')
+                <p class="mt-2 text-sm text-red-600">{{ $message }}</p>
+                @enderror
+              </div>
+
+              <!-- zip_code -->
+              <div>
+                <x-label for="zip_code" :value="__('Zip code')" />
+
+                <x-input name="zip_code" id="zip_code" class="block w-full mt-1" placeholder="e.g. 900345" type="text" :value="old('zip_code') ?? $billingInfo->zip_code" />
+
+                @error('zip_code')
                 <p class="mt-2 text-sm text-red-600">{{ $message }}</p>
                 @enderror
               </div>
@@ -84,7 +104,7 @@
         <ul class="w-full font-medium text-gray-900 bg-white border border-gray-200 divide-y rounded-lg">
           @foreach ($plans as $plan)
           <li class="flex items-center px-3">
-            <input id="list-radio-{{ $plan->name }}" name="plan" value="{{ $plan->slug }}" @checked(old('plan')==$plan->slug || $selected_plan?->slug == $plan->slug) type="radio" class="w-4 h-4 bg-gray-100 border-gray-300 text-primary-600 focus:ring-primary-500 focus:ring-2">
+            <input id="list-radio-{{ $plan->name }}" name="plan" value="{{ $plan->slug }}" @checked(old('plan')==$plan->slug || $selectedPlan?->slug == $plan->slug) type="radio" class="w-4 h-4 bg-gray-100 border-gray-300 text-primary-600 focus:ring-primary-500 focus:ring-2">
             <label for="list-radio-{{ $plan->name }}" class="flex items-center justify-between w-full py-4 ml-2 text-gray-900">
               <span class="capitalize">
                 {{ $plan->name }}
