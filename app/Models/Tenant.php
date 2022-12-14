@@ -88,9 +88,15 @@ class Tenant extends BaseTenant implements TenantWithDatabase, MustVerifyEmail
 
     public function createCreditCard($data): CreditCard
     {
-        $creditCard = (new CreditCard)->fill($data);
-        $creditCard->tenant()->associate($this);
-        $creditCard->save();
+        $creditCard = CreditCard::on(\getCentralConnection())->firstWhere('token', $data['token']);
+
+        if ($creditCard) {
+            $creditCard->update($data);
+        } else {
+            $creditCard = (new CreditCard)->fill($data);
+            $creditCard->tenant()->associate($this);
+            $creditCard->save();
+        }
 
         return $creditCard;
     }

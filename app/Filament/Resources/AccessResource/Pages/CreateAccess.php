@@ -12,6 +12,7 @@ use Filament\Pages\Actions;
 use Filament\Pages\Actions\Action;
 use Filament\Resources\Pages\CreateRecord;
 use Illuminate\Database\Eloquent\Model;
+use Illuminate\Support\Facades\DB;
 
 class CreateAccess extends CreateRecord
 {
@@ -57,7 +58,9 @@ class CreateAccess extends CreateRecord
         $access = new (static::getModel());
 
         // create access, attach driver and vehicle models and set it's status
-        try {
+        try { 
+            DB::beginTransaction(); // Tell Laravel all the code beneath this is a transaction
+
             $access->driver()->associate($driver);
             $access->vehicle()->associate($vehicle);
             $access->parkingLot()->associate($parking_lot);
@@ -70,14 +73,18 @@ class CreateAccess extends CreateRecord
             ]);
 
             $return_value = match (AccessStatus::from($data['status'])) {
-                AccessStatus::ISSUED => $access->issue(shouldNotify: true),
-                AccessStatus::ACTIVE => $access->activate(shouldNotify: true),
+                AccessStatus::ISSUED => $access->issue(),
+                AccessStatus::ACTIVE => $access->activate(),
                 AccessStatus::INACTIVE => $access->deactivate(),
                 default => false,
             };
 
+            DB::commit();
+
             return $return_value && $access->refresh();
         } catch (\Throwable $th) {
+            DB::rollBack(); // Tell Laravel, "It's not you, it's me. Please don't persist to DB"
+
             return $access;
         }
     }

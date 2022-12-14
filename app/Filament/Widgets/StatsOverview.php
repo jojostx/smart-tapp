@@ -44,12 +44,9 @@ class StatsOverview extends BaseWidget
                 ])->size('sm'),
 
             Stack::make([
-                Card::make('Drivers', $drivers)
-                    ->color('danger'),
+                Card::make('No of drivers registered', $drivers),
 
-                Card::make('Vehicles', $vehicles)
-                    ->description('Remaining: 48')
-                    ->color('success'),
+                Card::make('No of Vehicles registered', $vehicles),
 
                 Card::make('Help', '')
                     ->description(str('<span class="text-xs font-normal">Stats show you important metrics about your organisation.</span>')->toHtmlString())
@@ -58,24 +55,7 @@ class StatsOverview extends BaseWidget
                     ])
                     ->url('help')
                     ->openUrlInNewTab(),
-            ])->space(3),
+            ])->space(4),
         ];
-    }
-
-    protected function getAccessesData()
-    {
-        $activeAccess = Trend::query(Access::query()->whereActive())
-            ->between(
-                start: now()->startOfDay(),
-                end: now(),
-            )
-            ->perHour()
-            ->count();
-
-        return Card::make('Total Accesses', Access::query()->count())
-            ->chart($activeAccess->map(fn (TrendValue $value) => $value->aggregate)->toArray())
-            ->description('7% increase')
-            ->descriptionIcon('heroicon-s-trending-up')
-            ->color('success');
     }
 }

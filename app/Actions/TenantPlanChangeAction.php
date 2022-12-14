@@ -29,7 +29,7 @@ class TenantPlanChangeAction
     {
       // if no sub is passed perform the action on the tenants' most recent sub
       if (blank($subscription)) {
-        return $tenant->subscribeTo($plan);
+        return $tenant->subscribeTo($plan, withoutTrial: true);
       } else {
         // change plan and delete excess resource
         return $subscription->changePlan($plan);

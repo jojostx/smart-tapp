@@ -11,13 +11,13 @@ class Receipt extends Model
 {
     use HasFactory, GeneratesUuid, BindsOnUuid;
 
-
-        /**
+    /**
      * The attributes that are mass assignable.
      *
      * @var array<int, string>
      */
     protected $fillable = [
+        'currency',
         'amount',
         'organization',
         'name',

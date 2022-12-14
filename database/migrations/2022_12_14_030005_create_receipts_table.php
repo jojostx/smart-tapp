@@ -17,6 +17,7 @@ return new class extends Migration
             $table->id();
             $table->string('uuid')->unique();
             $table->string('tenant_id');
+            $table->string('currency', 3);
             $table->string('amount');
             $table->string('organization', 255);
             $table->string('name', 255);

@@ -4,6 +4,7 @@ use App\Models\Tenant;
 use Illuminate\Support\Carbon;
 use Illuminate\Support\HtmlString;
 use Jojostx\Larasubs\Models\Plan;
+use Jojostx\Larasubs\Models\Subscription;
 
 if (!function_exists('replaceQrCodeAttributes')) {
 
@@ -146,5 +147,41 @@ if (!function_exists('getPlanPrice')) {
   function getPlanPrice(Plan $plan): int
   {
     return (int) \money($plan->price, $plan->currency)->getValue();
+  }
+}
+
+if (!function_exists('calculateProratedAmount')) {
+  /**
+   * gets the prorated amount between a new plan and the current plan for a subscription 
+   * @link https://www.zoho.com/in/subscriptions/prorated-billing/
+   * @return int
+   */
+  function calculateProratedAmount(Plan $newPlan, Subscription $subscription): int
+  {
+    $tolerance = 50;
+    $currentPlan = $subscription->plan;
+    $daysLeft = now()->diffInDays($subscription->ends_at);
+    $daysUsed = now()->diffInDays($subscription->starts_at);
+    $totalDays = $subscription->starts_at->diffInDays($subscription->ends_at);
+
+    if ($newPlan->currency !== $currentPlan->currency) {
+      throw new InvalidArgumentException("Cannot calculate prorated amount for plans with mismatching currency", 1);
+    }
+
+    if (abs($newPlan->price - $currentPlan->price) < $tolerance) {
+      return (int) \money($newPlan->price, $newPlan->currency)->getValue();
+    } else if ($newPlan->price > ($currentPlan->price + $tolerance)) {
+      // upgraded proration calc
+      $credit = $currentPlan->price - (($currentPlan->price / $totalDays) * $daysUsed);
+      $price = (($newPlan->price / $totalDays) * $daysLeft) - $credit;
+
+      return (int) \money($price, $newPlan->currency)->getValue();
+    } else {
+      // downgraded proration calc
+      $credit = $currentPlan->price - (($currentPlan->price / $totalDays) * $daysUsed);
+      $price = $credit - (($newPlan->price / $totalDays) * $daysLeft);
+
+      return (int) \money($price, $newPlan->currency)->getValue();
+    }
   }
 }

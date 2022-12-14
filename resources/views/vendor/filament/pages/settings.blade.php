@@ -18,19 +18,22 @@
 
   <div id="tabs">
     <div x-show="tab === 'subscription'" x-cloak class="p-4 bg-white rounded-lg dark:bg-gray-800" id="subscription" role="tabpanel" aria-labelledby="subscription-tab">
-      <p class="text-sm text-gray-500 dark:text-gray-400">This page displays information about your current subscription.</p>
+      @livewire('components.settings.subscriptions')
 
-      <div class="mt-4">
-        {{ $this->table }}
+      @livewire('components.settings.payment-receipts')
+    </div>
+
+    <div x-show="tab === 'plans'" x-cloak class="p-4 py-6 bg-gray-900 rounded-lg dark:bg-gray-800" id="plans" role="tabpanel" aria-labelledby="plans-tab">
+      <div>
+        <p class="text-sm text-gray-300 dark:text-gray-300">You can change your plan <strong class="font-medium text-white dark:text-white">only once in 3 months. Please make sure to not exceed the feature allocations for the plan you are downgrading to, otherwise your excess parking lots, accesses and team members will be deleted!</strong></p>
+        <x-plan :plans="$this->plans" :params="$this->params" />
       </div>
     </div>
-    <div x-show="tab === 'plans'" x-cloak class="p-4 py-6 bg-gray-900 rounded-lg dark:bg-gray-800" id="plans" role="tabpanel" aria-labelledby="plans-tab">
-      <p class="text-sm text-gray-300 dark:text-gray-300">You can change your plan <strong class="font-medium text-white dark:text-white">only once in 3 months. Please make sure to not exceed the feature allocations for the plan you are downgrading to, otherwise your excess parking lots, accesses and team members will be deleted!</strong></p>
-      <x-plan :plans="$this->plans" :params="$this->params" />
-    </div>
+
     <div x-show="tab === 'payment-methods'" x-cloak class="p-4 bg-white rounded-lg dark:bg-gray-800" id="payment-methods" role="tabpanel" aria-labelledby="payment-methods-tab">
-      <p class="text-sm text-gray-500 dark:text-gray-400">This is some placeholder content the <strong class="font-medium text-gray-800 dark:text-white">Payment Methods tab's associated content</strong>. Clicking another tab will toggle the visibility of this one for the next. The tab JavaScript swaps classes to control the content visibility and styling.</p>
+      @livewire('components.settings.payment-methods')
     </div>
+
     <div x-show="tab === 'billing-information'" x-cloak class="p-4 space-y-4 bg-white rounded-lg dark:bg-gray-800" id="billing-information" role="tabpanel" aria-labelledby="billing-information-tab">
       <p class="text-gray-900 dark:text-gray-200">
         This information will be added to your invoice. <br>

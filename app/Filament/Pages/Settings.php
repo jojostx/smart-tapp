@@ -2,19 +2,16 @@
 
 namespace App\Filament\Pages;
 
+use App\Repositories\PlanRepository;
 use Closure;
-use App\Models\Tenant;
 use Filament\Tables;
 use Filament\Pages\Page;
 use Filament\Facades\Filament;
 use Filament\Forms\Components\Grid;
 use Filament\Forms\Components\TextInput;
 use Filament\Notifications\Notification;
-use Illuminate\Database\Eloquent\Builder;
+use Illuminate\Database\Eloquent\Collection;
 use Illuminate\Database\Eloquent\Model;
-use App\Repositories\PlanRepository;
-use Illuminate\Support\Collection;
-use Illuminate\Support\Facades\DB;
 
 class Settings extends Page implements Tables\Contracts\HasTable
 {
@@ -63,48 +60,13 @@ class Settings extends Page implements Tables\Contracts\HasTable
         return self::canAccessPage();
     }
 
-    protected function getTableQuery(): Builder
-    {
-        /** @var ?Tenant */
-        $tenant = tenant();
-
-        return $tenant->subscriptions()->getQuery();
-    }
-
-    protected function getTableColumns(): array
-    {
-        return [
-            Tables\Columns\BadgeColumn::make('status')->colors([
-                'primary' => static fn ($state): bool => $state === 'trialling',
-                'success' => static fn ($state): bool => $state === 'active',
-                'warning' => static fn ($state): bool => $state === 'overdue',
-                'secondary' => static fn ($state): bool => $state === 'ended',
-                'danger' => static fn ($state): bool => $state === 'cancelled',
-            ]),
-            Tables\Columns\TextColumn::make('name')->label('Id'),
-            Tables\Columns\TextColumn::make('plan.name'),
-            Tables\Columns\TextColumn::make('starts_at')->date(config('filament.date_format')),
-            Tables\Columns\TextColumn::make('ends_at')->date(config('filament.date_format')),
-        ];
-    }
-
-    protected function getTableEmptyStateHeading(): ?string
-    {
-        return 'No Subscription yet';
-    }
-
-    protected function isTablePaginationEnabled(): bool
-    {
-        return false;
-    }
-
     public function getPlansProperty(): Collection
     {
         $slug =  tenant()->subscription?->plan?->slug ?? '';
-
+  
         return app(PlanRepository::class)->getActiveExcept($slug);
     }
-
+  
     public function getParamsProperty(): array
     {
         return ['tenant' => \tenant()->getTenantKey()];
@@ -187,19 +149,5 @@ class Settings extends Page implements Tables\Contracts\HasTable
             ->success()
             ->seconds(10)
             ->send();
-    }
-
-    public function createSub()
-    {
-        DB::usingConnection(getCentralConnection(), function () {
-            /** @var ?Tenant */
-            $tenant = tenant();
-
-            $plan = $this->plans->first();
-
-            $subscription = $tenant->subscribeTo($plan, withoutTrial: true);
-
-            \dd($plan, $subscription);
-        });
     }
 }
