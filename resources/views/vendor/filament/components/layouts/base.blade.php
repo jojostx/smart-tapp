@@ -4,11 +4,15 @@
 
 <!DOCTYPE html>
 <html
-    lang="{{ str_replace('_', '-', app()->getLocale()) }}"
-    dir="{{ __('filament::layout.direction') ?? 'ltr' }}"
-    class="antialiased bg-gray-100 filament js-focus-visible"
+lang="{{ str_replace('_', '-', app()->getLocale()) }}"
+dir="{{ __('filament::layout.direction') ?? 'ltr' }}"
+class="antialiased bg-gray-100 filament js-focus-visible"
 >
-    <head>
+<head>
+        @if (request()->routeIs('filament.pages.*'))
+            <meta name="turbo-visit-control" content="reload">
+        @endif
+
         {{ \Filament\Facades\Filament::renderHook('head.start') }}
 
         <meta charset="utf-8">
