@@ -58,6 +58,11 @@ class Profile extends Page
         return User::find(auth()->guard('web')->id());
     }
 
+    protected function canUpdateInfo(): bool
+    {
+        return User::find(auth()->guard('web')->id())?->isSuperAdmin();
+    }
+
     public function getCancelButtonUrlProperty(): string
     {
         return static::getUrl();
@@ -100,7 +105,8 @@ class Profile extends Page
                         ->unique('users', 'phone_number', ignoreRecord: true)
                         ->tel()
                         ->rule(Rule::phone()->country(['NG'])),
-                ]),
+                ])
+                ->disabled(!self::canUpdateInfo()),
         ];
     }
 
@@ -183,25 +189,37 @@ class Profile extends Page
 
     public function savePersonalInfo(): void
     {
+        \abort_unless($this->canUpdateInfo(), 403);
+
         $data = $this->personalInfoForm->getState();
         $email_changed = isset($data['email']) && $data['email'] != $this->getFormModel()->email;
 
         // save phone and name attribute
-        $saved = $this->getFormModel()->fill([
-            'name' => $data['name'],
-            'phone_number' => $data['phone_number'],
-        ])->save();
+        $result = DB::transaction(function () use ($data) {
+            $saved = $this->getFormModel()->fill([
+                'name' => $data['name'],
+                'phone_number' => $data['phone_number'],
+            ])->save();
 
-        // Create a pending user email
-        $pending_email = $this->getFormModel()->newEmail($data['email']);
+            if ($saved && $tenant = tenant()) {
+                $saved = $tenant->fill([
+                    'name' => $data['name']
+                ])->save();
+            }
+
+            // Create a pending user email
+            $email_changed = (bool) $this->getFormModel()->newEmail($data['email']);
+
+            return ['saved' => $saved, 'email_changed' => $email_changed];
+        });
 
         $success_message = 'Details saved successfully. ';
 
-        if ($email_changed && $pending_email) {
+        if ($email_changed && $result['email_changed']) {
             $success_message .= 'Please check your inbox to verify the new email.';
         }
 
-        $saved && $this->showSuccessNotification($success_message);
+        $result['saved'] && $this->showSuccessNotification($success_message);
     }
 
     public function savePasswordInfo(): void
@@ -216,11 +234,11 @@ class Profile extends Page
                     'password' => $new_password,
                     'remember_token' => str()->random(60),
                 ])->save()
-                &&
-                $tenant->forceFill([
-                    'password' => $new_password,
-                    'remember_token' => str()->random(60),
-                ])->save();
+                    &&
+                    $tenant->forceFill([
+                        'password' => $new_password,
+                        'remember_token' => str()->random(60),
+                    ])->save();
             });
 
             if ($saved) {
@@ -237,7 +255,7 @@ class Profile extends Page
         }
     }
 
-    protected function showSuccessNotification(string|Closure|null $body)
+    protected function showSuccessNotification(string|Closure $body)
     {
         Notification::make('save-success-' . str()->random(5))
             ->body($body)
@@ -246,7 +264,7 @@ class Profile extends Page
             ->send();
     }
 
-    protected function showFailureNotification(string|Closure|null $body)
+    protected function showFailureNotification(string|Closure $body)
     {
         Notification::make('save-failed-' . str()->random(5))
             ->body($body)
