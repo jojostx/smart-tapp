@@ -14,18 +14,18 @@ use App\Models\Tenant\Vehicle;
 use Filament\Forms;
 use Filament\Tables;
 use Filament\Resources\Form;
+use Filament\Resources\Resource;
 use Filament\Resources\Table;
 use Filament\Forms\Components\Select;
 use Filament\Notifications\Notification;
-use Filament\Resources\Resource;
 use Filament\Tables\Actions\ActionGroup;
 use Filament\Tables\Filters\SelectFilter;
 use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Validation\Rules\Enum;
 use Illuminate\Validation\Rules\Unique;
-use App\Filament\Resources\AccessResource\RelationManagers;
 use Illuminate\Database\Eloquent\SoftDeletingScope;
+use App\Filament\Resources\AccessResource\RelationManagers;
 
 class AccessResource extends Resource
 {
@@ -111,9 +111,14 @@ class AccessResource extends Resource
 
                                 return $record->getKey();
                             })
-                            ->unique(table: 'accesses', column: 'vehicle_id', callback: function (Unique $rule, callable $get) {
-                                return $rule->where('driver_id',  $get('driver_id'));
-                            })
+                            ->unique(
+                                table: 'accesses',
+                                column: 'vehicle_id',
+                                callback: function (Unique $rule, callable $get) {
+                                    return $rule->where('driver_id',  $get('driver_id'));
+                                }
+                            )
+                            ->required()
                             ->visibleOn(Pages\CreateAccess::class),
 
                         Forms\Components\Select::make('driver_id')
@@ -167,6 +172,7 @@ class AccessResource extends Resource
                                     return $rule->where('vehicle_id',  $get('vehicle_id'));
                                 }
                             )
+                            ->required()
                             ->visibleOn(Pages\CreateAccess::class),
 
                         Forms\Components\Fieldset::make('Vehicle')
@@ -180,7 +186,6 @@ class AccessResource extends Resource
                                 Forms\Components\TextInput::make('model')
                                     ->required(),
                                 Forms\Components\TextInput::make('color'),
-
                             ])
                             ->hiddenOn(Pages\CreateAccess::class),
 
@@ -198,12 +203,16 @@ class AccessResource extends Resource
                             ])
                             ->hiddenOn(Pages\CreateAccess::class),
 
+
                         Forms\Components\Select::make('parking_lot_id')
                             ->label('Parking Lot')
-                            ->relationship('parkingLot', 'name'),
+                            ->relationship('parkingLot', 'name')
+                            ->required()
+                            ->exists('parking_lots', 'id'),
 
                         RangeSlider::make('validity_period')
                             ->label('Valid for')
+                            ->required()
                             ->max(5)
                             ->rule('integer')
                             ->min(1)
@@ -224,6 +233,7 @@ class AccessResource extends Resource
                                     $status == AccessStatus::ACTIVE;
                             })
                             ->step(10)
+                            ->required()
                             ->rule('integer')
                             ->min(30)
                             ->max(120)
@@ -235,6 +245,7 @@ class AccessResource extends Resource
                             ->options(AccessStatus::toArray(['expired']))
                             ->default(AccessStatus::ISSUED)
                             ->rule(new Enum(AccessStatus::class))
+                            ->required()
                             ->descriptions(AccessStatus::toDescriptionArray())->columnSpan('full'),
                     ])
                     ->columnSpan([
@@ -464,6 +475,14 @@ class AccessResource extends Resource
                         static::getCurrentPasswordField(),
                     ]),
             ]);
+    }
+
+
+    public static function getRelations(): array
+    {
+        return [
+            //
+        ];
     }
 
     public static function getPages(): array
