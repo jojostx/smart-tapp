@@ -2,6 +2,7 @@
 
 use App\Filament\Widgets\SmarttappInfoWidget;
 use App\Http\Middleware\EnsureAccountIsNotDeactivated;
+use App\Http\Middleware\EnsureSubscriptionIsActive;
 use App\Http\Middleware\FilamentRedirectIfAuthenticated;
 use App\Http\Middleware\RedirectIfAuthenticated;
 use Filament\Http\Middleware\Authenticate;
@@ -330,6 +331,7 @@ return [
         'auth' => [
             Authenticate::class,
             EnsureAccountIsNotDeactivated::class,
+            EnsureSubscriptionIsActive::class,
         ],
         'base' => [
             EncryptCookies::class,
