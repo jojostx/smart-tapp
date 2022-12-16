@@ -23,16 +23,7 @@ class RedirectIfAuthenticated
 
         foreach ($guards as $guard) {
             if (Auth::guard($guard)->check()) {
-                if (blank(tenant())) {
-                    return redirect(RouteServiceProvider::HOME);
-                }
-
-                if (
-                    request()->routeIs('filament.auth.login') ||
-                    !request()->routeIs('filament.pages.*', 'filament.resources.*', 'filament.auth.logout', 'filament.asset')
-                ) {
-                    return redirect()->route('filament.pages.dashboard');
-                }
+                return redirect(RouteServiceProvider::HOME);
             }
         }
 

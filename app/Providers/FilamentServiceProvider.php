@@ -18,9 +18,17 @@ class FilamentServiceProvider extends ServiceProvider
   public function boot()
   {
     Filament::serving(function () {
+      Filament::registerNavigationGroups([
+        'Parking',
+      ]);
+    });
+
+    Filament::serving(function () {
       Filament::registerTheme(mix('css/filament.css'));
       Filament::registerScripts([asset('js/phoneinput.js')]);
-      Filament::registerScripts([asset('js/actionable-text-column.js')], true);
+      Filament::registerScripts([asset('js/actionable-text-column.js')]);
+      Filament::registerScripts([asset('js/filament-turbo.js')]);
+      Filament::registerScripts([asset('js/filament-stimulus.js')]);
     });
 
     Filament::registerRenderHook(

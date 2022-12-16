@@ -24,6 +24,7 @@ use App\Filament\Forms\Components\SingleOptionMultiSelect;
 use Illuminate\Database\Eloquent\SoftDeletingScope;
 use App\Filament\Resources\UserResource\RelationManagers;
 use App\Filament\Resources\UserResource\RelationManagers\ParkingLotsRelationManager;
+use Illuminate\Validation\Rule;
 
 class UserResource extends Resource
 {
@@ -202,11 +203,15 @@ class UserResource extends Resource
                     ->unique(ignoreRecord: true)
                     ->required()
                     ->email(),
-                PhoneNumberInput::make('phone_number')
-                    ->label('Phone')
+
+                Forms\Components\TextInput::make('phone_number')
+                    ->label('Phone Number')
                     ->required()
                     ->reactive()
-                    ->allowedCountries(['NG']),
+                    ->unique('users', 'phone_number')->placeholder('ex: 09035055833')
+                    ->tel()
+                    ->rule(Rule::phone()->country(['NG'])),
+
                 SingleOptionMultiSelect::make('role')
                     ->relationshipName('roles', 'name')
                     ->label(__('Role'))

@@ -40,9 +40,9 @@
 
     <x-alert :type="'info'" :hasCloseButton="true" :showAlert="false"></x-alert>
     <x-toast :type="'info'" :hasCloseButton="true" :showToast="false"></x-toast>
-    
+
     @livewireScripts
-    
+
     @stack('scripts:body-end')
 </body>
 

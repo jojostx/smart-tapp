@@ -9,6 +9,11 @@ use Jojostx\Larasubs\Models\Plan;
 class Index extends Component
 {
     /**
+     * The query params array.
+     */
+    public array $params = [];
+
+    /**
      * The plans collection.
      *
      * @var null|Collection
@@ -20,9 +25,10 @@ class Index extends Component
      *
      * @return void
      */
-    public function __construct($plans)
+    public function __construct($plans, array $params = [])
     {
         $this->plans = $plans;
+        $this->params = $params;
     }
 
     /**

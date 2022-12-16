@@ -93,7 +93,7 @@ class PendingUserEmail extends Model
     public function verificationUrl(): string
     {
         return URL::temporaryTenantSignedRoute(
-            'pending-email.verify',
+            'filament.auth.pending-email.verify',
             now()->addMinutes(config('auth.verification.expire', 120)),
             ['token' => $this->token],
         );

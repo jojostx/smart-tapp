@@ -69,7 +69,7 @@
 
           return (Boolean(result)) ? Math.abs(result) : 5000;
         },
-        
+
         getDialogueClasses() {
           return this.colors[this.color]['dialogue_classes']
         },
@@ -80,16 +80,16 @@
 
         // binders //
         closeButton: {
-          ['@click']() {
-            this.show_alert = false;
-          },
-
           ['x-show']() {
             return this.show_close_button;
           },
 
           [':class']() {
             return this.getButtonClasses();
+          },
+
+          ['@click']() {
+            this.show_alert = false;
           },
         },
 

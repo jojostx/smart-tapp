@@ -25,6 +25,7 @@ class Access extends Model implements CanSendAccessActivationNotification
     protected $fillable = [
         'validity_period',
         'expiry_period',
+        'issued_at'
     ];
 
     /**

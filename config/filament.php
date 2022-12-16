@@ -1,6 +1,9 @@
 <?php
 
+use App\Filament\Widgets\SmarttappInfoWidget;
 use App\Http\Middleware\EnsureAccountIsNotDeactivated;
+use App\Http\Middleware\EnsureSubscriptionIsActive;
+use App\Http\Middleware\FilamentRedirectIfAuthenticated;
 use App\Http\Middleware\RedirectIfAuthenticated;
 use Filament\Http\Middleware\Authenticate;
 use Filament\Http\Middleware\DispatchServingFilamentEvent;
@@ -144,7 +147,7 @@ return [
         'path' => app_path('Filament/Widgets'),
         'register' => [
             Widgets\AccountWidget::class,
-            Widgets\FilamentInfoWidget::class,
+            SmarttappInfoWidget::class,
         ],
     ],
 
@@ -328,6 +331,7 @@ return [
         'auth' => [
             Authenticate::class,
             EnsureAccountIsNotDeactivated::class,
+            EnsureSubscriptionIsActive::class,
         ],
         'base' => [
             EncryptCookies::class,
@@ -341,7 +345,8 @@ return [
             MirrorConfigToSubpackages::class,
 
             // custom middleware & middleware from third party packages
-            RedirectIfAuthenticated::class,
+            FilamentRedirectIfAuthenticated::class,
+          
             'universal',
             PreventAccessFromCentralDomains::class,
             App\Http\Middleware\InitializeTenancyByDomain::class

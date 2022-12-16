@@ -14,11 +14,20 @@ html {
 }
 
 @layer components {
+    .tab {
+        @apply inline-block p-4 border-b-2 rounded-t-lg;
+    }
+    .active-tab {
+        @apply text-primary-600 border-primary-600 dark:text-primary-500 dark:border-primary-500;
+    }
+    .inactive-tab {
+        @apply border-transparent hover:text-gray-600 hover:border-gray-300 dark:hover:text-gray-300;
+    }
     .filament-badge-danger {
         @apply inline-flex items-center justify-center space-x-1 rtl:space-x-reverse min-h-[20px] px-2 py-0.5 text-sm font-medium tracking-tight rounded-xl whitespace-nowrap text-danger-700 bg-danger-500/10;
     }
     .filament-forms-field-wrapper-label {
-        @apply opacity-100 font-medium;
+        @apply font-medium opacity-100;
     }
     .filament-forms-range-component {
         width: calc(100% - (75px));

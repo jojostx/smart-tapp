@@ -5,7 +5,6 @@ namespace App\Filament\Livewire\Auth;
 use App\Filament\Traits\WithDomainValidation;
 use App\Models\Tenant\User;
 use DanHarrin\LivewireRateLimiting\WithRateLimiting;
-use Illuminate\Support\Facades\Cookie;
 use Illuminate\Support\Facades\Hash;
 use Livewire\Component;
 

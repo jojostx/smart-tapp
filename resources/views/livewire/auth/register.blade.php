@@ -35,7 +35,7 @@
                 </div>
 
                 <!-- Domain -->
-                <x-domain-input />
+                <x-domain-input :wire_lazy="true"/>
 
                 <!-- Name -->
                 <div class="mt-4">

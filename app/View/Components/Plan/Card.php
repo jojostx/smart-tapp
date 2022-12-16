@@ -14,6 +14,11 @@ class Card extends Component
     public $plan;
 
     /**
+     * The query params array.
+     */
+    public array $params = [];
+
+    /**
      * The plan Currency.
      *
      * @var \Akaunting\Money\Currency
@@ -35,11 +40,12 @@ class Card extends Component
      * 
      * @return void
      */
-    public function __construct($plan, $should_highlight = null)
+    public function __construct($plan, $should_highlight = null, array $params = [])
     {
         $this->plan = $plan;
         $this->should_highlight = $should_highlight;
         $this->currency = currency($this->plan->currency);
+        $this->params = $params;
     }
 
     public function is_highlighted()
@@ -59,6 +65,11 @@ class Card extends Component
     public function getCurrencySymbol()
     {
         return $this->currency->getSymbol();
+    }
+
+    public function getParams()
+    {
+        return \array_merge(['plan' => $this->plan->slug], $this->params);
     }
 
     public function getPrice()
@@ -89,6 +100,15 @@ class Card extends Component
     public function getFeatureTag($feature)
     {
         return sprintf($feature->description->get('tag', $feature->name), $feature->pivot->units);
+    }
+
+    public function getRoute()
+    {
+        if (\tenant()) {
+            return route('filament.plans.checkout', $this->getParams());
+        }
+
+        return \route('register', $this->getParams());
     }
 
     /**

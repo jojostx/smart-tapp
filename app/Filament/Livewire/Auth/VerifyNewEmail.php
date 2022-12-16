@@ -2,6 +2,7 @@
 
 namespace App\Filament\Livewire\Auth;
 
+use App\Jobs\Tenant\UpdateCustomerEmailOnFlutterwave;
 use App\Models\Tenant\PendingUserEmail;
 use DanHarrin\LivewireRateLimiting\WithRateLimiting;
 use Illuminate\Auth\AuthenticationException;
@@ -46,6 +47,9 @@ class VerifyNewEmail extends Component
                         'email_verified_at' => now(),
                     ])->save();
                 }
+
+                // dispatch a job to the queue to update the customer's email on flutterwave
+                UpdateCustomerEmailOnFlutterwave::dispatch($user, $tenant)->afterCommit();
 
                 return $user;
             });

@@ -24,13 +24,13 @@ class Tenant extends BaseTenant implements TenantWithDatabase, MustVerifyEmail
      * @var array<int, string>
      */
     protected $fillable = [
-        'name',
+        'name', //used in data column
         'email',
         'password',
         'domain',
         'organization',
     ];
-    
+
     /**
      * The custom columns that are assignable when creating or updating the model.
      *
@@ -61,4 +61,43 @@ class Tenant extends BaseTenant implements TenantWithDatabase, MustVerifyEmail
     protected $casts = [
         'email_verified_at' => 'datetime',
     ];
+
+    public function billingInfo()
+    {
+        return $this->hasOne(BillingInfo::class, 'tenant_id');
+    }
+
+    public function receipts()
+    {
+        return $this->hasMany(Receipt::class, 'tenant_id');
+    }
+
+    public function creditCards()
+    {
+        return $this->hasMany(CreditCard::class, 'tenant_id');
+    }
+
+    public function createReceipt($data): Receipt
+    {
+        $reciept = (new Receipt)->fill($data);
+        $reciept->tenant()->associate($this);
+        $reciept->save();
+
+        return $reciept;
+    }
+
+    public function createCreditCard($data): CreditCard
+    {
+        $creditCard = CreditCard::on(\getCentralConnection())->firstWhere('token', $data['token']);
+
+        if ($creditCard) {
+            $creditCard->update($data);
+        } else {
+            $creditCard = (new CreditCard)->fill($data);
+            $creditCard->tenant()->associate($this);
+            $creditCard->save();
+        }
+
+        return $creditCard;
+    }
 }

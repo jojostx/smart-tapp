@@ -4,6 +4,7 @@ namespace App\Filament\Livewire\Tenant\Access;
 
 use App\Models\Tenant\Access;
 use App\Models\Tenant\ReparkRequest;
+use App\Models\Tenant\User;
 use App\Notifications\Tenant\User\ReparkRequestCreatedNotification;
 use DanHarrin\LivewireRateLimiting\Exceptions\TooManyRequestsException;
 use Filament\Forms;
@@ -18,6 +19,7 @@ class Dashboard extends Component implements Forms\Contracts\HasForms
     use WithRateLimiting;
 
     public Access $access;
+    public User $issuer;
     public string $plate_number = "";
 
     public function mount(Access $access)
@@ -27,6 +29,8 @@ class Dashboard extends Component implements Forms\Contracts\HasForms
         if (!auth('driver')->check() && $this->access->isActive()) {
             Auth::guard('driver')->login($this->access->driver);
         }
+
+        $this->issuer = $this->access->issuer;
 
         $this->clearRateLimiter('submit');
     }
