@@ -68,7 +68,7 @@ class Kernel extends HttpKernel
         // 'landlord.verified' => \App\Http\Middleware\EnsureLandlordEmailIsVerified::class,
         // 'landlord.password.confirm' => \App\Http\Middleware\RequireLandlordPassword::class,
 
-        'auth.filament' => Filament\Http\Middleware\Authenticate::class,
+        'auth.filament' => \Filament\Http\Middleware\Authenticate::class,
         'guest.filament' => \App\Http\Middleware\FilamentRedirectIfAuthenticated::class,
 
         // defaults
