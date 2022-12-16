@@ -7,7 +7,6 @@ use Stancl\Tenancy\Middleware\InitializeTenancyByDomain as OriginalInitializeTen
 
 class InitializeTenancyByDomain extends OriginalInitializeTenancyByDomain
 {
-
     /**
      * Handle an incoming request.
      *

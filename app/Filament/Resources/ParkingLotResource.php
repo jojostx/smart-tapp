@@ -5,7 +5,6 @@ namespace App\Filament\Resources;
 use App\Enums\Models\ParkingLotStatus;
 use App\Filament\Forms\Components\Qrcode;
 use App\Filament\Resources\ParkingLotResource\Pages;
-use App\Filament\Resources\ParkingLotResource\RelationManagers;
 use App\Filament\Traits\WithCurrentPasswordField;
 use App\Models\Tenant\ParkingLot;
 use Filament\Forms;
@@ -15,7 +14,6 @@ use Filament\Resources\Table;
 use Filament\Tables;
 use Filament\Tables\Actions\ActionGroup;
 use Filament\Tables\Filters\SelectFilter;
-use Illuminate\Database\Eloquent\SoftDeletingScope;
 
 class ParkingLotResource extends Resource
 {
@@ -47,7 +45,7 @@ class ParkingLotResource extends Resource
                         Forms\Components\Radio::make('status')
                             ->options([
                                 'open' => 'Open',
-                                'closed' => 'Closed'
+                                'closed' => 'Closed',
                             ])
                             ->enum(ParkingLotStatus::class)
                             ->default(ParkingLotStatus::OPEN)
@@ -81,7 +79,7 @@ class ParkingLotResource extends Resource
                                 Forms\Components\Placeholder::make('created_at')
                                     ->label('Created at')
                                     ->content(fn (?ParkingLot $record): string => $record ? $record->created_at->diffForHumans() : '-'),
-                            ])->columnSpan(1)->columns(1)
+                            ])->columnSpan(1)->columns(1),
                     ])->columns(2)
                     ->columnSpan([
                         'sm' => 1,
@@ -112,7 +110,7 @@ class ParkingLotResource extends Resource
             ])
             ->filters([
                 SelectFilter::make('status')
-                    ->options(ParkingLotStatus::toArray())
+                    ->options(ParkingLotStatus::toArray()),
             ])
             ->actions([
                 ActionGroup::make([

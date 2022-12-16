@@ -13,13 +13,14 @@ use Illuminate\Queue\SerializesModels;
 
 class RecoverOldEmail extends Mailable implements ShouldQueue
 {
-    use Queueable, SerializesModels;
+    use Queueable;
+    use SerializesModels;
 
     /**
      * @var \Illuminate\Database\Eloquent\Model
      */
     public $pendingUserEmail;
-    
+
     /**
      * @var Carbon
      */
@@ -71,4 +72,3 @@ class RecoverOldEmail extends Mailable implements ShouldQueue
         return [];
     }
 }
-

@@ -7,7 +7,7 @@ use Illuminate\Console\Command;
 
 class ClearExpiredOtps extends Command
 {
-/**
+    /**
      * The name and signature of the console command.
      *
      * @var string
@@ -42,10 +42,10 @@ class ClearExpiredOtps extends Command
             $otps = Otp::where('is_valid', false)->count();
 
             $this->info("Found {$otps} expired otps.");
-            
+
             Otp::where('is_valid', false)->delete();
-            
-            $this->info("expired tokens deleted");
+
+            $this->info('expired tokens deleted');
         } catch (\Exception $e) {
             $this->error("Error:: {$e->getMessage()}");
         }

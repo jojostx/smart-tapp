@@ -17,7 +17,7 @@ class ListParkingLots extends ListRecords
             Actions\CreateAction::make(),
         ];
     }
-    
+
     protected function getTableActionsPosition(): ?string
     {
         return Position::BeforeCells;

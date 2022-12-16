@@ -19,7 +19,7 @@ class Otp extends Model
      * @var array
      */
     protected $fillable = [
-        'identifier', 'token', 'validity', 'is_valid'
+        'identifier', 'token', 'validity', 'is_valid',
     ];
 
     /**

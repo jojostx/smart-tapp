@@ -103,7 +103,7 @@ class ActionableTextColumn extends TextColumn
     {
         $triggerPosition = $this->evaluate($this->triggerPosition);
 
-        if (blank($triggerPosition) || !in_array($triggerPosition, ['before', 'after'])) {
+        if (blank($triggerPosition) || ! in_array($triggerPosition, ['before', 'after'])) {
             return 'after';
         }
 

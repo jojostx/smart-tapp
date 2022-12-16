@@ -13,7 +13,7 @@ use Spatie\Permission\PermissionRegistrar;
 class EditUser extends EditRecord
 {
     use WithCurrentPasswordField;
-    
+
     protected static string $resource = UserResource::class;
 
     protected function getListeners()
@@ -46,11 +46,11 @@ class EditUser extends EditRecord
                         ->action(function () use ($user) {
                             $user->isActive() ? $user->deactivateAccount() : $user->activateAccount();
                             app(PermissionRegistrar::class)->forgetCachedPermissions();
-                            $this->emitSelf('$refresh');                            
+                            $this->emitSelf('$refresh');
                         })
                         ->requiresConfirmation()
                         ->form([
-                            static::getCurrentPasswordField()
+                            static::getCurrentPasswordField(),
                         ])
                         ->color(fn () => $user->isActive() ? 'warning' : 'primary'),
                 ],
@@ -63,7 +63,7 @@ class EditUser extends EditRecord
 
     public function afterSave(): void
     {
-        if (!$this->record instanceof User) {
+        if (! $this->record instanceof User) {
             return;
         }
 

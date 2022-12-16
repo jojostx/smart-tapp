@@ -21,11 +21,11 @@ class EnsureAccountIsActivated
         $user = $request->user('web');
 
         if ($user && $user->isAdmin() && $user->isActive()) {
-          return $next($request);
+            return $next($request);
         }
 
         if (auth('web')->check()) {
-          auth('web')->logout();
+            auth('web')->logout();
         }
 
         return Redirect::guest(route('filament.auth.account.deactivated'));

@@ -8,7 +8,6 @@ use App\Models\Tenant\Driver;
 use App\Models\Tenant\ParkingLot;
 use App\Models\Tenant\User;
 use App\Models\Tenant\Vehicle;
-use Illuminate\Database\Console\Seeds\WithoutModelEvents;
 use Illuminate\Database\Seeder;
 use Spatie\Permission\Models\Role;
 

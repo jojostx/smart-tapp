@@ -4,12 +4,12 @@ namespace App\Filament\Pages;
 
 use App\Repositories\PlanRepository;
 use Closure;
-use Filament\Tables;
-use Filament\Pages\Page;
 use Filament\Facades\Filament;
 use Filament\Forms\Components\Grid;
 use Filament\Forms\Components\TextInput;
 use Filament\Notifications\Notification;
+use Filament\Pages\Page;
+use Filament\Tables;
 use Illuminate\Database\Eloquent\Collection;
 use Illuminate\Database\Eloquent\Model;
 
@@ -62,11 +62,11 @@ class Settings extends Page implements Tables\Contracts\HasTable
 
     public function getPlansProperty(): Collection
     {
-        $slug =  tenant()->subscription?->plan?->slug ?? '';
-  
+        $slug = tenant()->subscription?->plan?->slug ?? '';
+
         return app(PlanRepository::class)->getActiveExcept($slug);
     }
-  
+
     public function getParamsProperty(): array
     {
         return ['tenant' => \tenant()->getTenantKey()];
@@ -77,7 +77,7 @@ class Settings extends Page implements Tables\Contracts\HasTable
         return [
             Grid::make([
                 'default' => 1,
-                'md' => 2
+                'md' => 2,
             ])
                 ->schema([
                     TextInput::make('organization')
@@ -130,7 +130,7 @@ class Settings extends Page implements Tables\Contracts\HasTable
             'email' => $data['email'] ?? $tenant->email,
             'tax_number' => $data['tax_number'],
             'address' => $data['address'],
-            'zip_code' => $data['zip_code']
+            'zip_code' => $data['zip_code'],
         ];
 
         if ($billingInfo) {
@@ -142,7 +142,7 @@ class Settings extends Page implements Tables\Contracts\HasTable
         $saved && $this->showSuccessNotification('Details saved successfully.');
     }
 
-    protected function showSuccessNotification(string|Closure $body)
+    protected function showSuccessNotification(string | Closure $body)
     {
         Notification::make('save-success-' . str()->random(5))
             ->body($body)

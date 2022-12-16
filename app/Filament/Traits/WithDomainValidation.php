@@ -4,50 +4,50 @@ namespace App\Filament\Traits;
 
 trait WithDomainValidation
 {
-  /** @var string */
-  public $domain = '';
+    /** @var string */
+    public $domain = '';
 
-  protected function getRules(): array
-  {
-    /**
-     * append domain rule to rules array
-     */
-    $domainRule = $this->getDomainRule();
-    $rules = [];
+    protected function getRules(): array
+    {
+        /**
+         * append domain rule to rules array
+         */
+        $domainRule = $this->getDomainRule();
+        $rules = [];
 
-    if (property_exists($this, 'rules')) {
-      $rules = $this->rules;
+        if (property_exists($this, 'rules')) {
+            $rules = $this->rules;
+        }
+
+        if (method_exists($this, 'rules')) {
+            $rules = $this->rules();
+        }
+
+        return array_merge($domainRule, $rules);
     }
 
-    if (method_exists($this, 'rules')) {
-      $rules = $this->rules();
+    protected function getDomainRule(): array
+    {
+        return [
+            'domain' => ['required', 'exists:' . getCentralConnection() . '.domains,domain'],
+        ];
     }
 
-    return array_merge($domainRule, $rules);
-  }
+    protected function prepareForValidation($attributes): array
+    {
+        if ($this->domain === $this->currentTenant?->domain) {
+            return $attributes;
+        }
 
-  protected function getDomainRule(): array
-  {
-    return [
-      'domain' => ['required', 'exists:' . getCentralConnection() . '.domains,domain']
-    ];
-  }
+        if (filled($this->domain) && is_string($this->domain)) {
+            $attributes['domain'] = strtolower($this->domain) . '.' . config('tenancy.central_domains.main');
+        }
 
-  protected function prepareForValidation($attributes): array
-  {
-    if ($this->domain === $this->currentTenant?->domain) {
-      return $attributes;
+        return $attributes;
     }
 
-    if (filled($this->domain) && is_string($this->domain)) {
-      $attributes['domain'] = strtolower($this->domain) . '.' . config('tenancy.central_domains.main');
+    public function getCurrentTenantProperty()
+    {
+        return tenant();
     }
-
-    return $attributes;
-  }
-
-  public function getCurrentTenantProperty()
-  {
-    return tenant();
-  }
 }

@@ -14,7 +14,9 @@ use Laravel\Sanctum\HasApiTokens;
  */
 class Landlord extends Authenticatable
 {
-    use HasApiTokens, HasFactory, Notifiable;
+    use HasApiTokens;
+    use HasFactory;
+    use Notifiable;
 
     /**
      * The attributes that are mass assignable.

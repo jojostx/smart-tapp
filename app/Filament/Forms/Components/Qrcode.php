@@ -17,7 +17,8 @@ class Qrcode extends Component
     protected string $view = 'filament::forms.components.qrcode';
 
     protected $content = null;
-    protected string|Closure| null $downloadName = 'parkinglot_qrcode';
+
+    protected string | Closure | null $downloadName = 'parkinglot_qrcode';
 
     final public function __construct(string $name)
     {
@@ -50,10 +51,10 @@ class Qrcode extends Component
     /**
      * Sets the Download Name for the qrcode
      *
-     * @param string|Closure $downloadName
+     * @param  string|Closure  $downloadName
      * @return self
      */
-    public function downloadName(string|Closure $downloadName): self
+    public function downloadName(string | Closure $downloadName): self
     {
         $this->downloadName = $downloadName;
 
@@ -69,8 +70,8 @@ class Qrcode extends Component
     {
         $downloadName = $this->evaluate($this->downloadName);
 
-        $downloadName = !blank($downloadName) && is_string($downloadName) ? str($downloadName.' parkinglot qrcode')->snake() : 'parkinglot_qrcode';
-        
+        $downloadName = ! blank($downloadName) && is_string($downloadName) ? str($downloadName . ' parkinglot qrcode')->snake() : 'parkinglot_qrcode';
+
         return $downloadName;
     }
 

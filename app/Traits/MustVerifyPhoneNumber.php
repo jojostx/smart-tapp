@@ -11,7 +11,7 @@ trait MustVerifyPhoneNumber
      */
     public function hasVerifiedPhoneNumber()
     {
-        return !is_null($this->phone_verified_at);
+        return ! is_null($this->phone_verified_at);
     }
 
     /**

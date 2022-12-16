@@ -2,18 +2,18 @@
 
 namespace App\Filament\Pages;
 
-use Closure;
-use App\Models\Tenant\User;
-use Filament\Forms\Components\Grid;
-use Filament\Forms\Components\TextInput;
-use Filament\Pages\Page;
-use Illuminate\Database\Eloquent\Model;
 use App\Filament\Forms\Components\Password as FilamentPasswordRevealPassword;
+use App\Models\Tenant\User;
+use Closure;
 use Filament\Facades\Filament;
 use Filament\Forms\Components\Card;
+use Filament\Forms\Components\Grid;
 use Filament\Forms\Components\Placeholder;
+use Filament\Forms\Components\TextInput;
 use Filament\Notifications\Notification;
+use Filament\Pages\Page;
 use Illuminate\Auth\Events\PasswordReset;
+use Illuminate\Database\Eloquent\Model;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Hash;
@@ -79,7 +79,7 @@ class Profile extends Page
     {
         return [
             Grid::make([
-                'default' => 1
+                'default' => 1,
             ])
                 ->schema([
                     TextInput::make('name')
@@ -106,7 +106,7 @@ class Profile extends Page
                         ->tel()
                         ->rule(Rule::phone()->country(['NG'])),
                 ])
-                ->disabled(!self::canUpdateInfo()),
+                ->disabled(! self::canUpdateInfo()),
         ];
     }
 
@@ -126,7 +126,7 @@ class Profile extends Page
                         ->content(fn (?User $record): string => $record ? $record->updated_at->diffForHumans() : '-'),
                     Placeholder::make('created_at')
                         ->label('Created at')
-                        ->content(fn (?User $record): string => $record ? $record->created_at->diffForHumans() : '-')
+                        ->content(fn (?User $record): string => $record ? $record->created_at->diffForHumans() : '-'),
                 ])
                 ->columns(2)
                 ->columnSpan(2),
@@ -203,7 +203,7 @@ class Profile extends Page
 
             if ($saved && $tenant = tenant()) {
                 $saved = $tenant->fill([
-                    'name' => $data['name']
+                    'name' => $data['name'],
                 ])->save();
             }
 
@@ -255,7 +255,7 @@ class Profile extends Page
         }
     }
 
-    protected function showSuccessNotification(string|Closure $body)
+    protected function showSuccessNotification(string | Closure $body)
     {
         Notification::make('save-success-' . str()->random(5))
             ->body($body)
@@ -264,7 +264,7 @@ class Profile extends Page
             ->send();
     }
 
-    protected function showFailureNotification(string|Closure $body)
+    protected function showFailureNotification(string | Closure $body)
     {
         Notification::make('save-failed-' . str()->random(5))
             ->body($body)

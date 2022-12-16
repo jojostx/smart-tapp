@@ -3,8 +3,8 @@
 namespace App\Filament\Forms\Components;
 
 use Closure;
-use Filament\Forms\Components\Field;
 use Filament\Forms\Components\Concerns;
+use Filament\Forms\Components\Field;
 use Filament\Support\Concerns\HasExtraAlpineAttributes;
 use Illuminate\Contracts\Support\Arrayable;
 use Illuminate\Validation\Rule;

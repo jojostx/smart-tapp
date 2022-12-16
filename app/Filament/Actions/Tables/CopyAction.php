@@ -8,83 +8,86 @@ use Filament\Tables\Actions\Action;
 
 class CopyAction extends Action
 {
-  use HasKeyBindings;
+    use HasKeyBindings;
 
-  protected string $view = 'filament::tables.actions.copy-action';
-  protected string $type = 'button';
-  protected array $allowedTypes = ['button', 'iconButton', 'grouped'];
-  protected string | Closure | null $content = '';
+    protected string $view = 'filament::tables.actions.copy-action';
 
-  protected function setUp(): void
-  {
-    parent::setUp();
+    protected string $type = 'button';
 
-    $this->label(__('Copy'));
+    protected array $allowedTypes = ['button', 'iconButton', 'grouped'];
 
-    $this->successNotificationTitle(__('Copied!'));
+    protected string | Closure | null $content = '';
 
-    $this->color('primary');
+    protected function setUp(): void
+    {
+        parent::setUp();
 
-    $this->icon('heroicon-o-clipboard');
-  }
+        $this->label(__('Copy'));
 
-  public function content(string | Closure | null $content): static
-  {
-    $this->content = $content;
+        $this->successNotificationTitle(__('Copied!'));
 
-    return $this;
-  }
+        $this->color('primary');
 
-  public function view(string $view): static
-  {
-    return $this;
-  }
+        $this->icon('heroicon-o-clipboard');
+    }
 
-  public function button(): static
-  {
-    $this->type = 'button';
+    public function content(string | Closure | null $content): static
+    {
+        $this->content = $content;
 
-    return $this;
-  }
+        return $this;
+    }
 
-  public function link(): static
-  {
-    $this->type = 'button';
+    public function view(string $view): static
+    {
+        return $this;
+    }
 
-    return $this;
-  }
+    public function button(): static
+    {
+        $this->type = 'button';
 
-  public function grouped(): static
-  {
-    $this->type = 'grouped';
+        return $this;
+    }
 
-    return $this;
-  }
+    public function link(): static
+    {
+        $this->type = 'button';
 
-  public function iconButton(): static
-  {
-    $this->type = 'iconButton';
+        return $this;
+    }
 
-    return $this;
-  }
+    public function grouped(): static
+    {
+        $this->type = 'grouped';
 
-  public static function getDefaultName(): ?string
-  {
-    return 'copy';
-  }
+        return $this;
+    }
 
-  public function getContent(): string
-  {
-    return $this->evaluate($this->content) ?? '';
-  }
+    public function iconButton(): static
+    {
+        $this->type = 'iconButton';
 
-  public function getType(): string
-  {
-    return in_array($this->type, $this->allowedTypes) ? $this->type : 'button';
-  }
+        return $this;
+    }
 
-  public function getSuccessMessage(): string
-  {
-    return $this->evaluate($this->successNotificationTitle) ?? __('Copied!');
-  }
+    public static function getDefaultName(): ?string
+    {
+        return 'copy';
+    }
+
+    public function getContent(): string
+    {
+        return $this->evaluate($this->content) ?? '';
+    }
+
+    public function getType(): string
+    {
+        return in_array($this->type, $this->allowedTypes) ? $this->type : 'button';
+    }
+
+    public function getSuccessMessage(): string
+    {
+        return $this->evaluate($this->successNotificationTitle) ?? __('Copied!');
+    }
 }

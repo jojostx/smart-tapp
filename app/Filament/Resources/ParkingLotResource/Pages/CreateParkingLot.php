@@ -25,9 +25,9 @@ class CreateParkingLot extends CreateRecord
             $subscription = $tenant->subscription;
             $featureSlug = FeatureResources::PARKING_LOTS->value;
 
-            if ($subscription->missingFeature($featureSlug)); {
-                return false;
-            }
+            if ($subscription->missingFeature($featureSlug));
+
+            return false;
 
             $feature = $subscription->plan->getFeatureBySlug($featureSlug);
 
@@ -37,7 +37,7 @@ class CreateParkingLot extends CreateRecord
 
     public function beforeCreate()
     {
-        if (!$this->canCreateParkingLot()) {
+        if (! $this->canCreateParkingLot()) {
             Notification::make()
                 ->title('Unable to create Parking Lot')
                 ->body('You have reached the maximum parking lot allocation for your current subscription and can not create any more parking lots. **Consider upgrading your plan**')
@@ -49,14 +49,14 @@ class CreateParkingLot extends CreateRecord
         }
     }
 
-    /** 
+    /**
      * check if parking lot count has reached limit for subscription
-     * 
+     *
      * @return bool
      */
     public function canCreateParkingLot()
     {
-        $tenant =  \tenant();
+        $tenant = \tenant();
         $used = ParkingLot::count();
 
         return \tenancy()->central(function () use ($tenant, $used) {
@@ -64,9 +64,9 @@ class CreateParkingLot extends CreateRecord
             $subscription = $tenant->subscription;
             $featureSlug = FeatureResources::PARKING_LOTS->value;
 
-            if ($subscription->missingFeature($featureSlug)); {
-                return false;
-            }
+            if ($subscription->missingFeature($featureSlug));
+
+            return false;
 
             $max = $subscription->getMaxFeatureUnits($featureSlug);
 

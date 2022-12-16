@@ -4,14 +4,13 @@ namespace App\Notifications\Tenant\User;
 
 use Illuminate\Bus\Queueable;
 use Illuminate\Contracts\Queue\ShouldQueue;
-use Illuminate\Support\Facades\Lang;
-use Illuminate\Notifications\Notification;
 use Illuminate\Notifications\Messages\MailMessage;
+use Illuminate\Notifications\Notification;
 
 class ResetPassword extends Notification implements ShouldQueue
 {
     use Queueable;
-    
+
     /**
      * The password reset token.
      *

@@ -21,7 +21,7 @@ class EditDriver extends EditRecord
             Actions\DeleteAction::make()
                 ->requiresConfirmation()
                 ->modalSubheading(function (): string {
-                    return "Are you sure you want to do this? Doing so will delete all Accesses assigned to it and any associated Vehicle if they have no related Accesses.";
+                    return 'Are you sure you want to do this? Doing so will delete all Accesses assigned to it and any associated Vehicle if they have no related Accesses.';
                 })
                 ->form([
                     static::getCurrentPasswordField(),

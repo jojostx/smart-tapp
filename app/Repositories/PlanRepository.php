@@ -36,7 +36,7 @@ class PlanRepository
         return $query->where('price', '>', 0)->whereActive()->get();
     }
 
-    public function getActiveExcept(string|array $slug): Collection
+    public function getActiveExcept(string | array $slug): Collection
     {
         $query = Plan::on($this->centralConnection);
 

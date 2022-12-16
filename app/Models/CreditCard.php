@@ -9,7 +9,9 @@ use Illuminate\Database\Eloquent\Model;
 
 class CreditCard extends Model
 {
-    use HasFactory, GeneratesUuid, BindsOnUuid;
+    use HasFactory;
+    use GeneratesUuid;
+    use BindsOnUuid;
 
     /**
      * The attributes that are mass assignable.

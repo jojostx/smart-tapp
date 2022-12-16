@@ -1,13 +1,13 @@
 <?php
 
-use App\Http\Controllers\EmailVerificationController;
-use App\Http\Controllers\Landlord\Auth\LogoutController;
 use App\Filament\Livewire\Landlord\Auth\Login;
 use App\Filament\Livewire\Landlord\Auth\Passwords\Confirm;
 use App\Filament\Livewire\Landlord\Auth\Passwords\Email;
 use App\Filament\Livewire\Landlord\Auth\Passwords\Reset;
 use App\Filament\Livewire\Landlord\Auth\Verify;
 use App\Filament\Livewire\Landlord\Dashboard;
+use App\Http\Controllers\EmailVerificationController;
+use App\Http\Controllers\Landlord\Auth\LogoutController;
 use Illuminate\Support\Facades\Route;
 
 // Dashboard
@@ -24,7 +24,6 @@ Route::middleware('landlord.guest')->group(function () {
     Route::get('password/reset/{token}', Reset::class)
         ->name('password.reset');
 });
-
 
 Route::middleware('landlord.auth')->group(function () {
     Route::get('email/verify', Verify::class)

@@ -80,7 +80,7 @@ class DriverPolicy
     public function create(User $user)
     {
         // to create a new access for a vehicle and driver, the conditions below must be met.
-        // 1. the driver must not have an access with the same vehicle as the one the driver is trying to create an access for. 
+        // 1. the driver must not have an access with the same vehicle as the one the driver is trying to create an access for.
         // 2. not have an access with a status !== inactive;
         return $user->isAdmin();
     }

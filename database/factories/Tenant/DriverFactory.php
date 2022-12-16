@@ -9,7 +9,7 @@ use Illuminate\Database\Eloquent\Factories\Factory;
  */
 class DriverFactory extends Factory
 {
-    protected $model =  \App\Models\Tenant\Driver::class;
+    protected $model = \App\Models\Tenant\Driver::class;
 
     /**
      * Define the model's default state.

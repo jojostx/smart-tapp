@@ -15,7 +15,11 @@ use Illuminate\Support\Facades\DB;
 
 class Access extends Model implements CanSendAccessActivationNotification
 {
-    use HasFactory, GeneratesUuid, BindsOnUuid, AccessActivationNotifiable, AccessStatusManageable;
+    use HasFactory;
+    use GeneratesUuid;
+    use BindsOnUuid;
+    use AccessActivationNotifiable;
+    use AccessStatusManageable;
 
     /**
      * The attributes that are mass assignable.
@@ -25,7 +29,7 @@ class Access extends Model implements CanSendAccessActivationNotification
     protected $fillable = [
         'validity_period',
         'expiry_period',
-        'issued_at'
+        'issued_at',
     ];
 
     /**

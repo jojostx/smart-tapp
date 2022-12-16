@@ -2,13 +2,14 @@
 
 namespace App\Filament\Livewire\Tenant\Access;
 
-use Auth;
 use App\Models\Tenant\Access;
+use Auth;
 use Livewire\Component;
 
 class QrcodeScanner extends Component
 {
     public Access $access;
+
     public $parking_lot;
 
     /**
@@ -26,7 +27,7 @@ class QrcodeScanner extends Component
     {
         $this->access = $access;
 
-        if (!auth('driver')->check() && $this->access->isActive()) {
+        if (! auth('driver')->check() && $this->access->isActive()) {
             Auth::guard('driver')->login($this->access->driver);
         }
 
@@ -34,7 +35,7 @@ class QrcodeScanner extends Component
             return redirect()->route('access.dashboard', ['access' => $this->access]);
         }
 
-        if (!$this->access->driver->hasVerifiedPhoneNumber()) {
+        if (! $this->access->driver->hasVerifiedPhoneNumber()) {
             $this->access->driver->markPhoneNumberAsVerified();
         }
     }
@@ -56,9 +57,9 @@ class QrcodeScanner extends Component
             $this->addError('parking_lot', 'You are at the Wrong Parking lot');
 
             $this->dispatchBrowserEvent('open-alert', [
-                'color' => "danger",
+                'color' => 'danger',
                 'message' => 'The Parking Lot does not match the one assigned to you.',
-                'timeout' => 50000
+                'timeout' => 50000,
             ]);
 
             return;
@@ -66,7 +67,7 @@ class QrcodeScanner extends Component
 
         $this->access->activate();
 
-        if (!auth('driver')->check()) {
+        if (! auth('driver')->check()) {
             Auth::guard('driver')->login($this->access->driver);
         }
 

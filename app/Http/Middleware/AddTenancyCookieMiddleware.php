@@ -3,8 +3,8 @@
 namespace App\Http\Middleware;
 
 use Closure;
-use Illuminate\Support\Facades\Cookie;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Cookie;
 
 class AddTenancyCookieMiddleware
 {
@@ -17,7 +17,7 @@ class AddTenancyCookieMiddleware
      */
     public function handle(Request $request, Closure $next)
     {
-        if (!$request->hasCookie(config('tenancy.cookie'))) {
+        if (! $request->hasCookie(config('tenancy.cookie'))) {
             Cookie::queue(config('tenancy.cookie'), '', 2628000);
         }
 

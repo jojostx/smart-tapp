@@ -61,13 +61,13 @@ class Kernel extends HttpKernel
     protected $routeMiddleware = [
         'access.valid' => \App\Http\Middleware\EnsureAccessIsValid::class,
 
-        'cookie_consent'=> \Spatie\CookieConsent\CookieConsentMiddleware::class,
+        'cookie_consent' => \Spatie\CookieConsent\CookieConsentMiddleware::class,
         'tenant.cookie' => \App\Http\Middleware\AddTenancyCookieMiddleware::class,
         'landlord.auth' => \App\Http\Middleware\RedirectIfNotLandlord::class,
         'landlord.guest' => \App\Http\Middleware\RedirectIfLandlord::class,
         // 'landlord.verified' => \App\Http\Middleware\EnsureLandlordEmailIsVerified::class,
         // 'landlord.password.confirm' => \App\Http\Middleware\RequireLandlordPassword::class,
-        
+
         'auth.filament' => Filament\Http\Middleware\Authenticate::class,
         'guest.filament' => \App\Http\Middleware\FilamentRedirectIfAuthenticated::class,
 

@@ -4,7 +4,6 @@ namespace App\Filament\Resources;
 
 use App\Enums\Models\ReparkRequestStatus;
 use App\Filament\Resources\ReparkRequestResource\Pages;
-use App\Filament\Resources\ReparkRequestResource\RelationManagers;
 use App\Filament\Traits\WithCurrentPasswordField;
 use App\Models\Tenant\Access;
 use App\Models\Tenant\ReparkRequest;
@@ -18,7 +17,6 @@ use Filament\Tables;
 use Filament\Tables\Actions\ActionGroup;
 use Filament\Tables\Filters\SelectFilter;
 use Illuminate\Database\Eloquent\Builder;
-use Illuminate\Database\Eloquent\SoftDeletingScope;
 use Illuminate\Support\HtmlString;
 
 class ReparkRequestResource extends Resource
@@ -39,13 +37,13 @@ class ReparkRequestResource extends Resource
             ->schema([
                 Forms\Components\Card::make()
                     ->schema([
-                        static::getAccessForReparkRequestSelect('blocker', "blockee"),
-                        static::getAccessForReparkRequestSelect('blockee', "blocker"),
+                        static::getAccessForReparkRequestSelect('blocker', 'blockee'),
+                        static::getAccessForReparkRequestSelect('blockee', 'blocker'),
 
                         Forms\Components\Checkbox::make('shouldNotify')
                             ->label('Send Notification')
                             ->default(true)
-                            ->helperText("If selected, the Repark Request notification (text message) will be sent to the Driver of the vehicle that is blocking another!"),
+                            ->helperText('If selected, the Repark Request notification (text message) will be sent to the Driver of the vehicle that is blocking another!'),
 
                         Forms\Components\Placeholder::make('hasExistingReparkRequest')
                             ->disableLabel()
@@ -73,7 +71,7 @@ class ReparkRequestResource extends Resource
                                 }
 
                                 return '';
-                            })
+                            }),
                     ])
                     ->columnSpan([
                         'sm' => 2,
@@ -122,25 +120,25 @@ class ReparkRequestResource extends Resource
                         }
 
                         return $query;
-                    })
+                    }),
             ])
             ->actions([
                 ActionGroup::make([
                     Tables\Actions\Action::make('start-resolving')
                         ->label('Start resolving')
-                        ->visible(fn (ReparkRequest $record) => !$record->isResolving())
+                        ->visible(fn (ReparkRequest $record) => ! $record->isResolving())
                         ->color('danger')
                         ->icon('heroicon-o-play')
                         ->tooltip('Start resolving Repark Request')
                         ->requiresConfirmation()
                         ->modalHeading(function (): string {
-                            return "Start Resolving Repark Request";
+                            return 'Start Resolving Repark Request';
                         })
                         ->form([
                             Forms\Components\Checkbox::make('shouldNotify')
                                 ->label('Send Repark Request notification')
                                 ->helperText('This will send a Repark Request notification (text message) to the Driver of the vehicle that is blocking another!')
-                                ->default(true)
+                                ->default(true),
                         ])
                         ->action(function (ReparkRequest $record, ?array $data) {
                             $shouldNotify = isset($data['shouldNotify']) && $data['shouldNotify'];
@@ -161,15 +159,15 @@ class ReparkRequestResource extends Resource
                             }
                         }),
 
-                    Tables\Actions\Action::make("resolve")
+                    Tables\Actions\Action::make('resolve')
                         ->label('Resolve')
                         ->color('success')
                         ->icon('heroicon-o-check-circle')
                         ->tooltip('Resolve Repark Request')
-                        ->visible(fn (ReparkRequest $record) => !$record->isResolved())
+                        ->visible(fn (ReparkRequest $record) => ! $record->isResolved())
                         ->requiresConfirmation()
                         ->modalHeading(function (): string {
-                            return "Resolve Repark Request";
+                            return 'Resolve Repark Request';
                         })
                         ->action(function (ReparkRequest $record) {
                             $record->resolve() &&
@@ -180,13 +178,13 @@ class ReparkRequestResource extends Resource
                         }),
 
                     Tables\Actions\Action::make('notify')
-                        ->visible(fn (ReparkRequest $record) => !$record->isResolved())
+                        ->visible(fn (ReparkRequest $record) => ! $record->isResolved())
                         ->color('primary')
                         ->tooltip('Notify Driver')
                         ->icon('heroicon-o-paper-airplane')
                         ->requiresConfirmation()
                         ->modalHeading(function (): string {
-                            return "Notify Driver";
+                            return 'Notify Driver';
                         })
                         ->modalSubheading('This will send a Repark Request notification (text message) to the Driver of the vehicle that is blocking another!')
                         ->action(function (ReparkRequest $record) {
@@ -199,11 +197,11 @@ class ReparkRequestResource extends Resource
                     Tables\Actions\DeleteAction::make()
                         ->requiresConfirmation()
                         ->modalHeading(fn (): string => 'Delete ReparkRequest')
-                        ->modalSubheading("Are you sure you want to delete this ReparkRequest?")
+                        ->modalSubheading('Are you sure you want to delete this ReparkRequest?')
                         ->form([
                             static::getCurrentPasswordField(),
                         ]),
-                ])->icon('heroicon-o-dots-vertical')
+                ])->icon('heroicon-o-dots-vertical'),
             ])
             ->bulkActions([
                 Tables\Actions\DeleteBulkAction::make(),
@@ -221,7 +219,7 @@ class ReparkRequestResource extends Resource
     {
         $routeBaseName = static::getRouteBaseName();
 
-        if (!request()->routeIs("{$routeBaseName}.*")) {
+        if (! request()->routeIs("{$routeBaseName}.*")) {
             return ReparkRequest::whereUnresolved()->count() ?? null;
         }
 
@@ -236,15 +234,15 @@ class ReparkRequestResource extends Resource
         ];
     }
 
-    protected static function getAccessForReparkRequestSelect(string $name = "", string $dependent_name = ""): Select
+    protected static function getAccessForReparkRequestSelect(string $name = '', string $dependent_name = ''): Select
     {
         $name = str($name);
         $dependent_name = str($dependent_name);
-        $field_name = "{$name->lower()->value()}" . "_access_id";
+        $field_name = "{$name->lower()->value()}" . '_access_id';
         $field_label = "{$name->ucfirst()->value()}" . "'s Access";
-        $field_relationship_name = "{$name->lower()->value()}" . "Access";
+        $field_relationship_name = "{$name->lower()->value()}" . 'Access';
 
-        $dependent_field_name = "{$dependent_name->lower()->value()}" . "_access_id";
+        $dependent_field_name = "{$dependent_name->lower()->value()}" . '_access_id';
 
         return Select::make($field_name)
             ->label($field_label)
@@ -257,7 +255,7 @@ class ReparkRequestResource extends Resource
                 function (string $search, callable $get) use ($dependent_field_name) {
                     /** @var \Illuminate\Database\Eloquent\Collection */
                     $accesses = Access::with(['driver:id,name,phone_number', 'vehicle:id,plate_number'])
-                        ->whereNot("id", $get($dependent_field_name))
+                        ->whereNot('id', $get($dependent_field_name))
                         ->where(function (Builder $query) {
                             $query->whereNotInactive();
                         })
@@ -265,7 +263,7 @@ class ReparkRequestResource extends Resource
                             $query->whereHas('driver', function (Builder $query) use ($search) {
                                 $query->where('phone_number', 'like', "%{$search}%")
                                     ->orWhere('name', 'like', "%{$search}%");
-                            })->orWhereHas('vehicle',  function (Builder $query) use ($search) {
+                            })->orWhereHas('vehicle', function (Builder $query) use ($search) {
                                 $query->where('plate_number', 'like', "%{$search}%");
                             });
                         })

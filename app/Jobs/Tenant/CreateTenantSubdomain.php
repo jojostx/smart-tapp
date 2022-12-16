@@ -4,7 +4,6 @@ namespace App\Jobs\Tenant;
 
 use App\Models\Tenant;
 use Illuminate\Bus\Queueable;
-use Illuminate\Contracts\Queue\ShouldBeUnique;
 use Illuminate\Contracts\Queue\ShouldQueue;
 use Illuminate\Foundation\Bus\Dispatchable;
 use Illuminate\Queue\InteractsWithQueue;
@@ -12,7 +11,10 @@ use Illuminate\Queue\SerializesModels;
 
 class CreateTenantSubdomain implements ShouldQueue
 {
-    use Dispatchable, InteractsWithQueue, Queueable, SerializesModels;
+    use Dispatchable;
+    use InteractsWithQueue;
+    use Queueable;
+    use SerializesModels;
 
     protected $tenant;
 
@@ -38,7 +40,7 @@ class CreateTenantSubdomain implements ShouldQueue
         if (blank($tenant_domain)) {
             return false;
         }
-        
+
         $createdDomain = $this->tenant->createDomain($tenant_domain);
 
         if (blank($createdDomain)) {

@@ -12,7 +12,9 @@ use Illuminate\Database\Eloquent\Relations\HasMany;
 
 class Vehicle extends Model
 {
-    use HasFactory, GeneratesUuid, BindsOnUuid;
+    use HasFactory;
+    use GeneratesUuid;
+    use BindsOnUuid;
 
     /**
      * The attributes that are mass assignable.

@@ -15,15 +15,15 @@ class Password extends TextInput
 
     protected string $hideIcon = 'heroicon-o-eye-off';
 
-    protected bool|Closure  $revealable = true;
+    protected bool | Closure  $revealable = true;
 
-    protected bool|Closure  $copyable = false;
+    protected bool | Closure  $copyable = false;
 
     protected string $copyIcon = 'heroicon-o-clipboard';
 
     protected string $generateIcon = 'heroicon-o-key';
 
-    protected bool|Closure  $generatable = false;
+    protected bool | Closure  $generatable = false;
 
     protected int $passwordMinLen = 8;
 
@@ -54,7 +54,7 @@ class Password extends TextInput
         return parent::getValidationRules();
     }
 
-    public function generatable(bool|Closure $condition = true): static
+    public function generatable(bool | Closure $condition = true): static
     {
         $this->generatable = $condition;
 
@@ -81,24 +81,28 @@ class Password extends TextInput
     public function passwordLength(int $len): static
     {
         $this->passwordMinLen = $len;
+
         return $this;
     }
 
     public function passwordUsesLetters(bool $use = true): static
     {
         $this->passwordUsesLetters = $use;
+
         return $this;
     }
 
     public function passwordUsesNumbers(bool $use = true): static
     {
         $this->passwordUsesNumbers = $use;
+
         return $this;
     }
 
     public function passwordUsesSymbols(bool $use = true): static
     {
         $this->passwordUsesSymbols = $use;
+
         return $this;
     }
 
@@ -116,7 +120,7 @@ class Password extends TextInput
             ->join('');
     }
 
-    public function copyable(bool|Closure $condition = true): static
+    public function copyable(bool | Closure $condition = true): static
     {
         $this->copyable = $condition;
 
@@ -140,7 +144,7 @@ class Password extends TextInput
         return $this->copyIcon;
     }
 
-    public function revealable(bool|Closure $condition = true): static
+    public function revealable(bool | Closure $condition = true): static
     {
         $this->revealable = $condition;
 
@@ -178,6 +182,6 @@ class Password extends TextInput
 
     public function getXRef(): string
     {
-        return Str::of($this->getId())->replace(".", "_")->prepend('input_')->studly()->snake()->toString();
+        return Str::of($this->getId())->replace('.', '_')->prepend('input_')->studly()->snake()->toString();
     }
 }

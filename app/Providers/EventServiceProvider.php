@@ -2,16 +2,13 @@
 
 namespace App\Providers;
 
-use Illuminate\Auth\Events\Verified;
-use App\Events\UnverifiedTenantVerified;
-use App\Events\UnverifiedTenantRegistered;
 use App\Listeners\Tenant\LogAccessActivationNotification;
 use App\Listeners\Tenant\TenantUserLoggedOut;
 use Illuminate\Auth\Events\Logout;
 use Illuminate\Auth\Events\Registered;
 use Illuminate\Auth\Listeners\SendEmailVerificationNotification;
-use Illuminate\Notifications\Events\NotificationSent;
 use Illuminate\Foundation\Support\Providers\EventServiceProvider as ServiceProvider;
+use Illuminate\Notifications\Events\NotificationSent;
 
 class EventServiceProvider extends ServiceProvider
 {

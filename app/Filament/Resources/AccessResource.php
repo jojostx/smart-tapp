@@ -12,20 +12,18 @@ use App\Models\Tenant\Access;
 use App\Models\Tenant\Driver;
 use App\Models\Tenant\Vehicle;
 use Filament\Forms;
-use Filament\Tables;
+use Filament\Forms\Components\Select;
+use Filament\Notifications\Notification;
 use Filament\Resources\Form;
 use Filament\Resources\Resource;
 use Filament\Resources\Table;
-use Filament\Forms\Components\Select;
-use Filament\Notifications\Notification;
+use Filament\Tables;
 use Filament\Tables\Actions\ActionGroup;
 use Filament\Tables\Filters\SelectFilter;
 use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Validation\Rules\Enum;
 use Illuminate\Validation\Rules\Unique;
-use Illuminate\Database\Eloquent\SoftDeletingScope;
-use App\Filament\Resources\AccessResource\RelationManagers;
 
 class AccessResource extends Resource
 {
@@ -91,7 +89,7 @@ class AccessResource extends Resource
                                     ])
                                     ->columns([
                                         'sm' => 1,
-                                        'md' => 2
+                                        'md' => 2,
                                     ])
                                     ->getSchema();
                             })
@@ -115,7 +113,7 @@ class AccessResource extends Resource
                                 table: 'accesses',
                                 column: 'vehicle_id',
                                 callback: function (Unique $rule, callable $get) {
-                                    return $rule->where('driver_id',  $get('driver_id'));
+                                    return $rule->where('driver_id', $get('driver_id'));
                                 }
                             )
                             ->required()
@@ -141,11 +139,11 @@ class AccessResource extends Resource
                                             ->placeholder('ex: JohnDoe@gmail.com')
                                             ->hint("The Driver's email (optional)")
                                             ->unique('drivers', 'email')
-                                            ->dehydrateStateUsing(fn ($state) => str($state)->lower())
+                                            ->dehydrateStateUsing(fn ($state) => str($state)->lower()),
                                     ])
                                     ->columns([
                                         'sm' => 1,
-                                        'md' => 2
+                                        'md' => 2,
                                     ])
                                     ->getSchema();
                             })
@@ -169,7 +167,7 @@ class AccessResource extends Resource
                                 table: 'accesses',
                                 column: 'driver_id',
                                 callback: function (Unique $rule, callable $get) {
-                                    return $rule->where('vehicle_id',  $get('vehicle_id'));
+                                    return $rule->where('vehicle_id', $get('vehicle_id'));
                                 }
                             )
                             ->required()
@@ -199,10 +197,9 @@ class AccessResource extends Resource
                                     ->unique(ignoreRecord: true),
                                 Forms\Components\TextInput::make('email')
                                     ->required()
-                                    ->unique(ignoreRecord: true)
+                                    ->unique(ignoreRecord: true),
                             ])
                             ->hiddenOn(Pages\CreateAccess::class),
-
 
                         Forms\Components\Select::make('parking_lot_id')
                             ->label('Parking Lot')
@@ -261,7 +258,7 @@ class AccessResource extends Resource
                             ->content(fn (?Access $record): string => $record ? $record->updated_at->diffForHumans() : '-'),
                         Forms\Components\Placeholder::make('created_at')
                             ->label('Created at')
-                            ->content(fn (?Access $record): string => $record ? $record->created_at->diffForHumans() : '-')
+                            ->content(fn (?Access $record): string => $record ? $record->created_at->diffForHumans() : '-'),
                     ])
                     ->columnSpan(1),
             ])->columns([
@@ -309,7 +306,7 @@ class AccessResource extends Resource
                         }
 
                         return $query;
-                    })
+                    }),
             ])
             ->actions([
                 ActionGroup::make([
@@ -322,7 +319,7 @@ class AccessResource extends Resource
                         ->tooltip('Issue Access Activation')
                         ->requiresConfirmation()
                         ->modalHeading(function (): string {
-                            return "Issue Access Activation";
+                            return 'Issue Access Activation';
                         })
                         ->modalSubheading(function (): string {
                             return "This will re-issue the access and by default, the Access Activation Notification will be sent to the Driver's phone number.";
@@ -330,7 +327,7 @@ class AccessResource extends Resource
                         ->form([
                             Forms\Components\Checkbox::make('shouldNotify')
                                 ->label('Send Activation Notification')
-                                ->default(true)
+                                ->default(true),
                         ])
                         ->action(function (Access $record, ?array $data) {
                             $shouldNotify = isset($data['shouldNotify']) && $data['shouldNotify'];
@@ -361,7 +358,7 @@ class AccessResource extends Resource
                         ->tooltip('Send Activation Notification')
                         ->requiresConfirmation()
                         ->modalHeading(function (): string {
-                            return "Send Activation Notification";
+                            return 'Send Activation Notification';
                         })
                         ->modalSubheading(function (): string {
                             return "This will send the Access Activation Notification to the Driver's phone.";
@@ -393,18 +390,19 @@ class AccessResource extends Resource
                     ->visible(fn (Access $record) => $record->isExpired() || $record->isInactive() || $record->isIssued())
                     ->color('primary')
                     ->tooltip('Activate Access')
-                    ->requiresConfirmation(fn (Access $record) => !$record->isActive())
+                    ->requiresConfirmation(fn (Access $record) => ! $record->isActive())
                     ->modalHeading(function (): string {
-                        return "Activate Access";
+                        return 'Activate Access';
                     })
                     ->modalSubheading(function (Access $record): string {
                         $a = ($record->isExpired() || $record->isIssued()) ? 'not' : '';
+
                         return "This will activate the Access and allow the Driver to access their dashboard. By default, the Access Activation Notification will {$a} be sent to the Driver's phone number.";
                     })
                     ->form([
                         Forms\Components\Checkbox::make('shouldNotify')
                             ->label('Send Activation Notification')
-                            ->default(fn (Access $record) => $record->isInactive() ? true : false)
+                            ->default(fn (Access $record) => $record->isInactive() ? true : false),
                     ])
                     ->action(function (Access $record, ?array $data) {
                         $anotherActiveAccessExists = Access::query()
@@ -446,10 +444,10 @@ class AccessResource extends Resource
                     ->tooltip('Deactivate Access')
                     ->requiresConfirmation()
                     ->modalHeading(function (): string {
-                        return "Deactivate Access";
+                        return 'Deactivate Access';
                     })
                     ->modalSubheading(function (): string {
-                        return "This will deactivate the Access and prevent the Driver from accessing their dashboard.";
+                        return 'This will deactivate the Access and prevent the Driver from accessing their dashboard.';
                     })
                     ->form([
                         static::getCurrentPasswordField(),
@@ -476,7 +474,6 @@ class AccessResource extends Resource
                     ]),
             ]);
     }
-
 
     public static function getRelations(): array
     {

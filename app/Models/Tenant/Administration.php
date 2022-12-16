@@ -10,7 +10,8 @@ use Illuminate\Support\Carbon;
 
 class Administration extends Model
 {
-    use HasFactory, Expirable;
+    use HasFactory;
+    use Expirable;
 
     /**
      * Indicates if the IDs are auto-incrementing.

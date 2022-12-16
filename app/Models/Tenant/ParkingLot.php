@@ -14,7 +14,10 @@ use SimpleSoftwareIO\QrCode\Facades\QrCode;
 
 class ParkingLot extends Model
 {
-    use HasFactory, GeneratesUuid, BindsOnUuid, ParkingLotStatusManageable;
+    use HasFactory;
+    use GeneratesUuid;
+    use BindsOnUuid;
+    use ParkingLotStatusManageable;
 
     /**
      * The attributes that are mass assignable.

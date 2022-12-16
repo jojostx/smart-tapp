@@ -14,7 +14,7 @@ class Slice extends Component implements Htmlable
 
     protected ?string $hexColor = null;
 
-    protected string|Htmlable $label;
+    protected string | Htmlable $label;
 
     protected $value;
 
@@ -54,7 +54,7 @@ class Slice extends Component implements Htmlable
         return $this;
     }
 
-    public function label(string|Htmlable $label): static
+    public function label(string | Htmlable $label): static
     {
         $this->label = $label;
 
@@ -97,7 +97,7 @@ class Slice extends Component implements Htmlable
         return $this->hexColor;
     }
 
-    public function getLabel(): string|Htmlable
+    public function getLabel(): string | Htmlable
     {
         return $this->label;
     }

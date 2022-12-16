@@ -3,11 +3,10 @@
 namespace App\Filament\Resources\AccessResource\Pages;
 
 use App\Enums\Models\AccessStatus;
-use App\Filament\Forms\Components\Password;
 use App\Filament\Notifications\Notification;
-use Filament\Forms;
 use App\Filament\Resources\AccessResource;
 use App\Filament\Traits\WithCurrentPasswordField;
+use Filament\Forms;
 use Filament\Pages\Actions;
 use Filament\Resources\Pages\EditRecord;
 use Illuminate\Database\Eloquent\Model;
@@ -34,7 +33,7 @@ class EditAccess extends EditRecord
                 ->tooltip('Issue Access Activation')
                 ->requiresConfirmation()
                 ->modalHeading(function (): string {
-                    return "Issue Access Activation";
+                    return 'Issue Access Activation';
                 })
                 ->modalSubheading(function (): string {
                     return "This will re-issue the Access without activating it and by default, 
@@ -43,7 +42,7 @@ class EditAccess extends EditRecord
                 ->form([
                     Forms\Components\Checkbox::make('shouldNotify')
                         ->label('Send Activation Notification')
-                        ->default(true)
+                        ->default(true),
                 ])
                 ->action('issueAccess'),
 
@@ -55,28 +54,29 @@ class EditAccess extends EditRecord
                 ->tooltip('Send Activation Notification')
                 ->requiresConfirmation()
                 ->modalHeading(function (): string {
-                    return "Send Activation Notification";
+                    return 'Send Activation Notification';
                 })
                 ->modalSubheading(function (): string {
                     return "This will send the Access Activation Notification to the Driver's phone.";
                 })
                 ->form([
-                    static::getCurrentPasswordField()
+                    static::getCurrentPasswordField(),
                 ])
                 ->action('sendActivationNotification'),
 
             Actions\Action::make('activate')
                 ->visible(function () {
                     $record = $this->getRecord();
+
                     return $record->isExpired() ||
                         $record->isInactive() ||
                         $record->isIssued();
                 })
                 ->color('primary')
                 ->tooltip('Activate Access')
-                ->requiresConfirmation(fn () => !$this->getRecord()->isActive())
+                ->requiresConfirmation(fn () => ! $this->getRecord()->isActive())
                 ->modalHeading(function (): string {
-                    return "Activate Access";
+                    return 'Activate Access';
                 })
                 ->modalSubheading(function (): string {
                     $record = $this->getRecord();
@@ -88,13 +88,14 @@ class EditAccess extends EditRecord
                 ->form([
                     Forms\Components\Checkbox::make('shouldNotify')
                         ->label('Send Activation Notification')
-                        ->default(fn () => $this->getRecord()->isInactive() ? true : false)
+                        ->default(fn () => $this->getRecord()->isInactive() ? true : false),
                 ])
                 ->action('activateAccess'),
 
             Actions\Action::make('deactivate')
                 ->visible(function () {
                     $record = $this->getRecord();
+
                     return $record->isExpired() ||
                         $record->isActive() ||
                         $record->isIssued();
@@ -103,20 +104,20 @@ class EditAccess extends EditRecord
                 ->tooltip('Deactivate Access')
                 ->requiresConfirmation()
                 ->modalHeading(function (): string {
-                    return "Deactivate Access";
+                    return 'Deactivate Access';
                 })
                 ->modalSubheading(function (): string {
-                    return "This will deactivate the Access and prevent the Driver from accessing their dashboard.";
+                    return 'This will deactivate the Access and prevent the Driver from accessing their dashboard.';
                 })
                 ->form([
-                    static::getCurrentPasswordField()
+                    static::getCurrentPasswordField(),
                 ])
                 ->action('deactivateAccess'),
 
             Actions\DeleteAction::make()
                 ->requiresConfirmation()
                 ->form([
-                    static::getCurrentPasswordField()
+                    static::getCurrentPasswordField(),
                 ])
                 ->modalWidth('md'),
         ];
@@ -127,18 +128,21 @@ class EditAccess extends EditRecord
         if ($data['status'] == AccessStatus::INACTIVE->value) {
             $record->fill($data);
             $this->deactivateAccess();
+
             return $record;
         }
 
         if ($data['status'] == AccessStatus::ISSUED->value) {
             $record->fill($data);
             $this->issueAccess(array_merge($data, ['shouldNotify' => true]));
+
             return $record;
         }
 
         if ($data['status'] == AccessStatus::ACTIVE->value) {
             $record->fill($data);
             $this->activateAccess(array_merge($data, ['shouldNotify' => true]));
+
             return $record;
         }
 

@@ -4,7 +4,6 @@ use App\Filament\Widgets\SmarttappInfoWidget;
 use App\Http\Middleware\EnsureAccountIsNotDeactivated;
 use App\Http\Middleware\EnsureSubscriptionIsActive;
 use App\Http\Middleware\FilamentRedirectIfAuthenticated;
-use App\Http\Middleware\RedirectIfAuthenticated;
 use Filament\Http\Middleware\Authenticate;
 use Filament\Http\Middleware\DispatchServingFilamentEvent;
 use Filament\Http\Middleware\MirrorConfigToSubpackages;
@@ -44,7 +43,6 @@ return [
     */
 
     'core_path' => env('FILAMENT_CORE_PATH', 'filament'),
-
 
     /*
     |--------------------------------------------------------------------------
@@ -346,10 +344,10 @@ return [
 
             // custom middleware & middleware from third party packages
             FilamentRedirectIfAuthenticated::class,
-          
+
             'universal',
             PreventAccessFromCentralDomains::class,
-            App\Http\Middleware\InitializeTenancyByDomain::class
+            App\Http\Middleware\InitializeTenancyByDomain::class,
         ],
     ],
 

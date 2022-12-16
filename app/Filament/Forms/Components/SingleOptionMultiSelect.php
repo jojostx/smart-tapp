@@ -12,56 +12,56 @@ use Illuminate\Validation\Rules\Exists;
 
 class SingleOptionMultiSelect extends Select
 {
-  public function relationshipName($relationshipName, $titleColumnName): static
-  {
-    $this->relationship = $relationshipName;
-    $this->relationshipTitleColumnName = $titleColumnName;
+    public function relationshipName($relationshipName, $titleColumnName): static
+    {
+        $this->relationship = $relationshipName;
+        $this->relationshipTitleColumnName = $titleColumnName;
 
-    return $this;
-  }
-
-  public function getRelationship(): BelongsToMany
-  {
-    $model = $this->getModelInstance();
-
-    if (!$model instanceof Model) {
-      $class = $this->getModel();
-      $model = new $class;
+        return $this;
     }
 
-    $relationship = $this->getRelationshipName();
+    public function getRelationship(): BelongsToMany
+    {
+        $model = $this->getModelInstance();
 
-    return $model->{$relationship}();
-  }
+        if (! $model instanceof Model) {
+            $class = $this->getModel();
+            $model = new $class;
+        }
 
-  public function saveRelationships(): void
-  {
-    $this->getRelationship()->sync($this->getState() !== null ? [$this->getState()] : []);
-  }
+        $relationship = $this->getRelationshipName();
 
-  protected function setUp(): void
-  {
-    parent::setUp();
+        return $model->{$relationship}();
+    }
 
-    $this->afterStateHydrated(function (self $component): void {
-      $relationship = $component->getRelationship();
+    public function saveRelationships(): void
+    {
+        $this->getRelationship()->sync($this->getState() !== null ? [$this->getState()] : []);
+    }
 
-      $model = $relationship->first();
+    protected function setUp(): void
+    {
+        parent::setUp();
 
-      if (!$model) {
-        return;
-      }
+        $this->afterStateHydrated(function (self $component): void {
+            $relationship = $component->getRelationship();
 
-      $component->state($model->id);
-    });
+            $model = $relationship->first();
 
-    $this->rule(
-      static fn (Select $component): Exists => Rule::exists(
-        $component->getRelationship()->getModel()::class,
-        $component->getRelationship()->getRelatedKeyName(),
-      )
-    );
+            if (! $model) {
+                return;
+            }
 
-    $this->dehydrated(false);
-  }
+            $component->state($model->id);
+        });
+
+        $this->rule(
+            static fn (Select $component): Exists => Rule::exists(
+                $component->getRelationship()->getModel()::class,
+                $component->getRelationship()->getRelatedKeyName(),
+            )
+        );
+
+        $this->dehydrated(false);
+    }
 }

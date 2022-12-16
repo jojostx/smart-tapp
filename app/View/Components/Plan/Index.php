@@ -4,7 +4,6 @@ namespace App\View\Components\Plan;
 
 use Illuminate\Database\Eloquent\Collection;
 use Illuminate\View\Component;
-use Jojostx\Larasubs\Models\Plan;
 
 class Index extends Component
 {

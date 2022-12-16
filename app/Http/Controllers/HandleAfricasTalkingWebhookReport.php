@@ -31,7 +31,7 @@ class HandleAfricasTalkingWebhookReport extends Controller
         $result = (array) Redis::command('SMEMBERS', [$messageId]);
 
         if (filled($result) && count($result) > 1) {
-            list($tenant_id, $notification_id) = $result;
+            [$tenant_id, $notification_id] = $result;
 
             if ($tenant = tenancy()->find($tenant_id)) {
                 // find the notification by id within the tenant's context

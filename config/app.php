@@ -16,7 +16,7 @@ return [
     */
 
     'name' => env('APP_NAME', 'Laravel'),
-    
+
     /*
     |--------------------------------------------------------------------------
     | Application Mail Subject Prefix
@@ -209,7 +209,7 @@ return [
         App\Providers\RouteServiceProvider::class,
 
         /*
-        * Custom Service Providers and Service Providers from Third-party package 
+        * Custom Service Providers and Service Providers from Third-party package
         */
         App\Providers\BladeServiceProvider::class,
         App\Providers\TenancyServiceProvider::class,

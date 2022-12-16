@@ -9,7 +9,7 @@ use Illuminate\Database\Eloquent\Factories\Factory;
  */
 class ParkingLotFactory extends Factory
 {
-    protected $model =  \App\Models\Tenant\ParkingLot::class;
+    protected $model = \App\Models\Tenant\ParkingLot::class;
 
     /**
      * Define the model's default state.

@@ -6,7 +6,6 @@ use App\Enums\Models\UserAccountStatus;
 use App\Models\Tenant;
 use App\Models\Tenant\User;
 use Illuminate\Bus\Queueable;
-use Illuminate\Contracts\Queue\ShouldBeUnique;
 use Illuminate\Contracts\Queue\ShouldQueue;
 use Illuminate\Foundation\Bus\Dispatchable;
 use Illuminate\Queue\InteractsWithQueue;
@@ -14,7 +13,10 @@ use Illuminate\Queue\SerializesModels;
 
 class CreateTenantAdminUser implements ShouldQueue
 {
-    use Dispatchable, InteractsWithQueue, Queueable, SerializesModels;
+    use Dispatchable;
+    use InteractsWithQueue;
+    use Queueable;
+    use SerializesModels;
 
     protected $tenant;
 
@@ -35,7 +37,7 @@ class CreateTenantAdminUser implements ShouldQueue
      */
     public function handle()
     {
-        /** @param \App\Models\Tenant $tenant */
+        /** @param  \App\Models\Tenant  $tenant */
         $this->tenant->run(function ($tenant) {
             // create the user model in the tenant's db and set the tenant_id
             $user = User::create([

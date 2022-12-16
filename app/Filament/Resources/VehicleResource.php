@@ -3,7 +3,6 @@
 namespace App\Filament\Resources;
 
 use App\Filament\Resources\VehicleResource\Pages;
-use App\Filament\Resources\VehicleResource\RelationManagers;
 use App\Filament\Resources\VehicleResource\RelationManagers\DriversRelationManager;
 use App\Filament\Traits\WithCurrentPasswordField;
 use App\Models\Tenant\Vehicle;
@@ -13,7 +12,6 @@ use Filament\Resources\Resource;
 use Filament\Resources\Table;
 use Filament\Tables;
 use Illuminate\Database\Eloquent\Model;
-use Illuminate\Database\Eloquent\SoftDeletingScope;
 
 class VehicleResource extends Resource
 {
@@ -72,7 +70,7 @@ class VehicleResource extends Resource
                             ->content(fn (?Vehicle $record): string => $record ? $record->updated_at->diffForHumans() : '-'),
                         Forms\Components\Placeholder::make('created_at')
                             ->label('Created at')
-                            ->content(fn (?Vehicle $record): string => $record ? $record->created_at->diffForHumans() : '-')
+                            ->content(fn (?Vehicle $record): string => $record ? $record->created_at->diffForHumans() : '-'),
                     ])
                     ->columnSpan(1),
             ])->columns([

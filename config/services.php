@@ -32,9 +32,9 @@ return [
     ],
 
     'africastalking' => [
-        'username'      => env('AT_USERNAME'),
-        'key'           => env('AT_KEY'),
-        'from'          => env('AT_FROM'),
-    ]
+        'username' => env('AT_USERNAME'),
+        'key' => env('AT_KEY'),
+        'from' => env('AT_FROM'),
+    ],
 
 ];

@@ -9,7 +9,7 @@ use Illuminate\Database\Eloquent\Factories\Factory;
  */
 class VehicleFactory extends Factory
 {
-    protected $model =  \App\Models\Tenant\Vehicle::class;
+    protected $model = \App\Models\Tenant\Vehicle::class;
 
     /**
      * Define the model's default state.

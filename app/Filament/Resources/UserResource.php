@@ -3,28 +3,25 @@
 namespace App\Filament\Resources;
 
 use App\Enums\Models\UserAccountStatus;
-use Filament\Forms;
-use Filament\Tables;
-use App\Models\Tenant\User;
-use Filament\Resources\Form;
-use Filament\Resources\Table;
 use App\Enums\Roles\UserRole;
-use Filament\Resources\Resource;
-use Spatie\Permission\Models\Role;
-use Filament\Forms\Components\Section;
-use Illuminate\Database\Eloquent\Model;
-use Illuminate\Database\Eloquent\Builder;
-use Filament\Tables\Filters\TernaryFilter;
 use App\Filament\Forms\Components\HelpCard;
-use App\Filament\Forms\Components\PhoneNumberInput;
-use App\Filament\Resources\UserResource\Pages;
-use App\Filament\Resources\UserResource\Pages\EditUser;
-use App\Filament\Resources\UserResource\Pages\CreateUser;
 use App\Filament\Forms\Components\SingleOptionMultiSelect;
-use Illuminate\Database\Eloquent\SoftDeletingScope;
-use App\Filament\Resources\UserResource\RelationManagers;
+use App\Filament\Resources\UserResource\Pages;
+use App\Filament\Resources\UserResource\Pages\CreateUser;
+use App\Filament\Resources\UserResource\Pages\EditUser;
 use App\Filament\Resources\UserResource\RelationManagers\ParkingLotsRelationManager;
+use App\Models\Tenant\User;
+use Filament\Forms;
+use Filament\Forms\Components\Section;
+use Filament\Resources\Form;
+use Filament\Resources\Resource;
+use Filament\Resources\Table;
+use Filament\Tables;
+use Filament\Tables\Filters\TernaryFilter;
+use Illuminate\Database\Eloquent\Builder;
+use Illuminate\Database\Eloquent\Model;
 use Illuminate\Validation\Rule;
+use Spatie\Permission\Models\Role;
 
 class UserResource extends Resource
 {
@@ -146,7 +143,7 @@ class UserResource extends Resource
                         ->icon('heroicon-s-lock-closed')
                         ->action(fn (User $record) => $record->isActive() ? $record->deactivateAccount() : $record->activateAccount())
                         ->color(fn (User $record) => $record->isActive() ? 'danger' : 'primary'),
-                ])->icon('heroicon-o-dots-vertical')
+                ])->icon('heroicon-o-dots-vertical'),
             ])
             ->bulkActions([]);
     }

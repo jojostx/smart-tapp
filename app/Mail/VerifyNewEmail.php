@@ -12,7 +12,8 @@ use Illuminate\Queue\SerializesModels;
 
 class VerifyNewEmail extends Mailable implements ShouldQueue
 {
-    use Queueable, SerializesModels;
+    use Queueable;
+    use SerializesModels;
 
     /**
      * @var \Illuminate\Database\Eloquent\Model

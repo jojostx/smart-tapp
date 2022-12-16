@@ -47,7 +47,7 @@ class TenancyServiceProvider extends ServiceProvider
                     // Your own jobs to prepare the tenant.
                     // Provision API keys, create S3 buckets, anything you want!
                     Tenant\CreateFrameworkDirectoriesForTenant::class,
-                    
+
                     // create Tenant Subdomain
                     Tenant\CreateTenantSubdomain::class,
 

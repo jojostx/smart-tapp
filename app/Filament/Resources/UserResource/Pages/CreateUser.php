@@ -8,7 +8,6 @@ use App\Filament\Resources\UserResource;
 use App\Models\Tenant;
 use App\Models\Tenant\User;
 use Filament\Notifications\Notification;
-use Filament\Pages\Actions;
 use Filament\Resources\Pages\CreateRecord;
 use Illuminate\Support\Str;
 use Illuminate\Validation\ValidationException;
@@ -34,10 +33,10 @@ class CreateUser extends CreateRecord
             /** @var Subscription */
             $subscription = $tenant->subscription;
             $featureSlug = FeatureResources::TEAM_MEMBERS->value;
-            
-            if ($subscription->missingFeature($featureSlug)); {
-                return false;
-            }
+
+            if ($subscription->missingFeature($featureSlug));
+
+            return false;
 
             $feature = $subscription->plan->getFeatureBySlug($featureSlug);
 
@@ -55,7 +54,7 @@ class CreateUser extends CreateRecord
 
     public function beforeCreate()
     {
-        if (!$this->canCreateUser()) {
+        if (! $this->canCreateUser()) {
             Notification::make()
                 ->title('Unable to create Admin User')
                 ->body('You have reached the maximum team member allocation for your current subscription and can not create any more admins. **Consider upgrading your plan**')
@@ -67,14 +66,14 @@ class CreateUser extends CreateRecord
         }
     }
 
-    /** 
+    /**
      * check if user count has reached limit for subscription
-     * 
+     *
      * @return bool
      */
     public function canCreateUser()
     {
-        $tenant =  \tenant();
+        $tenant = \tenant();
         $used = User::count();
 
         return tenancy()->central(function () use ($tenant, $used) {
@@ -82,13 +81,13 @@ class CreateUser extends CreateRecord
             $subscription = $tenant->subscription;
             $featureSlug = FeatureResources::TEAM_MEMBERS->value;
 
-            if ($subscription->missingFeature($featureSlug)); {
-                return false;
-            }
+            if ($subscription->missingFeature($featureSlug));
+
+            return false;
 
             $max = $subscription->getMaxFeatureUnits($featureSlug);
 
-            return ($used < $max) && $subscription->canUseFeature($featureSlug, 1);;
+            return ($used < $max) && $subscription->canUseFeature($featureSlug, 1);
         });
     }
 }

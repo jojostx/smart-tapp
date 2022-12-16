@@ -66,9 +66,9 @@ class ReparkRequestsChart extends BarChartWidget
                         'data' => $data->map(fn (TrendValue $value) => $value->aggregate),
                     ],
                     $this->getBarChartDisplayConfig()
-                )
+                ),
             ],
-            'labels' => $data->map(fn (TrendValue $value) => Carbon::parse($value->date)->format("M")),
+            'labels' => $data->map(fn (TrendValue $value) => Carbon::parse($value->date)->format('M')),
         ];
     }
 
@@ -89,9 +89,9 @@ class ReparkRequestsChart extends BarChartWidget
                         'data' => $data->map(fn (TrendValue $value) => $value->aggregate),
                     ],
                     $this->getBarChartDisplayConfig()
-                )
+                ),
             ],
-            'labels' => $data->map(fn (TrendValue $value) => Carbon::parse($value->date)->format("M jS")),
+            'labels' => $data->map(fn (TrendValue $value) => Carbon::parse($value->date)->format('M jS')),
         ];
     }
 
@@ -112,9 +112,9 @@ class ReparkRequestsChart extends BarChartWidget
                         'data' => $data->map(fn (TrendValue $value) => $value->aggregate),
                     ],
                     $this->getBarChartDisplayConfig()
-                )
+                ),
             ],
-            'labels' => $data->map(fn (TrendValue $value) => Carbon::parse($value->date)->format("M jS")),
+            'labels' => $data->map(fn (TrendValue $value) => Carbon::parse($value->date)->format('M jS')),
         ];
     }
 
@@ -136,9 +136,9 @@ class ReparkRequestsChart extends BarChartWidget
                         'data' => $data->map(fn (TrendValue $value) => $value->aggregate),
                     ],
                     $this->getBarChartDisplayConfig()
-                )
+                ),
             ],
-            'labels' => $data->map(fn (TrendValue $value) => Carbon::parse($value->date)->format("h:i A")),
+            'labels' => $data->map(fn (TrendValue $value) => Carbon::parse($value->date)->format('h:i A')),
         ];
     }
 

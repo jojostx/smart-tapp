@@ -69,7 +69,7 @@ class Login extends Component
             return;
         }
 
-        if (!Hash::check($validated['password'], $user->password)) {
+        if (! Hash::check($validated['password'], $user->password)) {
             $this->addError('password', __('auth.password'));
 
             return;

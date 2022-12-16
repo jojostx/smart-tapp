@@ -3,18 +3,18 @@
 namespace App\Http\Middleware;
 
 use Closure;
-use Illuminate\Routing\Route;
-use Illuminate\Support\Facades\Route as Router;
 use Illuminate\Contracts\Encryption\DecryptException;
 use Illuminate\Contracts\Encryption\Encrypter;
 use Illuminate\Contracts\Foundation\Application;
 use Illuminate\Contracts\Support\Responsable;
 use Illuminate\Cookie\CookieValuePrefix;
 use Illuminate\Cookie\Middleware\EncryptCookies;
+use Illuminate\Http\Response;
+use Illuminate\Routing\Route;
 use Illuminate\Session\TokenMismatchException;
+use Illuminate\Support\Facades\Route as Router;
 use Illuminate\Support\InteractsWithTime;
 use Symfony\Component\HttpFoundation\Cookie;
-use Illuminate\Http\Response;
 
 class PreventAccessFromTenantDomains
 {
@@ -77,10 +77,10 @@ class PreventAccessFromTenantDomains
     public function handle($request, Closure $next)
     {
         $response = $next($request);
-        
+
         // If the route is universal, always let the request pass.
         \dd($request->cookie(), $request->cookies, config()->get('tenancy.cookie'), config()->get('session.cookie'));
-        
+
         if (! $response instanceof Response) {
             return $response;
         }
@@ -100,7 +100,7 @@ class PreventAccessFromTenantDomains
         \dd($middleware);
 
         foreach ($route->gatherMiddleware() as $inner) {
-            if (!$inner instanceof Closure && isset($middlewareGroups[$inner]) && in_array($middleware, $middlewareGroups[$inner], true)) {
+            if (! $inner instanceof Closure && isset($middlewareGroups[$inner]) && in_array($middleware, $middlewareGroups[$inner], true)) {
                 return true;
             }
         }

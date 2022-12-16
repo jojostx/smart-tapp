@@ -2,7 +2,6 @@
 
 declare(strict_types=1);
 
-use App\Http\Controllers\Subscription\CheckoutController;
 use App\Filament\Livewire\Tenant\Access\Dashboard;
 use App\Filament\Livewire\Tenant\Access\QrcodeScanner;
 use App\Http\Middleware\InitializeTenancyByDomain;

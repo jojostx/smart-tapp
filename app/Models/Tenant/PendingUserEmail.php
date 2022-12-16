@@ -5,7 +5,6 @@ namespace App\Models\Tenant;
 use Illuminate\Auth\Events\Verified;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\MorphTo;
-use Illuminate\Support\Facades\Log;
 use Illuminate\Support\Facades\URL;
 use Illuminate\Support\Traits\Tappable;
 
@@ -17,6 +16,7 @@ class PendingUserEmail extends Model
     use Tappable;
 
     const TYPE_PENDING = 'pending';
+
     const TYPE_RECOVER = 'recover';
 
     /**
@@ -43,14 +43,14 @@ class PendingUserEmail extends Model
      * Scope for the user.
      *
      * @param $query
-     * @param \Illuminate\Database\Eloquent\Model $user
+     * @param  \Illuminate\Database\Eloquent\Model  $user
      * @return void
      */
     public function scopeForUser($query, Model $user)
     {
         $query->where([
             $this->qualifyColumn('user_type') => get_class($user),
-            $this->qualifyColumn('user_id')   => $user->getKey(),
+            $this->qualifyColumn('user_id') => $user->getKey(),
         ]);
     }
 
@@ -64,7 +64,7 @@ class PendingUserEmail extends Model
         /** @var Model */
         $user = $this->user;
 
-        $dispatchEvent = !$user->hasVerifiedEmail() || $user->email !== $this->email;
+        $dispatchEvent = ! $user->hasVerifiedEmail() || $user->email !== $this->email;
 
         $originalEmail = $user->email;
 

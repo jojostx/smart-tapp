@@ -107,7 +107,7 @@ class RouteServiceProvider extends ServiceProvider
             ], $absolute);
         });
 
-        UrlGenerator::macro('temporaryTenantSignedRoute', function ($name, $expiration = null, $parameters = [],  $absolute = true) {
+        UrlGenerator::macro('temporaryTenantSignedRoute', function ($name, $expiration = null, $parameters = [], $absolute = true) {
             return $this->tenantSignedRoute($name, $parameters, $expiration, $absolute);
         });
     }

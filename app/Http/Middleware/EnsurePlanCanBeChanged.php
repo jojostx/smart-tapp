@@ -9,31 +9,31 @@ use Jojostx\Larasubs\Enums\IntervalType;
 
 class EnsurePlanCanBeChanged
 {
-  /**
-   * The routes to allow access to when subscription is inactive
-   */
-  protected $except = [
-    'filament.pages.settings',
-    'filament.plans.*'
-  ];
-  
-  /**
-   * Handle an incoming request.
-   *
-   * @param  \Illuminate\Http\Request  $request
-   * @param  \Closure(\Illuminate\Http\Request): (\Illuminate\Http\Response|\Illuminate\Http\RedirectResponse)  $next
-   * @return \Illuminate\Http\Response|\Illuminate\Http\RedirectResponse
-   */
-  public function handle(Request $request, Closure $next): mixed
-  {
-    /** @var \App\Models\Tenant */
-    $tenant = tenant();
-    $subscription = $tenant?->subscription;
+    /**
+     * The routes to allow access to when subscription is inactive
+     */
+    protected $except = [
+        'filament.pages.settings',
+        'filament.plans.*',
+    ];
 
-    if ($subscription && $subscription->active() && $subscription->planWasChangedInTimePast(3, IntervalType::MONTH)) {
-      return Redirect::route('filament.pages.settings');
+    /**
+     * Handle an incoming request.
+     *
+     * @param  \Illuminate\Http\Request  $request
+     * @param  \Closure(\Illuminate\Http\Request): (\Illuminate\Http\Response|\Illuminate\Http\RedirectResponse)  $next
+     * @return \Illuminate\Http\Response|\Illuminate\Http\RedirectResponse
+     */
+    public function handle(Request $request, Closure $next): mixed
+    {
+        /** @var \App\Models\Tenant */
+        $tenant = tenant();
+        $subscription = $tenant?->subscription;
+
+        if ($subscription && $subscription->active() && $subscription->planWasChangedInTimePast(3, IntervalType::MONTH)) {
+            return Redirect::route('filament.pages.settings');
+        }
+
+        return $next($request);
     }
-
-    return $next($request);
-  }
 }

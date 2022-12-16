@@ -7,7 +7,7 @@ use Filament\Tables\Actions\Action;
 
 class TableCellAction extends Action
 {
-  use HasKeyBindings;
+    use HasKeyBindings;
 
-  protected string $view = 'filament::tables.actions.table-cell-action';
+    protected string $view = 'filament::tables.actions.table-cell-action';
 }

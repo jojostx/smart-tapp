@@ -19,8 +19,11 @@ use Jojostx\Larasubs\Models\Subscription;
 class CreateAccess extends CreateRecord
 {
     protected static string $resource = AccessResource::class;
+
     public $vehicle;
+
     public $driver;
+
     public $parking_lot;
 
     protected function getCancelFormAction(): Action
@@ -53,7 +56,7 @@ class CreateAccess extends CreateRecord
             throw ValidationException::withMessages(['parking_lot_id' => __('Unable to create Access for invalid Parking Lot')]);
         }
 
-        if (!$this->canCreateAccessForParkingLot()) {
+        if (! $this->canCreateAccessForParkingLot()) {
             Notification::make()
                 ->body('You have reached the maximum access allocation for the selected parking lot and can not create any more accesses. **Consider upgrading your plan**')
                 ->danger()
@@ -70,9 +73,9 @@ class CreateAccess extends CreateRecord
 
         // create access, attach driver and vehicle models and set it's status
         $access->fill([
-            "expiry_period" => intval($data['expiry_period'] ?? 0),
-            "validity_period" => intval($data['validity_period']),
-            "issued_at" => \now(),
+            'expiry_period' => intval($data['expiry_period'] ?? 0),
+            'validity_period' => intval($data['validity_period']),
+            'issued_at' => \now(),
         ]);
 
         $access->driver()->associate($this->driver);
@@ -97,9 +100,9 @@ class CreateAccess extends CreateRecord
         return $access->refresh();
     }
 
-    /** 
+    /**
      * check if parking lot accesses has reached limit for subscription
-     * 
+     *
      * @return bool
      */
     public function canCreateAccessForParkingLot()
@@ -108,7 +111,7 @@ class CreateAccess extends CreateRecord
             return false;
         }
 
-        $tenant =  tenant();
+        $tenant = tenant();
         $used = $this->parking_lot->accesses->count();
 
         return tenancy()->central(function () use ($tenant, $used) {
@@ -116,12 +119,12 @@ class CreateAccess extends CreateRecord
             $subscription = $tenant->subscription;
             $featureSlug = FeatureResources::PARKING_LOTS->value;
 
-            if ($subscription->missingFeature($featureSlug)); {
-                return false;
-            }
+            if ($subscription->missingFeature($featureSlug));
+
+            return false;
 
             $max = $subscription->getMaxFeatureUnits($featureSlug);
-            
+
             $feature = $subscription->plan->getFeatureBySlug($featureSlug);
 
             return ($used < $max) && $feature->isActive();

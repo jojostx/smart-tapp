@@ -2,21 +2,25 @@
 
 namespace App\Models;
 
+use App\Traits\MustVerifyTenantEmail;
 use Illuminate\Contracts\Auth\MustVerifyEmail;
-use Stancl\Tenancy\Database\Models\Tenant as BaseTenant;
+use Illuminate\Notifications\Notifiable;
+use Jojostx\Larasubs\Models\Concerns\HasSubscriptions;
 use Stancl\Tenancy\Contracts\TenantWithDatabase;
 use Stancl\Tenancy\Database\Concerns\HasDatabase;
 use Stancl\Tenancy\Database\Concerns\HasDomains;
-use App\Traits\MustVerifyTenantEmail;
-use Illuminate\Notifications\Notifiable;
-use Jojostx\Larasubs\Models\Concerns\HasSubscriptions;
+use Stancl\Tenancy\Database\Models\Tenant as BaseTenant;
 
 /**
  * @mixin IdeHelperTenant
  */
 class Tenant extends BaseTenant implements TenantWithDatabase, MustVerifyEmail
 {
-    use HasDatabase, MustVerifyTenantEmail, HasDomains, Notifiable, HasSubscriptions;
+    use HasDatabase;
+    use MustVerifyTenantEmail;
+    use HasDomains;
+    use Notifiable;
+    use HasSubscriptions;
 
     /**
      * The attributes that are mass assignable.
@@ -44,7 +48,7 @@ class Tenant extends BaseTenant implements TenantWithDatabase, MustVerifyEmail
             'password',
             'domain',
             'organization',
-            'email_verified_at'
+            'email_verified_at',
         ];
     }
 

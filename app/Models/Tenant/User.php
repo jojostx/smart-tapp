@@ -2,11 +2,11 @@
 
 namespace App\Models\Tenant;
 
-use App\Traits\MustVerifyNewEmail;
 use App\Enums\Models\UserAccountStatus;
 use App\Enums\Roles\UserRole;
 use App\Notifications\Tenant\User\ResetPassword;
 use App\Notifications\Tenant\User\SetPassword;
+use App\Traits\MustVerifyNewEmail;
 use Dyrynda\Database\Support\BindsOnUuid;
 use Dyrynda\Database\Support\GeneratesUuid;
 use Filament\Models\Contracts\FilamentUser;
@@ -27,7 +27,14 @@ use Spatie\Permission\Traits\HasRoles;
  */
 class User extends Authenticatable implements MustVerifyEmail, FilamentUser
 {
-    use MustVerifyNewEmail, HasApiTokens, HasFactory,  GeneratesUuid, BindsOnUuid, Notifiable, HasRoles;
+    use MustVerifyNewEmail;
+    use HasApiTokens;
+    use HasFactory;
+    use GeneratesUuid;
+    use BindsOnUuid;
+    use Notifiable;
+    use HasRoles;
+
     /**
      * The attributes that are mass assignable.
      *
@@ -177,9 +184,8 @@ class User extends Authenticatable implements MustVerifyEmail, FilamentUser
 
     /**
      * activates the user's account.
-     * 
-     * @param bool $saveAfterFill
-     * 
+     *
+     * @param  bool  $saveAfterFill
      * @return bool
      */
     public function activateAccount(bool $saveAfterFill = true): bool
@@ -198,8 +204,7 @@ class User extends Authenticatable implements MustVerifyEmail, FilamentUser
     /**
      * deactivates the user's account
      *
-     * @param bool $saveAfterFill
-     * 
+     * @param  bool  $saveAfterFill
      * @return bool
      */
     public function deactivateAccount(bool $saveAfterFill = true): bool
@@ -216,11 +221,10 @@ class User extends Authenticatable implements MustVerifyEmail, FilamentUser
     }
 
     /**
-     * checks if the parking lot is assigned to the user 
+     * checks if the parking lot is assigned to the user
      * (expirable or non-expirable admin privilege).
-     * 
-     * @param \App\Models\Tenant\ParkingLot $parkingLot
-     * 
+     *
+     * @param  \App\Models\Tenant\ParkingLot  $parkingLot
      * @return bool
      */
     public function isAdminOfParkingLot(ParkingLot $parkingLot): bool
@@ -233,9 +237,8 @@ class User extends Authenticatable implements MustVerifyEmail, FilamentUser
     /**
      * checks if the user is a main admin of the parking lot
      * (non-expirable admin privilege).
-     * 
-     * @param \App\Models\Tenant\ParkingLot $parkingLot
-     * 
+     *
+     * @param  \App\Models\Tenant\ParkingLot  $parkingLot
      * @return bool
      */
     public function isMainAdminOfParkingLot(ParkingLot $parkingLot): bool
@@ -249,9 +252,8 @@ class User extends Authenticatable implements MustVerifyEmail, FilamentUser
     /**
      * checks if the user is a sub admin of the parking lot
      * (expirable admin privilege).
-     * 
-     * @param \App\Models\Tenant\ParkingLot $parkingLot
-     * 
+     *
+     * @param  \App\Models\Tenant\ParkingLot  $parkingLot
      * @return bool
      */
     public function isSubAdminOfParkingLot(ParkingLot $parkingLot): bool
@@ -264,9 +266,8 @@ class User extends Authenticatable implements MustVerifyEmail, FilamentUser
 
     /**
      * checks if the user's privilege is not expired or eternal
-     * 
-     * @param \App\Models\Tenant\ParkingLot $parkingLot
-     * 
+     *
+     * @param  \App\Models\Tenant\ParkingLot  $parkingLot
      * @return bool
      */
     public function canAdminParkingLot(ParkingLot $parkingLot): bool

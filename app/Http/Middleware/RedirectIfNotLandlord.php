@@ -27,8 +27,9 @@ class RedirectIfNotLandlord
         $redirectToRoute = $request->expectsJson() ? '' : route('landlord.login');
 
         throw new AuthenticationException(
-            'Unauthenticated.', [$guard], $redirectToRoute
+            'Unauthenticated.',
+            [$guard],
+            $redirectToRoute
         );
     }
-
 }

@@ -28,7 +28,7 @@ class EnsureAccessIsValid
 
         $access = Access::whereUuid($request->route('access'))->first();
 
-        if (!$access->isValid() || blank($access)) {
+        if (! $access->isValid() || blank($access)) {
             if (Auth::guard('driver')->check()) {
                 Auth::guard('driver')->logout();
             }

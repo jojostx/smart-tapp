@@ -2,7 +2,6 @@
 
 namespace App\Filament\Livewire\Auth;
 
-use App\Events\UnverifiedTenantRegistered;
 use App\Models\Tenant;
 use App\Rules\Subdomain;
 use Illuminate\Support\Facades\Hash;
@@ -48,7 +47,7 @@ class Register extends Component
             'organization' => ['required', 'string', 'max:255'],
             'domain' => ['bail', 'required', 'string', 'min:2', 'max:' . config('tenancy.subdomain_maxlength'), new Subdomain],
             'fqsd' => ['bail', 'required', 'string', 'min:2', 'unique:domains,domain', 'unique:tenants,domain'],
-            'email' => ['required', 'string', 'email', 'unique:tenants,email', 'max:255','string'],
+            'email' => ['required', 'string', 'email', 'unique:tenants,email', 'max:255', 'string'],
             'password' => ['required', 'min:8', 'same:passwordConfirmation', Password::defaults()],
             'terms' => ['required', 'accepted'],
         ];
@@ -57,11 +56,11 @@ class Register extends Component
     protected function prepareForValidation($attributes): array
     {
         $this->fqsd = $this->domain;
-        
+
         if (filled($this->fqsd) && \is_string($this->fqsd)) {
             $attributes['fqsd'] = strtolower($this->fqsd) . '.' . config('tenancy.central_domains.main');
         }
-        
+
         return $attributes;
     }
 

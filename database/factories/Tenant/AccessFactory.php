@@ -10,7 +10,7 @@ use Illuminate\Database\Eloquent\Factories\Factory;
  */
 class AccessFactory extends Factory
 {
-    protected $model =  \App\Models\Tenant\Access::class;
+    protected $model = \App\Models\Tenant\Access::class;
 
     /**
      * Define the model's default state.

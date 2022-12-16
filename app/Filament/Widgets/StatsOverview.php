@@ -11,8 +11,6 @@ use App\Models\Tenant\ReparkRequest;
 use App\Models\Tenant\Vehicle;
 use Filament\Widgets\StatsOverviewWidget as BaseWidget;
 use Filament\Widgets\StatsOverviewWidget\Card;
-use Flowframe\Trend\Trend;
-use Flowframe\Trend\TrendValue;
 
 class StatsOverview extends BaseWidget
 {

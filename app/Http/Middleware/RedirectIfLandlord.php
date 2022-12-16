@@ -23,5 +23,4 @@ class RedirectIfLandlord
 
         return $next($request);
     }
-
 }

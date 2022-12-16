@@ -4,8 +4,6 @@ namespace App\Listeners\Tenant;
 
 use App\Models\SessionModel;
 use Illuminate\Auth\Events\Logout;
-use Illuminate\Contracts\Queue\ShouldQueue;
-use Illuminate\Queue\InteractsWithQueue;
 
 class TenantUserLoggedOut
 {

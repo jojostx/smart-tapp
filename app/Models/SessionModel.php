@@ -26,8 +26,8 @@ class SessionModel extends Model
      *
      * @var array<int, string>
      */
-     public function tenant()
-     {
-         return $this->belongsTo(config('tenancy.tenant_model'));
-     }
+    public function tenant()
+    {
+        return $this->belongsTo(config('tenancy.tenant_model'));
+    }
 }

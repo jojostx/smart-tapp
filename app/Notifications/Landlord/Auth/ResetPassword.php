@@ -2,9 +2,9 @@
 
 namespace App\Notifications\Landlord\Auth;
 
-use Illuminate\Support\Facades\Lang;
-use Illuminate\Notifications\Notification;
 use Illuminate\Notifications\Messages\MailMessage;
+use Illuminate\Notifications\Notification;
+use Illuminate\Support\Facades\Lang;
 
 class ResetPassword extends Notification
 {
@@ -25,7 +25,7 @@ class ResetPassword extends Notification
     /**
      * Create a notification instance.
      *
-     * @param string $token
+     * @param  string  $token
      * @return void
      */
     public function __construct($token)
@@ -36,7 +36,7 @@ class ResetPassword extends Notification
     /**
      * Get the notification's channels.
      *
-     * @param mixed $notifiable
+     * @param  mixed  $notifiable
      * @return array|string
      */
     public function via($notifiable)
@@ -59,7 +59,7 @@ class ResetPassword extends Notification
         return (new MailMessage)
             ->subject(Lang::get('Reset Password Notification'))
             ->line(Lang::get('You are receiving this email because we received a password reset request for your account.'))
-            ->action(Lang::get('Reset Password'), url(config('app.url').route('landlord.password.reset', ['token' => $this->token, 'email' => $notifiable->getEmailForPasswordReset()], false)))
+            ->action(Lang::get('Reset Password'), url(config('app.url') . route('landlord.password.reset', ['token' => $this->token, 'email' => $notifiable->getEmailForPasswordReset()], false)))
             ->line(Lang::get('This password reset link will expire in :count minutes.', ['count' => config('auth.passwords.landlords.expire')]))
             ->line(Lang::get('If you did not request a password reset, no further action is required.'));
     }

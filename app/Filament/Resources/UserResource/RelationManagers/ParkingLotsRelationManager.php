@@ -15,16 +15,18 @@ use Filament\Tables;
 use Filament\Tables\Actions\ActionGroup;
 use Filament\Tables\Actions\Position;
 use Illuminate\Contracts\Support\Htmlable;
-use Illuminate\Database\Eloquent\SoftDeletingScope;
 use Illuminate\Support\Carbon;
 
 class ParkingLotsRelationManager extends RelationManager
 {
     use WithCurrentPasswordField;
 
-    protected static ?string $title = "Assigned Parking Lots";
+    protected static ?string $title = 'Assigned Parking Lots';
+
     protected static ?string $recordTitleAttribute = 'name';
+
     protected static ?string $inverseRelationship = 'administrators';
+
     protected static string $relationship = 'parkingLots';
 
     protected function getTableDescription(): string | Htmlable | null
@@ -65,6 +67,7 @@ class ParkingLotsRelationManager extends RelationManager
                             return str('<div class="text-xs filament-badge-danger"><span>Expired</span></div>')
                                 ->toHtmlString();
                         }
+
                         return null;
                     })
                     ->sortable(),
@@ -166,17 +169,18 @@ class ParkingLotsRelationManager extends RelationManager
                                 ['parking_lot_id', '=', $record->id],
                             ])->first();
 
-                            if (!$administration) {
+                            if (! $administration) {
                                 Notification::make('revive_failed')
                                     ->title('Failed to extend Expiration')
                                     ->body('Unable to extend the Administrative privilege. Please try again later.')
                                     ->danger()
                                     ->send();
+
                                 return;
                             }
 
                             $disable_expiry = $data['disable_expiry'] ?? true;
-                            if (!$disable_expiry && !empty($data['expires_at'])) {
+                            if (! $disable_expiry && ! empty($data['expires_at'])) {
                                 try {
                                     $administration->expiresAt(Carbon::parse($data['expires_at']));
                                     $extended = $administration->save();
@@ -200,7 +204,7 @@ class ParkingLotsRelationManager extends RelationManager
                                     ->danger()
                                     ->send();
                             }
-                        })
+                        }),
                 ])->icon('heroicon-o-dots-vertical'),
             ])
             ->bulkActions([

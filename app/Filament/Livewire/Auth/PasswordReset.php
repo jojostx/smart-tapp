@@ -24,96 +24,99 @@ use Livewire\Component;
  */
 class PasswordReset extends Component implements HasForms
 {
-  use InteractsWithForms;
-  use WithRateLimiting;
+    use InteractsWithForms;
+    use WithRateLimiting;
 
-  public ?string $email = '';
-  public ?string $token = '';
-  public ?string $password = '';
-  public ?string $password_confirm = '';
+    public ?string $email = '';
 
-  public function mount(?string $token = ''): void
-  {
-    if (Filament::auth()->check()) {
-      redirect()->intended(Filament::getUrl());
-    }
+    public ?string $token = '';
 
-    $this->email = request()->query('email', '');
+    public ?string $password = '';
 
-    $this->token = $token;
+    public ?string $password_confirm = '';
 
-    abort_if((blank($this->email) || blank($this->email)), 404);
-
-    $this->form->fill();
-  }
-
-  protected function getFormSchema(): array
-  {
-    return [
-      ComponentsPassword::make('password')
-        ->label(__('Password'))
-        ->password()
-        ->hint('must be at least 10 characters')
-        ->placeholder('••••••••')
-        ->required()
-        ->rules(['confirmed', RulesPassword::defaults()]),
-      ComponentsPassword::make('password_confirmation')
-        ->label('Confirm Password')
-        ->password()
-        ->placeholder('••••••••')
-        ->rules([
-          'required_with:new_password',
-        ]),
-    ];
-  }
-
-  public function submit()
-  {
-    $data = $this->form->getState();
-
-    $credentials = [
-      'email' => $this->email,
-      'password' => $data['password'],
-      'password_confirmation' => $data['password_confirmation'],
-      'token' => $this->token,
-    ];
-
-    $response = Password::broker('users')->reset(
-      $credentials,
-      function (User $user, string $password): void {
-        if (!$user->hasVerifiedEmail()) {
-          $user->forceFill(['email_verified_at' => $user->freshTimestamp()]);
+    public function mount(?string $token = ''): void
+    {
+        if (Filament::auth()->check()) {
+            redirect()->intended(Filament::getUrl());
         }
 
-        if ($user->isInactive()) {
-          $user->activateAccount(false);
-        }
+        $this->email = request()->query('email', '');
 
-        $user->forceFill([
-          'password' => Hash::make($password),
-          'remember_token' => Str::random(60),
-        ])->save();
+        $this->token = $token;
 
-        event(new PasswordReset_($user));
-      },
-    );
+        abort_if((blank($this->email) || blank($this->email)), 404);
 
-    if ($response === Password::PASSWORD_RESET) {
-      Notification::make('success')
-        ->title(__('passwords.reset'))
-        ->success()
-        ->send();
-
-      return redirect(route('filament.auth.login', [
-        'email' => $this->email,
-      ]));
+        $this->form->fill();
     }
 
-    $this->addError('password', __($response));
-  }
+    protected function getFormSchema(): array
+    {
+        return [
+            ComponentsPassword::make('password')
+              ->label(__('Password'))
+              ->password()
+              ->hint('must be at least 10 characters')
+              ->placeholder('••••••••')
+              ->required()
+              ->rules(['confirmed', RulesPassword::defaults()]),
+            ComponentsPassword::make('password_confirmation')
+              ->label('Confirm Password')
+              ->password()
+              ->placeholder('••••••••')
+              ->rules([
+                  'required_with:new_password',
+              ]),
+        ];
+    }
 
-  public function render(): View
-  {
-    return view('livewire.auth.password-reset', ['title' => 'Create New Password'])->extends('layouts.auth');
-  }
+    public function submit()
+    {
+        $data = $this->form->getState();
+
+        $credentials = [
+            'email' => $this->email,
+            'password' => $data['password'],
+            'password_confirmation' => $data['password_confirmation'],
+            'token' => $this->token,
+        ];
+
+        $response = Password::broker('users')->reset(
+            $credentials,
+            function (User $user, string $password): void {
+                if (! $user->hasVerifiedEmail()) {
+                    $user->forceFill(['email_verified_at' => $user->freshTimestamp()]);
+                }
+
+                if ($user->isInactive()) {
+                    $user->activateAccount(false);
+                }
+
+                $user->forceFill([
+                    'password' => Hash::make($password),
+                    'remember_token' => Str::random(60),
+                ])->save();
+
+                event(new PasswordReset_($user));
+            },
+        );
+
+        if ($response === Password::PASSWORD_RESET) {
+            Notification::make('success')
+              ->title(__('passwords.reset'))
+              ->success()
+              ->send();
+
+            return redirect(route('filament.auth.login', [
+                'email' => $this->email,
+            ]));
+        }
+
+        $this->addError('password', __($response));
+    }
+
+    public function render(): View
+    {
+        return view('livewire.auth.password-reset', ['title' => 'Create New Password'])->extends('layouts.auth');
+    }
 }

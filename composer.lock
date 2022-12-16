@@ -4,7 +4,7 @@
         "Read more about it at https://getcomposer.org/doc/01-basic-usage.md#installing-dependencies",
         "This file is @generated automatically"
     ],
-    "content-hash": "9ef6aabb5d99cb876af3dfc9c6aa444a",
+    "content-hash": "96c76476d7f6852e339cc1de3228ee89",
     "packages": [
         {
             "name": "abanoubnassem/filament-phone-field",
@@ -590,6 +590,52 @@
                 }
             ],
             "time": "2022-08-10T22:54:19+00:00"
+        },
+        {
+            "name": "caneara/axiom",
+            "version": "v3.2.1",
+            "source": {
+                "type": "git",
+                "url": "https://github.com/caneara/axiom.git",
+                "reference": "c96c97fcd0913a9b64f47f0ed63adc21543dabd2"
+            },
+            "dist": {
+                "type": "zip",
+                "url": "https://api.github.com/repos/caneara/axiom/zipball/c96c97fcd0913a9b64f47f0ed63adc21543dabd2",
+                "reference": "c96c97fcd0913a9b64f47f0ed63adc21543dabd2",
+                "shasum": ""
+            },
+            "require": {
+                "php": "^7.4|^8.0"
+            },
+            "require-dev": {
+                "orchestra/testbench": "^6.0",
+                "phpunit/phpunit": "^9.0"
+            },
+            "type": "library",
+            "autoload": {
+                "psr-4": {
+                    "Axiom\\": "src"
+                }
+            },
+            "notification-url": "https://packagist.org/downloads/",
+            "license": [
+                "MIT"
+            ],
+            "description": "A package that provides a library of reusable Laravel validation rules.",
+            "homepage": "https://github.com/mattkingshott/axiom",
+            "keywords": [
+                "axiom",
+                "laravel",
+                "php",
+                "rules",
+                "validation"
+            ],
+            "support": {
+                "issues": "https://github.com/caneara/axiom/issues",
+                "source": "https://github.com/caneara/axiom/tree/v3.2.1"
+            },
+            "time": "2021-03-25T12:05:06+00:00"
         },
         {
             "name": "danharrin/date-format-converter",
@@ -2531,7 +2577,7 @@
             "dist": {
                 "type": "path",
                 "url": "packages/jojostx/larasubs",
-                "reference": "c8e22d052ed45b52456cc5fb852bd1bdfa7773e9"
+                "reference": "8eac96fb965554fa217d0610b855aeeb586fe5d5"
             },
             "require": {
                 "illuminate/console": "^8.0|^9.0",
@@ -4005,53 +4051,6 @@
                 "source": "https://github.com/Masterminds/html5-php/tree/2.7.6"
             },
             "time": "2022-08-18T16:18:26+00:00"
-        },
-        {
-            "name": "mattkingshott/axiom",
-            "version": "v3.2.1",
-            "source": {
-                "type": "git",
-                "url": "https://github.com/caneara/axiom.git",
-                "reference": "c96c97fcd0913a9b64f47f0ed63adc21543dabd2"
-            },
-            "dist": {
-                "type": "zip",
-                "url": "https://api.github.com/repos/caneara/axiom/zipball/c96c97fcd0913a9b64f47f0ed63adc21543dabd2",
-                "reference": "c96c97fcd0913a9b64f47f0ed63adc21543dabd2",
-                "shasum": ""
-            },
-            "require": {
-                "php": "^7.4|^8.0"
-            },
-            "require-dev": {
-                "orchestra/testbench": "^6.0",
-                "phpunit/phpunit": "^9.0"
-            },
-            "type": "library",
-            "autoload": {
-                "psr-4": {
-                    "Axiom\\": "src"
-                }
-            },
-            "notification-url": "https://packagist.org/downloads/",
-            "license": [
-                "MIT"
-            ],
-            "description": "A package that provides a library of reusable Laravel validation rules.",
-            "homepage": "https://github.com/mattkingshott/axiom",
-            "keywords": [
-                "axiom",
-                "laravel",
-                "php",
-                "rules",
-                "validation"
-            ],
-            "support": {
-                "issues": "https://github.com/caneara/axiom/issues",
-                "source": "https://github.com/caneara/axiom/tree/v3.2.1"
-            },
-            "abandoned": "caneara/axiom",
-            "time": "2021-03-25T12:05:06+00:00"
         },
         {
             "name": "monolog/monolog",
@@ -9628,6 +9627,72 @@
             "time": "2020-07-09T08:09:16+00:00"
         },
         {
+            "name": "laravel/pint",
+            "version": "v1.2.1",
+            "source": {
+                "type": "git",
+                "url": "https://github.com/laravel/pint.git",
+                "reference": "e60e2112ee779ce60f253695b273d1646a17d6f1"
+            },
+            "dist": {
+                "type": "zip",
+                "url": "https://api.github.com/repos/laravel/pint/zipball/e60e2112ee779ce60f253695b273d1646a17d6f1",
+                "reference": "e60e2112ee779ce60f253695b273d1646a17d6f1",
+                "shasum": ""
+            },
+            "require": {
+                "ext-json": "*",
+                "ext-mbstring": "*",
+                "ext-tokenizer": "*",
+                "ext-xml": "*",
+                "php": "^8.0"
+            },
+            "require-dev": {
+                "friendsofphp/php-cs-fixer": "^3.11.0",
+                "illuminate/view": "^9.32.0",
+                "laravel-zero/framework": "^9.2.0",
+                "mockery/mockery": "^1.5.1",
+                "nunomaduro/larastan": "^2.2.0",
+                "nunomaduro/termwind": "^1.14.0",
+                "pestphp/pest": "^1.22.1"
+            },
+            "bin": [
+                "builds/pint"
+            ],
+            "type": "project",
+            "autoload": {
+                "psr-4": {
+                    "App\\": "app/",
+                    "Database\\Seeders\\": "database/seeders/",
+                    "Database\\Factories\\": "database/factories/"
+                }
+            },
+            "notification-url": "https://packagist.org/downloads/",
+            "license": [
+                "MIT"
+            ],
+            "authors": [
+                {
+                    "name": "Nuno Maduro",
+                    "email": "enunomaduro@gmail.com"
+                }
+            ],
+            "description": "An opinionated code formatter for PHP.",
+            "homepage": "https://laravel.com",
+            "keywords": [
+                "format",
+                "formatter",
+                "lint",
+                "linter",
+                "php"
+            ],
+            "support": {
+                "issues": "https://github.com/laravel/pint/issues",
+                "source": "https://github.com/laravel/pint"
+            },
+            "time": "2022-11-29T16:25:20+00:00"
+        },
+        {
             "name": "laravel/sail",
             "version": "v1.16.3",
             "source": {
@@ -11983,8 +12048,8 @@
     ],
     "minimum-stability": "dev",
     "stability-flags": {
-        "jojostx/larasubs": 20,
         "flowframe/laravel-trend": 20,
+        "jojostx/larasubs": 20,
         "kingflamez/laravelrave": 20
     },
     "prefer-stable": true,

@@ -7,11 +7,11 @@ use App\Models\Tenant\ReparkRequest;
 use App\Models\Tenant\User;
 use App\Notifications\Tenant\User\ReparkRequestCreatedNotification;
 use DanHarrin\LivewireRateLimiting\Exceptions\TooManyRequestsException;
+use DanHarrin\LivewireRateLimiting\WithRateLimiting;
 use Filament\Forms;
-use Livewire\Component;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Notification;
-use DanHarrin\LivewireRateLimiting\WithRateLimiting;
+use Livewire\Component;
 
 class Dashboard extends Component implements Forms\Contracts\HasForms
 {
@@ -19,14 +19,16 @@ class Dashboard extends Component implements Forms\Contracts\HasForms
     use WithRateLimiting;
 
     public Access $access;
+
     public User $issuer;
-    public string $plate_number = "";
+
+    public string $plate_number = '';
 
     public function mount(Access $access)
     {
         $this->access = $access->load(['driver', 'issuer']);
 
-        if (!auth('driver')->check() && $this->access->isActive()) {
+        if (! auth('driver')->check() && $this->access->isActive()) {
             Auth::guard('driver')->login($this->access->driver);
         }
 
@@ -60,7 +62,7 @@ class Dashboard extends Component implements Forms\Contracts\HasForms
         return false;
     }
 
-    protected function handleBlockersAccessRetrieval(string $blocker_plate_number = ""): ?Access
+    protected function handleBlockersAccessRetrieval(string $blocker_plate_number = ''): ?Access
     {
         // find access by plate number and parking lot, if the access is not deactivated,
         return Access::query()
@@ -100,16 +102,16 @@ class Dashboard extends Component implements Forms\Contracts\HasForms
             $this->rateLimit(1, 30 * 60);
         } catch (TooManyRequestsException $exception) {
             $this->dispatchBrowserEvent('open-alert', [
-                'color' => "danger",
+                'color' => 'danger',
                 'message' => "You've recently submitted a repark request. You will be allowed to request repark after {$exception->minutesUntilAvailable} minutes",
-                'timeout' => 20000
+                'timeout' => 20000,
             ]);
 
             return;
         }
 
         if ($this->plate_number === $this->access->vehicle->plate_number) {
-            $this->addError("plate_number", "Cannot Request a Repark for your own Vehicle.");
+            $this->addError('plate_number', 'Cannot Request a Repark for your own Vehicle.');
             $this->clearRateLimiter();
 
             return;
@@ -121,9 +123,9 @@ class Dashboard extends Component implements Forms\Contracts\HasForms
             $this->addError('plate_number', 'You are not allowed to request a repark for this vehicle.');
 
             $this->dispatchBrowserEvent('open-alert', [
-                'color' => "danger",
-                'message' => "You are not allowed to request a repark for this vehicle.",
-                'timeout' => 10000
+                'color' => 'danger',
+                'message' => 'You are not allowed to request a repark for this vehicle.',
+                'timeout' => 10000,
             ]);
 
             $this->clearRateLimiter();
@@ -131,13 +133,13 @@ class Dashboard extends Component implements Forms\Contracts\HasForms
             return;
         }
 
-        if (!$this->handleCreateRecord($access)) {
+        if (! $this->handleCreateRecord($access)) {
             $this->dispatchBrowserEvent('close-modal', ['id' => 'request-repark']);
 
             $this->dispatchBrowserEvent('open-alert', [
-                'color' => "danger",
-                'message' => "Unable to request for a repark for this vehicle. Try again or Contact Support",
-                'timeout' => 10000
+                'color' => 'danger',
+                'message' => 'Unable to request for a repark for this vehicle. Try again or Contact Support',
+                'timeout' => 10000,
             ]);
 
             $this->clearRateLimiter();
@@ -148,9 +150,9 @@ class Dashboard extends Component implements Forms\Contracts\HasForms
         $this->dispatchBrowserEvent('close-modal', ['id' => 'request-repark']);
 
         $this->dispatchBrowserEvent('open-alert', [
-            'color' => "success",
-            'message' => "Your request has been submitted and is being processed by the admin",
-            'timeout' => 10000
+            'color' => 'success',
+            'message' => 'Your request has been submitted and is being processed by the admin',
+            'timeout' => 10000,
         ]);
 
         $this->cancelRequest();

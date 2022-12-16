@@ -15,7 +15,12 @@ use Illuminate\Database\Eloquent\SoftDeletes;
 
 class ReparkRequest extends Model
 {
-    use HasFactory, GeneratesUuid, BindsOnUuid, SoftDeletes, MassPrunable, ReparkRequestStatusManageable;
+    use HasFactory;
+    use GeneratesUuid;
+    use BindsOnUuid;
+    use SoftDeletes;
+    use MassPrunable;
+    use ReparkRequestStatusManageable;
 
     /**
      * The attributes that are mass assignable.
@@ -47,10 +52,9 @@ class ReparkRequest extends Model
 
     /**
      * Create a new repark request from blocker and blockee accesses
-     * 
-     * @param Access $blocker_access
-     * @param Access $blockee_access
-     * 
+     *
+     * @param  Access  $blocker_access
+     * @param  Access  $blockee_access
      * @return self|null
      * @static
      */
@@ -98,7 +102,7 @@ class ReparkRequest extends Model
             'blockee_vehicle_id' => $blockee_vehicle_id,
             'blocker_vehicle_id' => $blocker_vehicle_id,
             'blockee_driver_id' => $blockee_driver_id,
-            'blocker_driver_id' => $blocker_driver_id
+            'blocker_driver_id' => $blocker_driver_id,
         ]);
     }
 

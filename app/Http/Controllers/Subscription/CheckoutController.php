@@ -54,7 +54,7 @@ class CheckoutController extends Controller
         return \view('subscriptions.checkout', compact('plans', 'selectedPlan', 'tenant', 'billingInfo'));
     }
 
-    public function create(CheckoutRequest $request,)
+    public function create(CheckoutRequest $request)
     {
         $validated = $request->validated();
         $plan = $this->planRepository()->getActiveBySlug($validated['plan']);
@@ -84,7 +84,7 @@ class CheckoutController extends Controller
             $plan = $this->planRepository()->getActiveBySlug($data['meta']['plan']);
 
             // can throw exception
-            if (!$this->validatePayment($plan, $data)) {
+            if (! $this->validatePayment($plan, $data)) {
                 return \back()->with('checkout_error', 'Unable to complete checkout');
             }
 
@@ -130,23 +130,23 @@ class CheckoutController extends Controller
                 'currency' => $plan->currency,
                 'redirect_url' => route('filament.plans.checkout.update'),
                 'customer' => [
-                    "name" => auth()->user()->name,
+                    'name' => auth()->user()->name,
                     'email' => $tenant->email,
-                    'phone_number' => auth()->user()->phone_number
+                    'phone_number' => auth()->user()->phone_number,
                 ],
-                "meta" => [
-                    "name" => $data['name'],
+                'meta' => [
+                    'name' => $data['name'],
                     'tenant' => $tenant->id,
                     'plan' => $data['plan'],
                     'organization' => $data['organization'],
-                    "tax_number" => $data['tax_number'],
-                    "address" => $data['address'],
-                    "zip_code" => $data['zip_code'],
+                    'tax_number' => $data['tax_number'],
+                    'address' => $data['address'],
+                    'zip_code' => $data['zip_code'],
                 ],
-                "customizations" => [
-                    "title" => 'Plan Checkout',
-                    "description" => "Payment for {$plan->name} plan",
-                ]
+                'customizations' => [
+                    'title' => 'Plan Checkout',
+                    'description' => "Payment for {$plan->name} plan",
+                ],
             ];
 
             $payment = Flutterwave::initializePayment($data);
@@ -163,8 +163,9 @@ class CheckoutController extends Controller
     }
 
     /**
-     * @throws InvalidArgumentException
      * @return bool
+     *
+     * @throws InvalidArgumentException
      */
     protected function validatePayment(?Plan $plan, array $data)
     {
@@ -172,7 +173,7 @@ class CheckoutController extends Controller
             $tenant = tenant();
             $amount = \calculateProratedAmount($plan, $tenant->subscription);
 
-            return $data['status'] == "successful" && $data['amount'] >= $amount && $data['currency'] == $plan->currency;
+            return $data['status'] == 'successful' && $data['amount'] >= $amount && $data['currency'] == $plan->currency;
         }
 
         return false;
@@ -197,13 +198,13 @@ class CheckoutController extends Controller
         return \tenancy()->central(function () use ($tenant, $data) {
             return $tenant->createCreditCard(
                 [
-                    "token" => $data['token'],
-                    "first_6" => $data['first_6digits'],
-                    "last_4" => $data['last_4digits'],
-                    "issuer" => $data['issuer'],
-                    "country" => $data['country'],
-                    "type" => $data['type'],
-                    "expiry" => $data['expiry'],
+                    'token' => $data['token'],
+                    'first_6' => $data['first_6digits'],
+                    'last_4' => $data['last_4digits'],
+                    'issuer' => $data['issuer'],
+                    'country' => $data['country'],
+                    'type' => $data['type'],
+                    'expiry' => $data['expiry'],
                 ]
             );
         });

@@ -34,10 +34,9 @@ class Card extends Component
 
     /**
      * Create a new component instance.
-     * 
-     * @param \Jojostx\Larasubs\Models\Plan $plan
-     * @param bool $should_highlight
-     * 
+     *
+     * @param  \Jojostx\Larasubs\Models\Plan  $plan
+     * @param  bool  $should_highlight
      * @return void
      */
     public function __construct($plan, $should_highlight = null, array $params = [])

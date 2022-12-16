@@ -85,7 +85,7 @@ class PieChartCard extends Card
 
     public function disableTotalLabel(bool $show = true): static
     {
-        $this->showTotalLabel = !$show;
+        $this->showTotalLabel = ! $show;
 
         return $this;
     }

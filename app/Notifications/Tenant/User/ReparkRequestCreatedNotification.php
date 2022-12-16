@@ -15,7 +15,9 @@ class ReparkRequestCreatedNotification extends Notification
      *
      * @return void
      */
-    public function __construct(public ReparkRequest $reparkRequest){}
+    public function __construct(public ReparkRequest $reparkRequest)
+    {
+    }
 
     /**
      * Get the notification's delivery channels.
@@ -43,7 +45,7 @@ class ReparkRequestCreatedNotification extends Notification
             'repark_request_id' => $this->reparkRequest->id,
             'repark_request_uuid' => $this->reparkRequest->uuid,
             'title' => 'Repark Requested',
-            'content' => "Driver of Vehicle **[{$blockee_plate_number}]** requested a repark for Vehicle **[{$blocker_plate_number}]**</span>"
+            'content' => "Driver of Vehicle **[{$blockee_plate_number}]** requested a repark for Vehicle **[{$blocker_plate_number}]**</span>",
         ];
     }
 }

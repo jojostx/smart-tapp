@@ -2,9 +2,11 @@
 
 namespace App\Filament\Resources;
 
+use AbanoubNassem\FilamentPhoneField\Forms\Components\PhoneInput;
 use App\Filament\Forms\Components\PhoneNumberInput;
 use App\Filament\Resources\DriverResource\Pages;
 use App\Filament\Tables\Columns\ActionableTextColumn;
+use App\Filament\Traits\WithCurrentPasswordField;
 use App\Models\Tenant\Driver;
 use Filament\Forms;
 use Filament\Forms\Components\Section;
@@ -12,13 +14,9 @@ use Filament\Resources\Form;
 use Filament\Resources\Resource;
 use Filament\Resources\Table;
 use Filament\Tables;
+use Filament\Tables\Actions\ActionGroup;
 use Filament\Tables\Filters\TernaryFilter;
 use Illuminate\Database\Eloquent\Model;
-use App\Filament\Resources\DriverResource\RelationManagers;
-use AbanoubNassem\FilamentPhoneField\Forms\Components\PhoneInput;
-use App\Filament\Traits\WithCurrentPasswordField;
-use Filament\Tables\Actions\ActionGroup;
-use Illuminate\Database\Eloquent\SoftDeletingScope;
 
 class DriverResource extends Resource
 {
@@ -126,7 +124,7 @@ class DriverResource extends Resource
                         ->modalSubheading('Are you sure you would like to do this? Deleting the driver will delete all associated Acessess.')
                         ->modalWidth('md')
                         ->form([
-                            static::getCurrentPasswordField()
+                            static::getCurrentPasswordField(),
                         ]),
                 ])->icon('heroicon-o-dots-vertical'),
             ])
@@ -134,7 +132,7 @@ class DriverResource extends Resource
                 Tables\Actions\DeleteBulkAction::make()
                     ->requiresConfirmation()
                     ->form([
-                        static::getCurrentPasswordField()
+                        static::getCurrentPasswordField(),
                     ]),
             ]);
     }

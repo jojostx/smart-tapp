@@ -10,7 +10,7 @@ use Livewire\Component;
 class Verify extends Component
 {
     use WithRateLimiting;
-    
+
     public string $email = '';
 
     public string $otp = '';
@@ -23,13 +23,13 @@ class Verify extends Component
 
     public function mount(?string $id = null)
     {
-        if (!blank($id)) {
+        if (! blank($id)) {
             $this->tenant = Tenant::findOrFail($id);
 
             $this->email = $this->tenant->email;
 
             $this->emailSent = true;
-        }else {
+        } else {
             $this->emailSent = false;
         }
     }
@@ -58,23 +58,23 @@ class Verify extends Component
         ]);
 
         // only proceed when we have an unverified tenant
-        if (!$this->tenant instanceof Tenant && $this->tenant->hasVerifiedEmail()) {
-             return;
+        if (! $this->tenant instanceof Tenant && $this->tenant->hasVerifiedEmail()) {
+            return;
         }
 
         // validate otp
-        if (!$this->tenant->validateOTP($this->otp)->status) {
-             $this->addError('otp', 'Invalid OTP');
-        
-             return;
+        if (! $this->tenant->validateOTP($this->otp)->status) {
+            $this->addError('otp', 'Invalid OTP');
+
+            return;
         }
 
         if ($this->tenant->markEmailAsVerified()) {
             //  show tenant onboarding loading modal
-             $this->isCreatingAccount = true;
+            $this->isCreatingAccount = true;
 
             //  Emit VerifiedEvent
-             event(new TenantVerified($this->tenant));
+            event(new TenantVerified($this->tenant));
         }
     }
 

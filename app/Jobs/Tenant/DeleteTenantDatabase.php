@@ -10,10 +10,10 @@ class DeleteTenantDatabase extends DeleteDatabase
     {
         $database = $this->tenant->database();
 
-        if (!$database->manager()->databaseExists($database->getName())) {
-           return;
+        if (! $database->manager()->databaseExists($database->getName())) {
+            return;
         }
-       
+
         parent::handle();
     }
 }

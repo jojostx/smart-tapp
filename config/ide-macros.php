@@ -23,7 +23,7 @@ return [
     */
 
     'classes' => [
-        \Illuminate\View\View::class
+        \Illuminate\View\View::class,
     ],
 
 ];
