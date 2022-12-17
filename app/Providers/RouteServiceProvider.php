@@ -51,7 +51,7 @@ class RouteServiceProvider extends ServiceProvider
     protected function mapWebRoutes()
     {
         foreach ($this->centralDomains() as $key => $domain) {
-            if ($domain == env('TENANCY_CENTRAL_ADMIN_DOMAIN')) {
+            if ($domain == \config('tenancy.central_domains.admin')) {
                 Route::middleware('web')
                     ->as('landlord.')
                     ->domain($domain)

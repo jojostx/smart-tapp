@@ -49,7 +49,6 @@ class Login extends Component
     {
         // // set the user's session [user_id & tenant_id] on the central db session table before login
         // setTenantCentralSession(request());
-
         $this->rateLimit(20);
 
         $validated = $this->validate();
