@@ -30,7 +30,12 @@ class EnsurePlanCanBeChanged
         $tenant = tenant();
         $subscription = $tenant?->subscription;
 
-        if ($subscription && $subscription->active() && $subscription->planWasChangedInTimePast(3, IntervalType::MONTH)) {
+        if (
+            $subscription &&
+            $subscription->active() &&
+            $subscription->planWasChangedInTimePast(3, IntervalType::MONTH) &&
+            !$subscription->plan->isFree()
+        ) {
             return Redirect::route('filament.pages.settings');
         }
 
