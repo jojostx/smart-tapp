@@ -2,6 +2,7 @@
 
 namespace App\Notifications\Tenant\User;
 
+use App\Filament\Notifications\Notification as NotificationsNotification;
 use App\Models\Tenant\ReparkRequest;
 use Illuminate\Bus\Queueable;
 use Illuminate\Notifications\Notification;
@@ -45,7 +46,19 @@ class ReparkRequestCreatedNotification extends Notification
             'repark_request_id' => $this->reparkRequest->id,
             'repark_request_uuid' => $this->reparkRequest->uuid,
             'title' => 'Repark Requested',
-            'content' => "Driver of Vehicle **[{$blockee_plate_number}]** requested a repark for Vehicle **[{$blocker_plate_number}]**</span>",
+            'content' => "Driver of Vehicle **[{$blockee_plate_number}]** requested a repark for Vehicle **[{$blocker_plate_number}]**",
         ];
+    }
+
+    public function toDatabase($notifiable): array
+    {
+        $blockee_plate_number = $this->reparkRequest->blockeeVehicle->plate_number;
+        $blocker_plate_number = $this->reparkRequest->blockerVehicle->plate_number;
+
+        return NotificationsNotification::make()
+            ->title('Repark Requested')
+            ->body("Driver of Vehicle **[{$blockee_plate_number}]** requested a repark for Vehicle **[{$blocker_plate_number}]**")
+            ->icon('heroicon-o-exclamation')
+            ->getDatabaseMessage();
     }
 }
