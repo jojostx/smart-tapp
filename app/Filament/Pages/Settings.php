@@ -60,11 +60,11 @@ class Settings extends Page implements Tables\Contracts\HasTable
         return self::canAccessPage();
     }
 
-    public function getPlansProperty(): Collection
+    public function getPlansProperty(PlanRepository $plans): Collection
     {
         $slug = tenant()->subscription?->plan?->slug ?? '';
 
-        return app(PlanRepository::class)->getActiveExcept($slug);
+        return $plans->getActiveExcept($slug);
     }
 
     public function getParamsProperty(): array
