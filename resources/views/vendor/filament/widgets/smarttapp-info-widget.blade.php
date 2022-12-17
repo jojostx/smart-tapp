@@ -3,7 +3,7 @@
         <div class="relative flex flex-col items-center justify-center h-12 space-y-2">
             <div class="space-y-1">
                 <a
-                    href="https://smart-tapp.com"
+                    href="{{ config('app.url') }}"
                     target="_blank"
                     rel="noopener noreferrer"
                     @class([
@@ -18,7 +18,7 @@
 
             <div class="flex space-x-2 text-sm rtl:space-x-reverse">
                 <a
-                    href="https://smart-tapp.com#faqs"
+                    href="{{ config('app.url') }}#faqs"
                     target="_blank"
                     rel="noopener noreferrer"
                     @class([
@@ -34,7 +34,7 @@
                 </span>
 
                 <a
-                    href="https://smart-tapp.com#help"
+                    href="{{ config('app.url') }}#help"
                     target="_blank"
                     rel="noopener noreferrer"
                     @class([
