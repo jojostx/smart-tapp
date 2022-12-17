@@ -45,6 +45,19 @@ class QrcodeScanner extends Component
         return $this->access->isValid();
     }
 
+    public function getTenantSupportPhoneNumberProperty()
+    {
+        // consider using a custom user role for support agent,
+        // consider attaching a chat page for chatting with the customer via the
+        // chat widget or via email or phone number
+        $this->access->issuer->phone_number_e164;
+    }
+
+    public function getTenantSupportEmailProperty()
+    {
+        $this->access->issuer->email;
+    }
+
     public function updatedParkingLot()
     {
         $this->resetValidation('parking_lot');
@@ -67,7 +80,7 @@ class QrcodeScanner extends Component
 
         $this->access->activate();
 
-        if (! auth('driver')->check()) {
+        if (!auth('driver')->check()) {
             Auth::guard('driver')->login($this->access->driver);
         }
 

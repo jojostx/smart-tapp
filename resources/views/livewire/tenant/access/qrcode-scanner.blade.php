@@ -92,13 +92,13 @@
                     <p class="max-w-md mt-2 text-lg text-gray-600">Unfortunately, Your Access has expired. To Reactivate it, contact support</p>
 
                     <div class="inline-flex items-center justify-center mt-4 overflow-hidden border rounded-md">
-                        <a href="tel:+2348034081360" class="inline-flex items-center justify-center gap-1 px-4 text-sm font-medium text-gray-800 transition-colors bg-gray-100 border border-transparent shadow focus:outline-none focus:ring-offset-2 focus:ring-2 focus:ring-inset h-9 focus:ring-white hover:bg-gray-200 focus:bg-gray-300 focus:ring-offset-gray-500">
+                        <a href="tel:{{ $this->tenantSupportPhoneNumber }}" class="inline-flex items-center justify-center gap-1 px-4 text-sm font-medium text-gray-800 transition-colors bg-gray-100 border border-transparent shadow focus:outline-none focus:ring-offset-2 focus:ring-2 focus:ring-inset h-9 focus:ring-white hover:bg-gray-200 focus:bg-gray-300 focus:ring-offset-gray-500">
                             <x-heroicon-o-phone-outgoing class="w-5 h-5 mr-1 -ml-2 text-gray-600 rtl:ml-1 rtl:-mr-2" />
                             <span>
                                 Contact Support
                             </span>
                         </a>
-                        <a href="mailto:support@dunamis.smart-tapp.test" class="inline-flex items-center justify-center gap-1 px-4 text-sm font-medium text-gray-800 transition-colors bg-gray-100 border border-transparent shadow focus:outline-none focus:ring-offset-2 focus:ring-2 focus:ring-inset h-9 focus:ring-white hover:bg-gray-200 focus:bg-gray-300 focus:ring-offset-gray-500">
+                        <a href="mailto:{{ $this->tenantSupportEmail }}" class="inline-flex items-center justify-center gap-1 px-4 text-sm font-medium text-gray-800 transition-colors bg-gray-100 border border-transparent shadow focus:outline-none focus:ring-offset-2 focus:ring-2 focus:ring-inset h-9 focus:ring-white hover:bg-gray-200 focus:bg-gray-300 focus:ring-offset-gray-500">
                             <x-heroicon-o-mail class="w-5 h-5 mr-1 -ml-2 text-gray-600 rtl:ml-1 rtl:-mr-2" />
                             <span>
                                 Email Support
