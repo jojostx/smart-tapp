@@ -6,6 +6,7 @@ enum UserRole: string
 {
     case SUPER_ADMIN = 'super_admin';
     case ADMIN = 'admin';
+    case SUPPORT = 'support';
 
     public static function toArray(): array
     {
@@ -19,6 +20,7 @@ enum UserRole: string
         return [
             self::SUPER_ADMIN->value => 'Access for the parking lot can be created',
             self::ADMIN->value => 'Access for the Parking Lot can not be created.',
+            self::ADMIN->value => 'Handles queries and issues from your drivers.',
         ];
     }
 }
