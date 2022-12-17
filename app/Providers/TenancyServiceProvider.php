@@ -41,18 +41,6 @@ class TenancyServiceProvider extends ServiceProvider
             TenantVerified::class => [
                 JobPipeline::make([
                     Jobs\CreateDatabase::class,
-                    Jobs\MigrateDatabase::class,
-                    // Jobs\SeedDatabase::class,
-
-                    // Your own jobs to prepare the tenant.
-                    // Provision API keys, create S3 buckets, anything you want!
-                    Tenant\CreateFrameworkDirectoriesForTenant::class,
-
-                    // create Tenant Subdomain
-                    Tenant\CreateTenantSubdomain::class,
-
-                    // create Tenant Super Admin user
-                    Tenant\CreateTenantAdminUser::class,
                 ])->send(function (TenantVerified $event) {
                     return $event->tenant;
                 })->shouldBeQueued(true), // `false` by default, but you probably want to make this `true` for production.
@@ -85,11 +73,36 @@ class TenancyServiceProvider extends ServiceProvider
             Events\DomainDeleted::class => [],
 
             // Database events
-            Events\DatabaseCreated::class => [],
+            Events\DatabaseCreated::class => [
+                JobPipeline::make([
+                    Jobs\MigrateDatabase::class,
+                ])->send(function (Events\DatabaseCreated $event) {
+                    return $event->tenant;
+                })->shouldBeQueued(true),
+            ],
 
-            Events\DatabaseMigrated::class => [],
+            Events\DatabaseMigrated::class => [
+                JobPipeline::make([
+                    Jobs\SeedDatabase::class,
+                ])->send(function (Events\DatabaseMigrated $event) {
+                    return $event->tenant;
+                })->shouldBeQueued(true),
+            ],
 
-            Events\DatabaseSeeded::class => [],
+            Events\DatabaseSeeded::class => [
+                JobPipeline::make([
+                    // Your own jobs to prepare the tenant.
+                    Tenant\CreateFrameworkDirectoriesForTenant::class,
+
+                    // create Tenant Subdomain
+                    Tenant\CreateTenantSubdomain::class,
+
+                    // create Tenant Super Admin user
+                    Tenant\CreateTenantAdminUser::class,
+                ])->send(function (Events\DatabaseSeeded $event) {
+                    return $event->tenant;
+                })->shouldBeQueued(true),
+            ],
             Events\DatabaseRolledBack::class => [],
             Events\DatabaseDeleted::class => [],
 
@@ -127,11 +140,14 @@ class TenancyServiceProvider extends ServiceProvider
     public function boot()
     {
         $this->bootEvents();
+
         $this->mapRoutes();
 
         $this->makeTenancyMiddlewareHighestPriority();
 
-        TenantAssetsController::$tenancyMiddleware = InitializeTenancyByDomain::class;
+        $this->setTenantAssetMiddleware();
+
+        $this->redirectToCentralDomainOnFail();
     }
 
     protected function bootEvents()
@@ -171,5 +187,17 @@ class TenancyServiceProvider extends ServiceProvider
         foreach (array_reverse($tenancyMiddleware) as $middleware) {
             $this->app[\Illuminate\Contracts\Http\Kernel::class]->prependToMiddlewarePriority($middleware);
         }
+    }
+
+    protected function redirectToCentralDomainOnFail()
+    {
+        InitializeTenancyByDomain::$onFail = function () {
+            return redirect(config('app.url'));
+        };
+    }
+
+    protected function setTenantAssetMiddleware()
+    {
+        TenantAssetsController::$tenancyMiddleware = InitializeTenancyByDomain::class;
     }
 }
