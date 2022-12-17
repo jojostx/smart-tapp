@@ -16,7 +16,7 @@ trait HasOTP
      * @param  int  $validity
      * @return mixed
      */
-    public function generateOtp(int $digits = 6, int $validity = 5): object
+    public function generateOtp(int $digits = 6, int $validity = 30): object
     {
         $identifier = $this->getIdentifier();
 
