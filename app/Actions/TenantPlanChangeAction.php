@@ -3,19 +3,13 @@
 namespace App\Actions;
 
 use App\Models\Tenant;
-use App\Repositories\PlanRepository;
 use Jojostx\Larasubs\Models\Plan;
 use Jojostx\Larasubs\Models\Subscription;
 
 class TenantPlanChangeAction
 {
-    protected ?Tenant $tenant;
-
-    protected ?Plan $plan;
-
     public function __construct(
-        protected PlanRepository $planRepository,
-        protected DeleteExcessTenantResources $deleteExcessTenantResources
+        protected DeleteExcessTenantResourcesAction $deleteExcessTenantResourcesAction
     ) {
     }
 
@@ -37,6 +31,6 @@ class TenantPlanChangeAction
         });
 
         // delete excess resources
-        return $this->deleteExcessTenantResources->handle($subscription);
+        return $this->deleteExcessTenantResourcesAction->handle($subscription);
     }
 }

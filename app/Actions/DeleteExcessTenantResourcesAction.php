@@ -4,19 +4,11 @@ namespace App\Actions;
 
 use App\Enums\Models\FeatureResources;
 use App\Models\Tenant;
-use App\Repositories\PlanRepository;
 use Jojostx\Larasubs\Models\Subscription;
 
-class DeleteExcessTenantResources
+class DeleteExcessTenantResourcesAction
 {
-    protected ?PlanRepository $planRepository;
-
     protected ?Tenant $tenant;
-
-    public function __construct(PlanRepository $planRepository)
-    {
-        $this->planRepository = $planRepository;
-    }
 
     public function handle(Subscription $subscription, string $featureSlug = ''): ?Subscription
     {
