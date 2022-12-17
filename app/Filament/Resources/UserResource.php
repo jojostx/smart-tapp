@@ -52,16 +52,13 @@ class UserResource extends Resource
                             '
                             <ul class="space-y-4 text-primary-800">
                                 <li>
-                                    <span>• You can only assign one available Parking lot per admin user.</span>
-                                </li>
-                                <li>
-                                    <span>• Assigning a Parking lot to an Admin User makes it unavailable.</span>
+                                    <span>• You can assign multiple available Parking lot per admin user.</span>
                                 </li>
                                 <li>
                                     <span>• After creating an Admin User an email containing instructions to complete the account creation will be sent to their email address.</span>
                                 </li>
                                 <li>
-                                    <span>• The Admin user will have access to the dashboard for administering the Parking lot assigned to them.</span>
+                                    <span>• The Admin user will have access to the dashboard for administering the Parking lots assigned to them.</span>
                                 </li>
                             </ul>'
                         )->toHtmlString()
