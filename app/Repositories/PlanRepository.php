@@ -5,62 +5,53 @@ namespace App\Repositories;
 use Illuminate\Database\Eloquent\Collection;
 use Jojostx\Larasubs\Models\Plan;
 
-class PlanRepository
+class PlanRepository extends Repository
 {
-    protected ?string $centralConnection;
+    protected static string $model = Plan::class;
 
-    public function __construct()
-    {
-        $this->centralConnection = static::getCentralConnection();
-    }
-
-    protected static function getCentralConnection(): string
+    protected static function getConnection(): ?string
     {
         return getCentralConnection();
     }
 
-    public function all(): Collection
+    public function getAll(): Collection
     {
-        return Plan::on($this->centralConnection)->all();
+        return $this->all();
     }
 
     public function getActive(): Collection
     {
-        return Plan::on($this->centralConnection)->whereActive()->get();
+        return $this->whereActive()->get();
     }
 
     public function getActiveExceptFree(): Collection
     {
-        $query = Plan::on($this->centralConnection);
-
-        return $query->where('price', '>', 0)->whereActive()->get();
+        return $this->where('price', '>', 0)->whereActive()->get();
     }
 
     public function getActiveExcept(string | array $slug): Collection
     {
-        $query = Plan::on($this->centralConnection);
-
         if (is_array($slug) && \filled($slug)) {
             $slugs = \array_values($slug);
 
-            return $query->whereNotIn('slug', $slugs)->whereActive()->get();
+            return $this->whereNotIn('slug', $slugs)->whereActive()->get();
         }
 
-        return $query->whereNot('slug', $slug)->whereActive()->get();
+        return $this->whereNot('slug', $slug)->whereActive()->get();
     }
 
     public function getBySlug(string $slug): ?Plan
     {
-        return Plan::on($this->centralConnection)->where('slug', $slug)->first();
+        return $this->where('slug', $slug)->first();
     }
 
     public function getActiveBySlug(string $slug): ?Plan
     {
-        return Plan::on($this->centralConnection)->whereActive()->where('slug', $slug)->first();
+        return $this->whereActive()->where('slug', $slug)->first();
     }
 
     public function getInactiveBySlug(string $slug): ?Plan
     {
-        return Plan::on($this->centralConnection)->whereNotActive()->where('slug', $slug)->first();
+        return $this->whereNotActive()->where('slug', $slug)->first();
     }
 }

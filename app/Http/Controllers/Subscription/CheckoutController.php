@@ -9,9 +9,11 @@ use App\Http\Requests\CheckoutRequest;
 use App\Models\CreditCard;
 use App\Models\Receipt;
 use App\Models\Tenant;
+use App\Notifications\Tenant\User\SubscriptionSuccessfulNotification;
 use App\Repositories\PlanRepository;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
+use Illuminate\Support\Facades\Notification as FacadesNotification;
 use InvalidArgumentException;
 use Jojostx\Larasubs\Models\Plan;
 use KingFlamez\Rave\Facades\Rave as Flutterwave;
@@ -84,7 +86,7 @@ class CheckoutController extends Controller
             $plan = $this->planRepository()->getActiveBySlug($data['meta']['plan']);
 
             // can throw exception
-            if (! $this->validatePayment($plan, $data)) {
+            if (!$this->validatePayment($plan, $data)) {
                 return \back()->with('checkout_error', 'Unable to complete checkout');
             }
 
@@ -190,7 +192,10 @@ class CheckoutController extends Controller
             return back()->with('checkout_error', 'Unable to complete plan checkout');
         }
 
-        return \redirect()->route('filament.pages.settings')->with('checkout_success', 'Plan checkout successfully');
+        /** send notification to admin */
+        FacadesNotification::sendNow(\auth()->user(), new SubscriptionSuccessfulNotification($subscription));
+
+        return \redirect()->route('filament.pages.settings');
     }
 
     protected function updatePaymentMethod(Tenant $tenant, array $data): CreditCard
