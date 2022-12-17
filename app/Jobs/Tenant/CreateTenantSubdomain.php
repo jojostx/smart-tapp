@@ -41,6 +41,10 @@ class CreateTenantSubdomain implements ShouldQueue
             return false;
         }
 
+        if ($this->tenant->domains()->first()) {
+            return true;
+        }
+
         $createdDomain = $this->tenant->createDomain($tenant_domain);
 
         if (blank($createdDomain)) {
