@@ -9,6 +9,7 @@ use Illuminate\Auth\AuthenticationException;
 use Illuminate\Auth\Events\Verified;
 use Illuminate\Support\Facades\DB;
 use Livewire\Component;
+use Stancl\Tenancy\Contracts\TenantCouldNotBeIdentifiedException;
 
 class VerifyNewEmail extends Component
 {
@@ -25,40 +26,46 @@ class VerifyNewEmail extends Component
 
     public function verifyEmail()
     {
-        if ($tenant = \tenant()) {
-            $user = DB::transaction(function () use ($tenant) {
-                // validate credentials
-                $user = PendingUserEmail::whereToken($this->token)
-                    ->firstOr(
-                        ['*'],
-                        function () {
-                            throw new AuthenticationException(
-                                __('The verification link is not valid anymore.')
-                            );
-                        }
-                    )->tap(function ($pendingUserEmail) {
-                        $pendingUserEmail->activate();
-                    })->user;
+        $tenant = tenant();
 
-                //change tenant email on the central db
-                if (filled($user)) {
-                    $tenant->forceFill([
-                        'email' => $user->email,
-                        'email_verified_at' => now(),
-                    ])->save();
-                }
+        throw_if(blank($tenant), TenantCouldNotBeIdentifiedException::class);
 
+        try {
+            DB::beginTransaction();
+
+            // validate credentials
+            $user = PendingUserEmail::whereToken($this->token)
+                ->firstOr(
+                    ['*'],
+                    function () {
+                        throw new AuthenticationException(
+                            __('The verification link is not valid anymore.')
+                        );
+                    }
+                )->tap(function ($pendingUserEmail) {
+                    $pendingUserEmail->activate();
+                })->user;
+
+            //change tenant email on the central db
+            if (filled($user)) {
+                $tenant->forceFill([
+                    'email' => $user->email,
+                    'email_verified_at' => now(),
+                ])->save();
+            }
+
+            DB::commit();
+
+            if ($user) {
                 // dispatch a job to the queue to update the customer's email on flutterwave
                 UpdateCustomerEmailOnFlutterwave::dispatch($user, $tenant)->afterCommit();
 
-                return $user;
-            });
-
-            if ($user) {
                 event(new Verified($user));
 
                 $this->authenticated($tenant);
             }
+        } catch (\Exception $exp) {
+            DB::rollBack();
         }
     }
 
