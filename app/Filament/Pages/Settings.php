@@ -2,6 +2,7 @@
 
 namespace App\Filament\Pages;
 
+use App\Models\Tenant;
 use App\Repositories\PlanRepository;
 use Closure;
 use Filament\Facades\Filament;
@@ -60,18 +61,6 @@ class Settings extends Page implements Tables\Contracts\HasTable
         return self::canAccessPage();
     }
 
-    public function getPlansProperty(PlanRepository $plans): Collection
-    {
-        $slug = tenant()->subscription?->plan?->slug ?? '';
-
-        return $plans->getActiveExcept($slug);
-    }
-
-    public function getParamsProperty(): array
-    {
-        return ['tenant' => \tenant()->getTenantKey()];
-    }
-
     protected function getBillingInfoFormSchema(): array
     {
         return [
@@ -115,6 +104,26 @@ class Settings extends Page implements Tables\Contracts\HasTable
                 ->schema($this->getBillingInfoFormSchema())
                 ->model($this->getFormModel()),
         ];
+    }
+
+    public function getPlansProperty(PlanRepository $plans): Collection
+    {
+        $slug = tenant()->subscription?->plan?->slug ?? '';
+
+        return $plans->getActiveExcept($slug);
+    }
+
+    public function getParamsProperty(): array
+    {
+        return ['tenant' => \tenant()->getTenantKey()];
+    }
+
+    public function getHasSubscriptionProperty(): bool
+    {
+        /** @var ?Tenant */
+        $tenant = tenant();
+
+        return $tenant?->activeSubscriptions()->isNotEmpty();
     }
 
     public function saveBillingInfo(): void

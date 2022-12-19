@@ -1,4 +1,4 @@
-<x-filament::page x-data="{ tab: window.location.hash ? window.location.hash.substring(1) : 'plans' }">
+<x-filament::page x-data="{ tab: window.location.hash ? window.location.hash.substring(1) : '{{ $this->hasSubscription ? 'subscription' : 'plan' }}' }">
     <div id="tabs_toggle" class="mb-4 border-b border-gray-400 dark:border-gray-700">
         <ul class="flex flex-wrap -mb-px text-sm font-medium text-center" role="tablist">
             <li class="mr-2" role="presentation">
