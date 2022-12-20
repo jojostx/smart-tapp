@@ -14,6 +14,11 @@ return [
     /**
      * Public Key: Your Rave publicKey. Sign up on https://dashboard.flutterwave.com/ to get one from your settings page
      */
+    'baseUrl' => 'https://api.flutterwave.com/v3',
+
+    /**
+     * Public Key: Your Rave publicKey. Sign up on https://dashboard.flutterwave.com/ to get one from your settings page
+     */
     'publicKey' => env('FLW_PUBLIC_KEY'),
 
     /**

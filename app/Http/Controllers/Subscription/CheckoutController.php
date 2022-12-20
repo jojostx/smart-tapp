@@ -12,8 +12,10 @@ use App\Models\Tenant;
 use App\Notifications\Tenant\User\SubscriptionSuccessfulNotification;
 use App\Repositories\PlanRepository;
 use Illuminate\Http\Request;
+use Illuminate\Support\Arr;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Notification as FacadesNotification;
+use Illuminate\Validation\ValidationException;
 use InvalidArgumentException;
 use Jojostx\Larasubs\Models\Plan;
 use KingFlamez\Rave\Facades\Rave as Flutterwave;
@@ -47,73 +49,69 @@ class CheckoutController extends Controller
 
     public function index(Request $request)
     {
-        // exclude free plans
-        $plans = $this->planRepository()->getActive();
-        $selectedPlan = $this->planRepository()->getActiveBySlug($request->get('plan', ''));
+        /** @var Tenant */
         $tenant = \tenant();
+
+        $plans = $this->planRepository()->getActive();
+
+        $selectedPlan = $tenant?->subscription?->plan ?? $this->planRepository()->getActiveBySlug($request->get('plan', ''));
+
         $billingInfo = $tenant->billingInfo;
 
-        return \view('subscriptions.checkout', compact('plans', 'selectedPlan', 'tenant', 'billingInfo'));
+        $creditCards = $tenant->chargeableCards();
+
+        return \view(
+            'subscriptions.checkout',
+            compact('plans', 'selectedPlan', 'tenant', 'billingInfo', 'creditCards')
+        );
     }
 
     public function create(CheckoutRequest $request)
     {
         $validated = $request->validated();
+
+        $request->authenticate(); // authenticate's card if present
+
         $plan = $this->planRepository()->getActiveBySlug($validated['plan']);
+
+        $credit_card = $validated['credit_card'];
+
+        if (blank($plan)) {
+            throw ValidationException::withMessages([
+                'plan' => __('Invalid Plan'),
+            ]);
+        }
 
         if ($plan->isFree()) {
             // perform plan downgrade and redirect to dashboard
             return $this->handleSubscriptionPlanChange($plan);
         }
 
-        return $this->initiatePlanCheckoutRequest($plan, $validated);
+        if ($request->hasChargeableCard($credit_card)) {
+            // perform tokenized charge
+            return $this->handleCardPaymentRequest($plan, $validated);
+        }
+
+        return $this->handlePlanCheckoutRequest($plan, $validated);
     }
 
     public function update(Request $request)
     {
-        try {
-            $status = $request->status;
+        $status = $request->status;
 
-            //if payment is successful
-            if ($status != 'successful') {
-                return \back()->with('checkout_error', $request['message']);
-            }
-
-            $response = $this->verifyFlwTransaction();
-
-            $data = $response['data'];
-
-            $plan = $this->planRepository()->getActiveBySlug($data['meta']['plan']);
-
-            // can throw exception
-            if (!$this->validatePayment($plan, $data)) {
-                return \back()->with('checkout_error', 'Unable to complete checkout');
-            }
-
-            // Success! Confirm the customer's payment
-            $tenant = getTenant($data['meta']['tenant']);
-
-            if ($tenant->isNot(tenant())) {
-                return \back()->with('checkout_error', 'Unable to complete checkout and subscription to plan');
-            }
-
-            DB::beginTransaction(); // Tell Laravel all the code beneath this is a transaction
-
-            $this->createReceipt($tenant, $data);
-            $this->updatePaymentMethod($tenant, $data['card']);
-            $result = $this->handleSubscriptionPlanChange($plan);
-
-            DB::commit(); // Tell Laravel this transacion's all good and it can persist to DB
-
-            return $result;
-        } catch (\Exception $exp) {
-            DB::rollBack(); // Tell Laravel, "It's not you, it's me. Please don't persist to DB"
-
-            return back(400)->with('checkout_error', $exp->getMessage());
+        //if payment is successful
+        if ($status != 'successful') {
+            return \back()->with('checkout_error', $request['message']);
         }
+
+        $transactionID = Flutterwave::getTransactionIDFromCallback();
+
+        $response = Flutterwave::verifyTransaction($transactionID);
+
+        return $this->processVerificationResponse($response['data']);
     }
 
-    protected function initiatePlanCheckoutRequest(Plan $plan, array $data)
+    protected function handlePlanCheckoutRequest(Plan $plan, array $data)
     {
         try {
             $tenant = tenant();
@@ -153,7 +151,7 @@ class CheckoutController extends Controller
 
             $payment = Flutterwave::initializePayment($data);
 
-            if ($payment['status'] !== 'success') {
+            if ($payment['status'] != 'success') {
                 // notify something went wrong
                 return \back()->with('checkout_error', $payment['message']);
             }
@@ -165,7 +163,108 @@ class CheckoutController extends Controller
     }
 
     /**
-     * @return bool
+     * @todo can be refactored to a queuable action or job
+     */
+    protected function handleCardPaymentRequest(Plan $plan, array $data)
+    {
+        /** @var Tenant */
+        $tenant = tenant();
+
+        //This generates a payment reference
+        $reference = Flutterwave::generateReference();
+
+        //calculate prorated Billing
+        $amount = \calculateProratedAmount($plan, $tenant->subscription);
+
+        /** @var \App\Models\CreditCard */
+        $card = $tenant->chargeableCards()->firstWhere('uuid', $data['credit_card']);
+
+        // Enter the details of the payment
+        $data = [
+            'tx_ref' => $reference,
+            'token' => $card->token,
+            'email' => $tenant->email,
+            'currency' => $plan->currency,
+            'amount' => $amount,
+            'narration' => "Payment for Smart-tapp subscription",
+            'full_name' => auth()->user()->name,
+            'meta' => [
+                'tenant' => $tenant->id,
+                'name' => $data['name'],
+                'plan' => $data['plan'],
+                'organization' => $data['organization'],
+                'tax_number' => $data['tax_number'],
+                'address' => $data['address'],
+                'zip_code' => $data['zip_code'],
+            ],
+        ];
+
+        try {
+            //---------------------InitializeTokenizedChargeJob----------------------------//
+            /** @todo refactor to queued job */
+            $response = Flutterwave::initializeTokenizedCharge($data);
+            
+            if ($response['status'] != 'success') {
+                // notify something went wrong
+                return \back()->with('checkout_error', $response['message']);
+            }
+            
+            $transactionID = Arr::get($response, 'data.id');
+            //-------------------------------------------------------//
+            
+            //---------------------ProcessTokenizedChargeJob----------------------------//
+            /** @todo refactor to queued job */
+            $verif_response = Flutterwave::verifyTransaction($transactionID);
+            
+            // validate transaction and update subscription
+            return $this->processVerificationResponse($verif_response['data']);
+            //-------------------------------------------------------//
+        } catch (\Exception $exp) {
+            return back(400)->with('checkout_error', $exp->getMessage());
+        }
+    }
+
+    /**
+     * processes the verification response from flw:
+     * - create receipt
+     * - update card
+     * - handle subscription
+     */
+    protected function processVerificationResponse(array $data)
+    {
+        try {
+            $plan = $this->planRepository()->getActiveBySlug($data['meta']['plan']);
+
+            // can throw exception
+            if (!$this->validatePayment($plan, $data)) {
+                return \back()->with('checkout_error', 'Unable to complete checkout');
+            }
+
+            // Success! Confirm the customer's payment
+            $tenant = getTenant($data['meta']['tenant']);
+
+            if ($tenant->isNot(tenant())) {
+                return \back()->with('checkout_error', 'Unable to complete checkout and subscription to plan');
+            }
+
+            DB::beginTransaction(); // Tell Laravel all the code beneath this is a transaction
+
+            $this->createReceipt($tenant, $data);
+            $this->updatePaymentMethod($tenant, $data['card']);
+            $result = $this->handleSubscriptionPlanChange($plan);
+
+            DB::commit(); // Tell Laravel this transacion's all good and it can persist to DB
+
+            return $result;
+        } catch (\Exception $exp) {
+            DB::rollBack(); // Tell Laravel, "It's not you, it's me. Please don't persist to DB"
+
+            return back(400)->with('checkout_error', $exp->getMessage());
+        }
+    }
+
+    /**
+     * validates the payment by the customer at flw
      *
      * @throws InvalidArgumentException
      */
@@ -181,6 +280,9 @@ class CheckoutController extends Controller
         return false;
     }
 
+    /**
+     * handles the processes involved in changing the plan 
+     */
     protected function handleSubscriptionPlanChange(Plan $plan)
     {
         $tenant = tenant();
@@ -198,6 +300,9 @@ class CheckoutController extends Controller
         return \redirect()->route('filament.pages.settings');
     }
 
+    /**
+     * handles updating or creating a new payment method for the customer
+     */
     protected function updatePaymentMethod(Tenant $tenant, array $data): CreditCard
     {
         return \tenancy()->central(function () use ($tenant, $data) {
@@ -215,6 +320,9 @@ class CheckoutController extends Controller
         });
     }
 
+    /**
+     * handles creating a new payment receipt for the customer
+     */
     protected function createReceipt(Tenant $tenant, array $data): Receipt
     {
         return \tenancy()->central(function () use ($tenant, $data) {
@@ -229,12 +337,5 @@ class CheckoutController extends Controller
                 'zip_code' => $data['meta']['zip_code'],
             ]);
         });
-    }
-
-    public function verifyFlwTransaction()
-    {
-        $transactionID = Flutterwave::getTransactionIDFromCallback();
-
-        return Flutterwave::verifyTransaction($transactionID);
     }
 }

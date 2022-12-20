@@ -2,8 +2,6 @@
 
 namespace App\Filament\Resources;
 
-use AbanoubNassem\FilamentPhoneField\Forms\Components\PhoneInput;
-use App\Filament\Forms\Components\PhoneNumberInput;
 use App\Filament\Resources\DriverResource\Pages;
 use App\Filament\Tables\Columns\ActionableTextColumn;
 use App\Filament\Traits\WithCurrentPasswordField;
@@ -17,6 +15,7 @@ use Filament\Tables;
 use Filament\Tables\Actions\ActionGroup;
 use Filament\Tables\Filters\TernaryFilter;
 use Illuminate\Database\Eloquent\Model;
+use Illuminate\Validation\Rule;
 
 class DriverResource extends Resource
 {
@@ -159,14 +158,18 @@ class DriverResource extends Resource
                 Forms\Components\TextInput::make('email')
                     ->email()
                     ->required(),
-                // PhoneNumberInput::make('phone_number')
-                //     ->required()
-                //     ->reactive()
-                //     ->allowedCountries(['NG']),
-                PhoneInput::make('phone_number')
+                Forms\Components\TextInput::make('phone_number')
+                    ->placeholder('ex: +234 8034 062 460')
+                    ->hint("The Driver's phone number")
+                    ->required()
+                    ->unique('drivers', 'phone_number'),
+                Forms\Components\TextInput::make('phone_number')
+                    ->label('Phone Number')
                     ->required()
                     ->reactive()
-                    ->initialCountry('NG'),
+                    ->unique('drivers', 'phone_number', ignoreRecord: true)
+                    ->tel()
+                    ->rule(Rule::phone()->country(['NG'])),
                 Forms\Components\Placeholder::make('location')
                     ->label('Location')
                     ->content('Nigeria (NGN)'),

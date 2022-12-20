@@ -12,14 +12,44 @@
 
         <div class="grid order-last grid-cols-1 bg-white md:order-first lg:grid-cols-12">
             <div class="px-6 py-8 md:col-span-9 lg:col-span-10 xl:col-span-9 lg:col-end-13 xl:col-end-13 md:px-10 lg:px-16 md:py-32">
+
+                @if (session()->has('checkout_error'))
+                    <div class="p-3 my-2 border rounded-lg bg-danger-100 border-danger-700">
+                        <p class="text-danger-700">An error occured: {{ session('checkout_error') }}</p>
+                    </div>
+                @endif
+
                 <h1 class="text-lg font-bold md:text-xl text-primary-900 leading-extra-tight">Checkout</h1>
-                <div class="mt-6">
+                <div class="mt-6 space-y-4">
                     <!-- Domain -->
                     <div>
                         <x-label for="domain" :value="__('Domain')" />
 
-                        <x-input name="domain" id="domain" type="text" class="block w-full mt-1 appearance-none" placeholder="e.g. Acme Ltd" :value="old('domain') ?? str($tenant?->domain)->before('.')" disabled />
+                        <x-input id="domain" name="domain" type="text" class="block w-full mt-1 appearance-none" placeholder="e.g. Acme Ltd" :value="old('domain') ?? str($tenant?->domain)->before('.')" disabled />
                     </div>
+
+                    @if(filled($creditCards))
+                    <div>
+                        <x-label for="credit_card">
+                            Payment Method
+                            <span class="text-sm font-normal text-gray-500">(select a card)</span>
+                        </x-label>
+                        <select id="credit_card" name="credit_card" class="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-primary-500 focus:border-primary-500 block w-full p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-primary-500 dark:focus:border-primary-500">
+                            <option value="">None</option>
+                            @foreach ($creditCards as $card)
+                            <option @selected($card->isDefault()) value="{{ $card->uuid }}">{{ ucfirst(strtolower($card->type)) }} 💳 - {{ $card->card_number }}</option>
+                            @endforeach
+                        </select>
+
+                        @error('credit_card')
+                        <p class="mt-2 text-sm text-red-600">{{ $message }}</p>
+                        @enderror
+
+                        <p class="mt-3 text-xs text-gray-500">
+                            If no card is selected you will be required to complete checkout at the payment page
+                        </p>
+                    </div>
+                    @endif
 
                     <div class="mt-4">
                         <button @click.prevent="open = !open" class="flex items-center justify-center text-xs text-primary-600">
@@ -92,14 +122,21 @@
                 </div>
             </div>
         </div>
+
         <div class="grid grid-cols-1 pt-6 bg-gray-900 lg:grid-cols-12 md:pt-0">
             <div class="px-6 py-8 md:col-span-9 lg:col-span-10 xl:col-span-9 md:px-10 lg:px-16 pt-14 md:py-32">
                 <h1 class="mb-6 text-lg font-bold text-white md:text-xl md:w-8/12 leading-extra-tight md:mb-10"> Chosen plan </h1>
 
+                @error('plan')
+                <div class="p-3 my-2 border rounded-lg bg-danger-100 border-danger-700">
+                    <p class="text-danger-700">{{ $message }}</p>
+                </div>
+                @enderror
+
                 <ul class="w-full font-medium text-gray-900 bg-white border border-gray-200 divide-y rounded-lg">
                     @foreach ($plans as $plan)
                     <li class="flex items-center px-3">
-                        <input id="list-radio-{{ $plan->name }}" name="plan" value="{{ $plan->slug }}" @checked(old('plan')==$plan->slug || $selectedPlan?->slug == $plan->slug) type="radio" class="w-4 h-4 bg-gray-100 border-gray-300 text-primary-600 focus:ring-primary-500 focus:ring-2">
+                        <input id="list-radio-{{ $plan->name }}" name="plan" value="{{ $plan->slug }}" {{ old('plan') === $plan->slug || $selectedPlan?->slug == $plan->slug ? 'checked="checked"': '' }} type="radio" class="w-4 h-4 bg-gray-100 border-gray-300 text-primary-600 focus:ring-primary-500 focus:ring-2">
                         <label for="list-radio-{{ $plan->name }}" class="flex items-center justify-between w-full py-4 ml-2 text-gray-900">
                             <span class="capitalize">
                                 {{ $plan->name }}

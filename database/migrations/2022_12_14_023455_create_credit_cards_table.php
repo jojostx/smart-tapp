@@ -17,6 +17,7 @@ return new class extends Migration
             $table->id();
             $table->string('uuid')->unique();
             $table->string('tenant_id');
+            $table->boolean('is_enabled')->default(true);
             $table->string('first_6');
             $table->string('last_4');
             $table->string('issuer');
@@ -24,6 +25,7 @@ return new class extends Migration
             $table->string('type');
             $table->string('token')->unique();
             $table->string('expiry');
+            $table->unsignedInteger('sort_order')->default(0);
             $table->timestamps();
 
             $table->foreign('tenant_id')->references('id')->on('tenants')->onUpdate('cascade')->onDelete('cascade')->unique();

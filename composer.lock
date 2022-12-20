@@ -2577,7 +2577,7 @@
             "dist": {
                 "type": "path",
                 "url": "packages/jojostx/larasubs",
-                "reference": "8eac96fb965554fa217d0610b855aeeb586fe5d5"
+                "reference": "5a313bf2877896d7a9c701399549aa4ca731521d"
             },
             "require": {
                 "illuminate/console": "^8.0|^9.0",
@@ -2649,24 +2649,24 @@
             "source": {
                 "type": "git",
                 "url": "https://github.com/jojostx/laravelrave.git",
-                "reference": "1f86847922a956fbbb19f0f973fc59cf245c3c2d"
+                "reference": "ec6fd2b65739bfe3d819d93f94b4ae88e2f7f143"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/jojostx/laravelrave/zipball/1f86847922a956fbbb19f0f973fc59cf245c3c2d",
-                "reference": "1f86847922a956fbbb19f0f973fc59cf245c3c2d",
+                "url": "https://api.github.com/repos/jojostx/laravelrave/zipball/ec6fd2b65739bfe3d819d93f94b4ae88e2f7f143",
+                "reference": "ec6fd2b65739bfe3d819d93f94b4ae88e2f7f143",
                 "shasum": ""
             },
             "require": {
-                "illuminate/support": "^5.0|^6.0|^7.0|^8.0|^9.0",
-                "php": "^7.2|^8.0"
+                "illuminate/console": "^8.0|^9.0",
+                "illuminate/contracts": "^8.0|^9.0",
+                "illuminate/support": "^8.0|^9.0",
+                "php": "^8.0"
             },
             "require-dev": {
-                "mockery/mockery": "^1.2",
-                "orchestra/testbench": "^4.0",
-                "phpunit/phpunit": "^8.3",
-                "satooshi/php-coveralls": ">0.7",
-                "scrutinizer/ocular": "^1.1"
+                "mockery/mockery": "^1.3",
+                "orchestra/testbench": "^6.22|^7.0",
+                "phpunit/phpunit": "^9.5"
             },
             "type": "library",
             "extra": {
@@ -2723,7 +2723,7 @@
             "support": {
                 "source": "https://github.com/jojostx/laravelrave/tree/hotfix"
             },
-            "time": "2022-12-10T10:51:06+00:00"
+            "time": "2022-12-20T07:52:33+00:00"
         },
         {
             "name": "laravel-frontend-presets/tall",

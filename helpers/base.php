@@ -3,10 +3,11 @@
 use App\Models\Tenant;
 use Illuminate\Support\Carbon;
 use Illuminate\Support\HtmlString;
+use Jojostx\Larasubs\Enums\IntervalType;
 use Jojostx\Larasubs\Models\Plan;
 use Jojostx\Larasubs\Models\Subscription;
 
-if (! function_exists('replaceQrCodeAttributes')) {
+if (!function_exists('replaceQrCodeAttributes')) {
     /**
      *  replaces qrcode width and height attributes with class(es)
      *
@@ -23,7 +24,7 @@ if (! function_exists('replaceQrCodeAttributes')) {
 
         $xmlDom = new DOMDocument();
 
-        if (! $xmlDom->loadXML($qrcode)) {
+        if (!$xmlDom->loadXML($qrcode)) {
             return str($qrcode)->toHtmlString();
         }
 
@@ -52,7 +53,7 @@ if (! function_exists('replaceQrCodeAttributes')) {
     }
 }
 
-if (! function_exists('in_range')) {
+if (!function_exists('in_range')) {
     /**
      * Determines if $number is between $min and $max
      *
@@ -66,15 +67,15 @@ if (! function_exists('in_range')) {
     {
         if (is_int($number) && is_int($min) && is_int($max)) {
             return $inclusive
-              ? ($number >= $min && $number <= $max)
-              : ($number > $min && $number < $max);
+                ? ($number >= $min && $number <= $max)
+                : ($number > $min && $number < $max);
         }
 
         return false;
     }
 }
 
-if (! function_exists('elapsed')) {
+if (!function_exists('elapsed')) {
     /**
      * Determines if $time is in the past
      *
@@ -90,7 +91,7 @@ if (! function_exists('elapsed')) {
     }
 }
 
-if (! function_exists('flattenWithKeys')) {
+if (!function_exists('flattenWithKeys')) {
     /**
      * Flattens an array recursively while preserving keys by "smushing" them
      *
@@ -105,7 +106,7 @@ if (! function_exists('flattenWithKeys')) {
     function flattenWithKeys(array $array, $nestingDelimiter = '.', $root = '', $result = []): array
     {
         foreach ($array as $k => $v) {
-            if ((is_array($v) || is_object($v)) && ! empty($v)) {
+            if ((is_array($v) || is_object($v)) && !empty($v)) {
                 $result = flattenWithKeys((array) $v, $nestingDelimiter, $root . $k . $nestingDelimiter, $result);
             } else {
                 $result[$root . $k] = $v;
@@ -116,7 +117,7 @@ if (! function_exists('flattenWithKeys')) {
     }
 }
 
-if (! function_exists('getCentralConnection')) {
+if (!function_exists('getCentralConnection')) {
     /**
      * gets the name of the central database connection
      *
@@ -128,7 +129,7 @@ if (! function_exists('getCentralConnection')) {
     }
 }
 
-if (! function_exists('getTenant')) {
+if (!function_exists('getTenant')) {
     /**
      * gets the name of the central database connection
      *
@@ -140,7 +141,7 @@ if (! function_exists('getTenant')) {
     }
 }
 
-if (! function_exists('getPlanPrice')) {
+if (!function_exists('getPlanPrice')) {
     /**
      * gets the price for a plan
      *
@@ -152,11 +153,12 @@ if (! function_exists('getPlanPrice')) {
     }
 }
 
-if (! function_exists('calculateProratedAmount')) {
+if (!function_exists('calculateProratedAmount')) {
     /**
      * gets the prorated amount between a new plan and the current plan for a subscription
-     *
      * @link https://www.zoho.com/in/subscriptions/prorated-billing/
+     *
+     * @throws InvalidArgumentException
      *
      * @return int
      */
@@ -164,6 +166,11 @@ if (! function_exists('calculateProratedAmount')) {
     {
         $tolerance = 50;
         $currentPlan = $subscription->plan;
+
+        if (blank($currentPlan)) {
+            return (int) \money($newPlan->price, $newPlan->currency)->getValue();
+        }
+
         $daysLeft = now()->diffInDays($subscription->ends_at);
         $daysUsed = now()->diffInDays($subscription->starts_at);
         $totalDays = $subscription->starts_at->diffInDays($subscription->ends_at);
@@ -187,5 +194,48 @@ if (! function_exists('calculateProratedAmount')) {
 
             return (int) \money($price, $newPlan->currency)->getValue();
         }
+    }
+}
+
+if (!function_exists('tenantCanChangePlanFor')) {
+    /**
+     * check if a tenant can change the plan for a subscription
+     */
+    function tenantCanChangePlanFor(Subscription $subscription = null): bool
+    {
+        return !tenantCannotChangePlanFor($subscription);
+    }
+}
+
+if (!function_exists('tenantCannotChangePlanFor')) {
+    /**
+     * check if a tenant cannot change the plan for a subscription
+     */
+    function tenantCannotChangePlanFor(Subscription $subscription = null): bool
+    {
+        return $subscription &&
+            $subscription->inactive() &&
+            $subscription->planWasChangedInTimePast(3, IntervalType::MONTH) &
+            !$subscription->plan->isFree();
+    }
+}
+
+if (!function_exists('getTokenizationAmount')) {
+    /**
+     * get the minimum amount to tokenize a card
+     */
+    function getTokenizationAmount()
+    {
+        return 100;
+    }
+}
+
+if (!function_exists('getTokenizationCurrency')) {
+    /**
+     * get the currency to tokenize a card //should default to customer's
+     */
+    function getTokenizationCurrency(): string
+    {
+        return 'NGN';
     }
 }

@@ -4,6 +4,7 @@ namespace App\Models;
 
 use App\Traits\MustVerifyTenantEmail;
 use Illuminate\Contracts\Auth\MustVerifyEmail;
+use Illuminate\Database\Eloquent\Collection;
 use Illuminate\Notifications\Notifiable;
 use Jojostx\Larasubs\Models\Concerns\HasSubscriptions;
 use Stancl\Tenancy\Contracts\TenantWithDatabase;
@@ -79,6 +80,39 @@ class Tenant extends BaseTenant implements TenantWithDatabase, MustVerifyEmail
     public function creditCards()
     {
         return $this->hasMany(CreditCard::class, 'tenant_id');
+    }
+
+    /**
+     * get All the enabled credit cards for the model.
+     */
+    public function enabledCards(): Collection
+    {
+        return $this->creditCards()
+            ->whereEnabled()
+            ->get()
+            ->reject->isEnabled();
+    }
+
+    /**
+     * get All the enabled and unexpired credit cards for the model.
+     */
+    public function chargeableCards(): Collection
+    {
+        return $this->creditCards()
+            ->whereEnabled()
+            ->get()
+            ->reject->isExpired()
+            ->reject->isDisabled();
+    }
+
+    /**
+     * get the default
+     * returns a CreditCard or an empty collection
+     * - always use the blank|filled helper fn to check
+     */
+    public function defaultCard(): Collection|CreditCard
+    {
+        return $this->creditCards->first->isDefault();
     }
 
     public function createReceipt($data): Receipt

@@ -79,6 +79,7 @@ class DatabaseSeeder extends Seeder
             'trial_interval_type' => IntervalType::WEEK,
             'grace_interval' => 1,
             'grace_interval_type' => IntervalType::WEEK,
+            'sort_order' => 2,
         ]);
 
         $enterprise = Plan::create([
@@ -98,6 +99,7 @@ class DatabaseSeeder extends Seeder
             'trial_interval_type' => IntervalType::WEEK,
             'grace_interval' => 1,
             'grace_interval_type' => IntervalType::WEEK,
+            'sort_order' => 3,
         ]);
 
         $teamMembers = Feature::create([

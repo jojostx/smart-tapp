@@ -2,8 +2,10 @@
 
 namespace App\Http\Requests;
 
+use App\Models\Tenant;
 use Illuminate\Auth\Events\Lockout;
 use Illuminate\Foundation\Http\FormRequest;
+use Illuminate\Support\Facades\Log;
 use Illuminate\Support\Facades\RateLimiter;
 use Illuminate\Support\Str;
 use Illuminate\Validation\ValidationException;
@@ -35,13 +37,46 @@ class CheckoutRequest extends FormRequest
     public function rules()
     {
         return [
+            'plan' => 'required|exists:' . getCentralConnection() . '.' . 'plans,slug',
             'organization' => 'nullable|string|max:255',
             'name' => 'nullable|string|max:255',
             'tax_number' => 'nullable|string|max:255',
             'address' => 'nullable|string|max:255',
             'zip_code' => 'nullable|string|max:12',
-            'plan' => 'required|exists:' . getCentralConnection() . '.' . 'plans,slug',
+            'credit_card' => 'nullable|string|exists:' . getCentralConnection() . '.' . 'credit_cards,uuid',
         ];
+    }
+
+    /**
+     * Attempt to authenticate the request's credentials.
+     *
+     * @throws ValidationException
+     */
+    public function authenticate(): void
+    {
+        $this->ensureIsNotRateLimited();
+
+        /** @var Tenant */
+        $tenant = \tenant();
+        $credit_card = $this->get('credit_card');
+
+        if (\blank($tenant)) {
+            RateLimiter::hit($this->throttleKey());
+
+            throw ValidationException::withMessages([
+                'plan' => __('Operation not allowed'),
+            ]);
+        }
+
+        if ($this->hasUnchargeableCard($credit_card)) {
+            RateLimiter::hit($this->throttleKey());
+
+            throw ValidationException::withMessages([
+                'credit_card' => __('Invalid credit card'),
+            ]);
+        }
+
+        RateLimiter::clear($this->throttleKey());
     }
 
     /**
@@ -51,7 +86,7 @@ class CheckoutRequest extends FormRequest
      */
     public function ensureIsNotRateLimited(): void
     {
-        if (! RateLimiter::tooManyAttempts($this->throttleKey(), 10)) {
+        if (!RateLimiter::tooManyAttempts($this->throttleKey(), 30)) {
             return;
         }
 
@@ -60,7 +95,7 @@ class CheckoutRequest extends FormRequest
         $seconds = RateLimiter::availableIn($this->throttleKey());
 
         throw ValidationException::withMessages([
-            'email' => trans('auth.throttle', [
+            'plan' => trans('auth.throttle', [
                 'seconds' => $seconds,
                 'minutes' => ceil($seconds / 60),
             ]),
@@ -72,6 +107,28 @@ class CheckoutRequest extends FormRequest
      */
     public function throttleKey(): string
     {
-        return Str::lower($this->input('email')) . '|' . $this->ip();
+        return Str::lower($this->input('plan')) . '|' . $this->ip();
+    }
+
+    /**
+     * check if card is present and chargeable
+     */
+    public function hasChargeableCard(?string $credit_card): bool
+    {
+        /** @var Tenant */
+        $tenant = \tenant();
+
+        return filled($credit_card) && $tenant->chargeableCards()->contains('uuid', $credit_card);
+    }
+
+    /**
+     * check if card is present and unchargeable
+     */
+    public function hasUnchargeableCard(?string $credit_card): bool
+    {
+        /** @var Tenant */
+        $tenant = \tenant();
+
+        return filled($credit_card) && $tenant->chargeableCards()->doesntContain('uuid', $credit_card);
     }
 }
