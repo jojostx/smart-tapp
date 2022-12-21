@@ -194,7 +194,7 @@ class UserResource extends Resource
 
                 Forms\Components\TextInput::make('email')
                     ->label(__('Email'))
-                    ->placeholder('ex: example@gmail.com')
+                    ->placeholder('ex: JohnDoe@example.com')
                     ->validationAttribute(__('Email'))
                     ->maxLength(255)
                     ->unique(ignoreRecord: true)

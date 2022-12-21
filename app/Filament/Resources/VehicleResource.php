@@ -49,15 +49,25 @@ class VehicleResource extends Resource
                         Forms\Components\Grid::make()
                             ->schema([
                                 Forms\Components\TextInput::make('plate_number')
-                                    ->required(),
+                                    ->placeholder('ex: ABG-VFF32')
+                                    ->hint("The Vehicle's plate number")
+                                    ->string()
+                                    ->maxLength(255)
+                                    ->required()
+                                    ->unique('vehicles', 'plate_number'),
                                 Forms\Components\TextInput::make('brand')
-                                    ->maxValue(125)
+                                    ->placeholder('ex: Toyota')
+                                    ->string()
+                                    ->maxLength(255)
                                     ->required(),
                                 Forms\Components\TextInput::make('model')
-                                    ->maxValue(125)
-                                    ->required(),
+                                    ->placeholder('ex: Camry')
+                                    ->string()
+                                    ->maxLength(255),
                                 Forms\Components\TextInput::make('color')
-                                    ->maxValue(20),
+                                    ->string()
+                                    ->maxLength(255)
+                                    ->placeholder('ex: Blue'),
                             ]),
                     ])
                     ->columnSpan([

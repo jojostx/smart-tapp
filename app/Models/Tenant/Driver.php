@@ -41,6 +41,32 @@ class Driver extends Authenticatable
         'phone_verified_at' => 'datetime',
     ];
 
+    /**
+     * The "booted" method of the model.
+     *
+     * @return void
+     */
+    protected static function booted()
+    {
+        static::creating(function (Driver $driver) {
+            if (filled($driver->phone_number)) {
+                $driver->phone_number_e164 = phone($driver->phone_number, 'NG')->formatE164();
+            }
+        });
+
+        static::saving(function (Driver $driver) {
+            if (filled($driver->phone_number)) {
+                $driver->phone_number_e164 = phone($driver->phone_number, 'NG')->formatE164();
+            }
+        });
+
+        static::updating(function (Driver $driver) {
+            if (filled($driver->phone_number)) {
+                $driver->phone_number_e164 = phone($driver->phone_number, 'NG')->formatE164();
+            }
+        });
+    }
+
     public function routeNotificationForTermii($notification)
     {
         return $this->getPhoneNumberForVerification() ?? $this->phone_number_e164;

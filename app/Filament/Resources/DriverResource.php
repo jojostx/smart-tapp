@@ -155,16 +155,19 @@ class DriverResource extends Resource
     {
         return Section::make(__('Driver Details'))
             ->schema([
+                Forms\Components\TextInput::make('name')
+                    ->string()
+                    ->maxLength(255)
+                    ->required(),
                 Forms\Components\TextInput::make('email')
+                    ->string()
                     ->email()
+                    ->maxLength(255)
                     ->required(),
                 Forms\Components\TextInput::make('phone_number')
-                    ->placeholder('ex: +234 8034 062 460')
-                    ->hint("The Driver's phone number")
-                    ->required()
-                    ->unique('drivers', 'phone_number'),
-                Forms\Components\TextInput::make('phone_number')
                     ->label('Phone Number')
+                    ->placeholder('ex: 09035055833')
+                    ->hint("The Driver's phone number")
                     ->required()
                     ->reactive()
                     ->unique('drivers', 'phone_number', ignoreRecord: true)

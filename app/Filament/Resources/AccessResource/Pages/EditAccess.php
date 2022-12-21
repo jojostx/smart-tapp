@@ -186,12 +186,8 @@ class EditAccess extends EditRecord
     {
         /** @var \App\Models\Tenant\Access */
         $record = $this->getRecord();
-        $anotherActiveAccessExists = ($this->getModel())::query()
-            ->whereNotInactive()
-            ->whereRelation('vehicle', 'plate_number', $record->vehicle->plate_number)
-            ->exists();
 
-        if ($anotherActiveAccessExists) {
+        if ($record->hasAnotherActiveAccessWithSameVehicle()) {
             Notification::make()
                 ->body('Unable to activate because another Access already exists and has been issued for this Vehicle.')
                 ->danger()

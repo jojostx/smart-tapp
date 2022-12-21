@@ -126,7 +126,7 @@ class ReparkRequestResource extends Resource
                 ActionGroup::make([
                     Tables\Actions\Action::make('start-resolving')
                         ->label('Start resolving')
-                        ->visible(fn (ReparkRequest $record) => ! $record->isResolving())
+                        ->visible(fn (ReparkRequest $record) => !$record->isResolving())
                         ->color('danger')
                         ->icon('heroicon-o-play')
                         ->tooltip('Start resolving Repark Request')
@@ -164,21 +164,38 @@ class ReparkRequestResource extends Resource
                         ->color('success')
                         ->icon('heroicon-o-check-circle')
                         ->tooltip('Resolve Repark Request')
-                        ->visible(fn (ReparkRequest $record) => ! $record->isResolved())
+                        ->visible(fn (ReparkRequest $record) => !$record->isResolved())
                         ->requiresConfirmation()
+                        ->form([
+                            Forms\Components\Checkbox::make('shouldNotify')
+                                ->label('Send Repark Request Resolved notification')
+                                ->helperText('This will notify the blocked driver via text message that the blocking vehicle has been reparked.')
+                                ->default(true),
+                        ])
                         ->modalHeading(function (): string {
                             return 'Resolve Repark Request';
                         })
                         ->action(function (ReparkRequest $record) {
-                            $record->resolve() &&
+                            $shouldNotify = isset($data['shouldNotify']) && $data['shouldNotify'];
+
+                            if ($record->resolve()) {
+                                $shouldNotify &&
+                                    $record->sendReparkRequestResolvedNotification(checkStatusCountdown: 30) &&
+                                    Notification::make()
+                                    ->title('The Repark Request has been resolved!')
+                                    ->body($shouldNotify ? "The SMS notification will be sent to the Driver's phone" : null)
+                                    ->success()
+                                    ->send();
+                            } else {
                                 Notification::make()
-                                ->title('The Repark Request has been resolved!')
-                                ->success()
-                                ->send();
+                                    ->title('Unable to Resolve Repark Request')
+                                    ->danger()
+                                    ->send();
+                            }
                         }),
 
                     Tables\Actions\Action::make('notify')
-                        ->visible(fn (ReparkRequest $record) => ! $record->isResolved())
+                        ->visible(fn (ReparkRequest $record) => !$record->isResolved())
                         ->color('primary')
                         ->tooltip('Notify Driver')
                         ->icon('heroicon-o-paper-airplane')
@@ -219,7 +236,7 @@ class ReparkRequestResource extends Resource
     {
         $routeBaseName = static::getRouteBaseName();
 
-        if (! request()->routeIs("{$routeBaseName}.*")) {
+        if (!request()->routeIs("{$routeBaseName}.*")) {
             return ReparkRequest::whereUnresolved()->count() ?? null;
         }
 

@@ -105,7 +105,7 @@ class ParkingLot extends Model
     {
         return Attribute::make(
             get: function ($value, $attributes) {
-                return replaceQrCodeAttributes(QrCode::generate(json_encode($attributes['uuid'])), 'w-full max-w-sm', 'parkinglot_qrcode');
+                return replaceQrCodeAttributes(QrCode::generate(json_encode($attributes['uuid'])), 'w-full max-w-md', 'parkinglot_qrcode');
             },
         )->shouldCache();
     }

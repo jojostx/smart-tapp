@@ -1,6 +1,5 @@
-<div class="max-w-sm p-4 space-y-4 bg-white border rounded-md shadow">
-    <p class="text-lg font-semibold">Qrcode</p>
-    <div class="max-w-xs">
+<x-filament::modal @click.outside="$dispatch('close-modal', {id: 'qrcode-modal'})" width="md" id="qrcode-modal" heading="Download Qrcode">
+    <div class="relative bg-white rounded-lg dark:bg-gray-700">
         {{ $this->form }}
     </div>
-</div>
+</x-filament::modal>

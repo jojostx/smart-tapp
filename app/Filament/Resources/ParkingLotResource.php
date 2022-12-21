@@ -44,19 +44,21 @@ class ParkingLotResource extends Resource
 
                 Forms\Components\Card::make()
                     ->schema([
-                        Forms\Components\Placeholder::make('updated_at')
-                            ->label('Modified at')
-                            ->content(fn (?ParkingLot $record): string => $record ? $record->updated_at->diffForHumans() : '-'),
-                        Forms\Components\Placeholder::make('created_at')
-                            ->label('Created at')
-                            ->content(fn (?ParkingLot $record): string => $record ? $record->created_at->diffForHumans() : '-'),
+                        Forms\Components\Fieldset::make('Instructions')
+                            ->disabled()
+                            ->schema([
+                                Forms\Components\Placeholder::make('instructions')
+                                    ->disableLabel()
+                                    ->columnSpanFull()
+                                    ->content(fn () => \view('filament::components.parking-lot-instructions')),
+                            ])
                     ])
                     ->extraAttributes(['class' => 'hidden sm:block'])
                     ->columns(2)
-                    ->columnSpan(2),
+                    ->columnSpan(3),
             ])->columns([
-                'sm' => 4,
-                'lg' => null,
+                'sm' => 5,
+                'lg' => 5,
             ]);
     }
 
@@ -134,7 +136,7 @@ class ParkingLotResource extends Resource
                     ->minLength(2)
                     ->rules(['alpha_dash'])
                     ->unique(ignoreRecord: true)
-                    ->visible(function (ParkingLot $record) {
+                    ->visible(function () {
                         /** @var User */
                         $user = Filament::auth()->user();
 
@@ -150,6 +152,18 @@ class ParkingLotResource extends Resource
                     ->descriptions(ParkingLotStatus::toDescriptionArray())
                     ->columnSpan('full')
                     ->required(),
+
+                Forms\Components\Fieldset::make('Dates')
+                    ->disabled()
+                    ->schema([
+                        Forms\Components\Placeholder::make('updated_at')
+                            ->label('Modified at')
+                            ->content(fn (?ParkingLot $record): string => $record ? $record->updated_at->diffForHumans() : '-'),
+                        Forms\Components\Placeholder::make('created_at')
+                            ->label('Created at')
+                            ->content(fn (?ParkingLot $record): string => $record ? $record->created_at->diffForHumans() : '-'),
+                    ]),
+
             ]);
     }
 }

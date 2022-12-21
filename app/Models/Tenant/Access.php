@@ -135,4 +135,16 @@ class Access extends Model implements CanSendAccessActivationNotification
     {
         return $this->belongsTo(User::class, 'issued_by');
     }
+
+    /**
+     * check if another access is active for the same vehicle as this access
+     */
+    public function hasAnotherActiveAccessWithSameVehicle(): bool
+    {
+        return static::query()
+            ->whereNotInactive()
+            ->whereNot('id', $this->id)
+            ->whereRelation('vehicle', 'plate_number', $this->vehicle->plate_number)
+            ->exists();
+    }
 }

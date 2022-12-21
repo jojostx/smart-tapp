@@ -24,7 +24,6 @@ class QrcodeWidget extends Widget implements Forms\Contracts\HasForms
                 ->columnSpan('full')
                 ->content(fn () => $this->record ? $this->record->qrcode : '-')
                 ->downloadName(fn () => $this->record ? $this->record->name : '')
-
         ];
     }
 }

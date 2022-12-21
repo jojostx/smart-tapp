@@ -22,6 +22,7 @@ use Filament\Tables\Actions\ActionGroup;
 use Filament\Tables\Filters\SelectFilter;
 use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\Model;
+use Illuminate\Validation\Rule;
 use Illuminate\Validation\Rules\Enum;
 use Illuminate\Validation\Rules\Unique;
 
@@ -76,15 +77,22 @@ class AccessResource extends Resource
                                         Forms\Components\TextInput::make('plate_number')
                                             ->placeholder('ex: ABG-VFF32')
                                             ->hint("The Vehicle's plate number")
+                                            ->string()
+                                            ->maxLength(255)
                                             ->required()
                                             ->unique('vehicles', 'plate_number'),
                                         Forms\Components\TextInput::make('brand')
                                             ->placeholder('ex: Toyota')
+                                            ->string()
+                                            ->maxLength(255)
                                             ->required(),
                                         Forms\Components\TextInput::make('model')
                                             ->placeholder('ex: Camry')
-                                            ->required(),
+                                            ->string()
+                                            ->maxLength(255),
                                         Forms\Components\TextInput::make('color')
+                                            ->string()
+                                            ->maxLength(255)
                                             ->placeholder('ex: Blue'),
                                     ])
                                     ->columns([
@@ -129,17 +137,25 @@ class AccessResource extends Resource
                                     ->schema([
                                         Forms\Components\TextInput::make('name')
                                             ->placeholder('ex: John Doe')
+                                            ->string()
+                                            ->maxLength(255)
                                             ->required(),
-                                        Forms\Components\TextInput::make('phone_number')
-                                            ->placeholder('ex: +234 8034 062 460')
-                                            ->hint("The Driver's phone number")
-                                            ->required()
-                                            ->unique('drivers', 'phone_number'),
                                         Forms\Components\TextInput::make('email')
-                                            ->placeholder('ex: JohnDoe@gmail.com')
+                                            ->placeholder('ex: JohnDoe@example.com')
                                             ->hint("The Driver's email (optional)")
+                                            ->string()
+                                            ->email()
+                                            ->maxLength(255)
                                             ->unique('drivers', 'email')
                                             ->dehydrateStateUsing(fn ($state) => str($state)->lower()),
+                                        Forms\Components\TextInput::make('phone_number')
+                                            ->label('Phone Number')
+                                            ->placeholder('ex: 09035055833')
+                                            ->hint("The Driver's phone number")
+                                            ->required()
+                                            ->reactive()
+                                            ->unique('drivers', 'phone_number')
+                                            ->rule(Rule::phone()->country(['NG'])),
                                     ])
                                     ->columns([
                                         'sm' => 1,
@@ -390,7 +406,7 @@ class AccessResource extends Resource
                     ->visible(fn (Access $record) => $record->isExpired() || $record->isInactive() || $record->isIssued())
                     ->color('primary')
                     ->tooltip('Activate Access')
-                    ->requiresConfirmation(fn (Access $record) => ! $record->isActive())
+                    ->requiresConfirmation(fn (Access $record) => !$record->isActive())
                     ->modalHeading(function (): string {
                         return 'Activate Access';
                     })
@@ -405,14 +421,9 @@ class AccessResource extends Resource
                             ->default(fn (Access $record) => $record->isInactive() ? true : false),
                     ])
                     ->action(function (Access $record, ?array $data) {
-                        $anotherActiveAccessExists = Access::query()
-                            ->whereNotInactive()
-                            ->whereRelation('vehicle', 'plate_number', $record->vehicle->plate_number)
-                            ->exists();
-
-                        if ($anotherActiveAccessExists) {
+                        if ($record->hasAnotherActiveAccessWithSameVehicle()) {
                             Notification::make()
-                                ->body('Unable to activate because another Access already exists and has been issued for this Vehicle.')
+                                ->body('Unable to activate access because another Access already exists and has been issued for this Vehicle.')
                                 ->danger()
                                 ->send()
                                 ->seconds(30);
