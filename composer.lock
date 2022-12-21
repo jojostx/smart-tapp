@@ -2577,7 +2577,7 @@
             "dist": {
                 "type": "path",
                 "url": "packages/jojostx/larasubs",
-                "reference": "5a313bf2877896d7a9c701399549aa4ca731521d"
+                "reference": "10fffdcb962ab5d965be8926dfb16129aa53fd9f"
             },
             "require": {
                 "illuminate/console": "^8.0|^9.0",

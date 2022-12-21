@@ -295,9 +295,9 @@ class AccessResource extends Resource
                         'success' => fn ($state): bool => $state === AccessStatus::ACTIVE->value,
                         'danger' => fn ($state): bool => $state === AccessStatus::EXPIRED->value,
                     ]),
-                Tables\Columns\TextColumn::make('parkingLot.name')->searchable(),
-                Tables\Columns\TextColumn::make('driver.phone_number')->searchable(),
                 Tables\Columns\TextColumn::make('vehicle.plate_number')->searchable(),
+                Tables\Columns\TextColumn::make('driver.phone_number')->searchable(),
+                Tables\Columns\TextColumn::make('parkingLot.name')->searchable(),
                 Tables\Columns\TextColumn::make('issued_at')
                     ->date(config('filament.date_format'))
                     ->toggleable()

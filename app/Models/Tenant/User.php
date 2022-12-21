@@ -149,6 +149,11 @@ class User extends Authenticatable implements MustVerifyEmail, FilamentUser
         });
     }
 
+    public static function getSuperAdmin(): static
+    {
+        return static::query()->role(UserRole::SUPER_ADMIN)->first();
+    }
+
     /**
      * Send the password reset notification.
      *

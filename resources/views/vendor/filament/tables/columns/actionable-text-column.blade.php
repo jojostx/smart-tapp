@@ -58,7 +58,7 @@
             ])>
                 <li class="filament-tables-grouped-action">
                     <button class="flex items-center w-full h-8 px-3 text-sm font-medium group whitespace-nowrap filament-dropdown-item focus:outline-none hover:text-white focus:text-white hover:bg-primary-600 focus:bg-primary-700 "
-                        @click.prevent="$clipboard('{{ $getFormattedState() }}'); copied = true; $tooltip('{{ __('Copied!') }}', { placement: 'auto-end', delay: 500, onHidden: () => { copied = false }, })">
+                        @click.prevent="navigator.clipboard.writeText('{{ $getFormattedState() }}'); copied = true; $tooltip('{{ __('Copied!') }}', { placement: 'auto-end', delay: 500, onHidden: () => { copied = false }, })">
 
                         <x-heroicon-o-clipboard x-show="!copied" class="flex-shrink-0 w-5 h-5 mr-2 -ml-1 rtl:ml-2 rtl:-mr-1 group-hover:text-white group-focus:text-white text-primary-500 dark:text-gray-400"/>
                         
@@ -135,8 +135,8 @@
             ])>
                 <li class="filament-tables-grouped-action">
                     <button class="flex items-center w-full h-8 px-3 text-sm font-medium group whitespace-nowrap filament-dropdown-item focus:outline-none hover:text-white focus:text-white hover:bg-primary-600 focus:bg-primary-700 "
-                        @click.prevent="$clipboard('{{ $getFormattedState() }}'); copied = true; $tooltip('{{ __('Copied!') }}', { placement: 'auto-end', delay: 500, onHidden: () => { copied = false }, })">
-                        
+                        @click.prevent="navigator.clipboard.writeText('{{ $getFormattedState() }}'); copied = true; $tooltip('{{ __('Copied!') }}', { placement: 'auto-end', delay: 500, onHidden: () => { copied = false }, })">
+                    
                         <x-heroicon-o-clipboard x-show="!copied" class="flex-shrink-0 w-5 h-5 mr-2 -ml-1 rtl:ml-2 rtl:-mr-1 group-hover:text-white group-focus:text-white text-primary-500 dark:text-gray-400"/>
                         
                         <x-heroicon-o-check x-show="copied" class="flex-shrink-0 w-5 h-5 mr-2 -ml-1 rtl:ml-2 rtl:-mr-1 text-success-500"/>

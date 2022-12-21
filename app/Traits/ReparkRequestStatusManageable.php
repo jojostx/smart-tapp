@@ -19,11 +19,11 @@ trait ReparkRequestStatusManageable
     }
 
     /**
-     * Checks if the repark request is being resolved (resolving).
+     * Checks if the repark request is being resolved (pending).
      */
-    public function isResolving(): bool
+    public function isPendingConfirmation(): bool
     {
-        return $this->status == ReparkRequestStatus::RESOLVING;
+        return $this->status == ReparkRequestStatus::PENDING;
     }
 
     /**
@@ -62,14 +62,14 @@ trait ReparkRequestStatusManageable
     }
 
     /**
-     * Scope a query to only include resolving repark request.
+     * Scope a query to only include pending repark request.
      *
      * @param  \Illuminate\Database\Eloquent\Builder  $query
      * @return \Illuminate\Database\Eloquent\Builder
      */
-    public function scopeWhereResolving(Builder $query)
+    public function scopeWherePending(Builder $query)
     {
-        return $query->where('status', ReparkRequestStatus::RESOLVING->value);
+        return $query->where('status', ReparkRequestStatus::PENDING->value);
     }
 
     /**
@@ -85,37 +85,37 @@ trait ReparkRequestStatusManageable
 
     /**
      * returns a collection of the count of all the repark request based on the status
-     * e.g: ``['total_count' => 10, 'unresolved_count' => 2, 'resolving_count' => 4, 'resolved_count' => 4]``
+     * e.g: ``['total_count' => 10, 'unresolved_count' => 2, 'pending_count' => 4, 'resolved_count' => 4]``
      *
      * @return Collection
      */
     public static function getStatusesCount(): Collection
     {
         $unresolved = ReparkRequestStatus::UNRESOLVED->value;
-        $resolving = ReparkRequestStatus::RESOLVING->value;
+        $pending = ReparkRequestStatus::PENDING->value;
         $resolved = ReparkRequestStatus::RESOLVED->value;
 
         return static::toBase()
-          ->selectRaw('count(*) as total_count')
-          ->selectRaw("count(IF(status = '$unresolved', 1, null)) as unresolved_count")
-          ->selectRaw("count(IF(status = '$resolving', 1, null)) as resolving_count")
-          ->selectRaw("count(IF(status = '$resolved', 1, null)) as resolved_count")
-          ->get();
+            ->selectRaw('count(*) as total_count')
+            ->selectRaw("count(IF(status = '$unresolved', 1, null)) as unresolved_count")
+            ->selectRaw("count(IF(status = '$pending', 1, null)) as pending_count")
+            ->selectRaw("count(IF(status = '$resolved', 1, null)) as resolved_count")
+            ->get();
     }
 
     /**
-     * Start Resolving the repark request
+     * mark the repark request as pending
      *
      * @return bool
      */
-    public function startResolving(): bool
+    public function markAsPending(): bool
     {
-        if ($this->isResolving()) {
+        if ($this->isPendingConfirmation()) {
             return false;
         }
 
         return $this->forceFill([
-            'status' => ReparkRequestStatus::RESOLVING,
+            'status' => ReparkRequestStatus::PENDING,
         ])->save();
     }
 

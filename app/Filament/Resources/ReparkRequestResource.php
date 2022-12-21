@@ -104,6 +104,7 @@ class ReparkRequestResource extends Resource
                     ->enum(ReparkRequestStatus::toArray())
                     ->colors([
                         'danger' => fn ($state): bool => $state === ReparkRequestStatus::UNRESOLVED->value,
+                        'warning' => fn ($state): bool => $state === ReparkRequestStatus::PENDING->value,
                         'success' => fn ($state): bool => $state === ReparkRequestStatus::RESOLVED->value,
                     ]),
                 Tables\Columns\TextColumn::make('blockerDriver.phone_number')->searchable(),
@@ -124,36 +125,36 @@ class ReparkRequestResource extends Resource
             ])
             ->actions([
                 ActionGroup::make([
-                    Tables\Actions\Action::make('start-resolving')
-                        ->label('Start resolving')
-                        ->visible(fn (ReparkRequest $record) => !$record->isResolving())
+                    Tables\Actions\Action::make('mark-as-pending')
+                        ->label('Mark as pending')
+                        ->visible(fn (ReparkRequest $record) => $record->isUnresolved())
                         ->color('danger')
                         ->icon('heroicon-o-play')
-                        ->tooltip('Start resolving Repark Request')
+                        ->tooltip('Mark Repark Request as pending')
                         ->requiresConfirmation()
                         ->modalHeading(function (): string {
-                            return 'Start Resolving Repark Request';
+                            return 'Mark Repark Request as pending';
                         })
                         ->form([
                             Forms\Components\Checkbox::make('shouldNotify')
-                                ->label('Send Repark Request notification')
-                                ->helperText('This will send a Repark Request notification (text message) to the Driver of the vehicle that is blocking another!')
+                                ->label('Send notification')
+                                ->helperText('This will send a notification (sms) to the Driver of the vehicle that is being blocked!')
                                 ->default(true),
                         ])
                         ->action(function (ReparkRequest $record, ?array $data) {
                             $shouldNotify = isset($data['shouldNotify']) && $data['shouldNotify'];
 
-                            if ($record->startResolving()) {
+                            if ($record->markAsPending()) {
                                 $shouldNotify &&
-                                    $record->sendReparkRequestResolutionNotification(checkStatusCountdown: 30) &&
+                                    $record->sendConfirmReparkNotification(checkStatusCountdown: 30) &&
                                     Notification::make()
-                                    ->title('Started Resolving Repark Request')
-                                    ->body($shouldNotify ? "The **Repark Request notification** will be sent to the Driver's phone" : null)
+                                    ->title('Repark Request marked as Pending')
+                                    ->body($shouldNotify ? "The **Notification** will be sent to the Driver's phone for confirmation" : null)
                                     ->success()
                                     ->send();
                             } else {
                                 Notification::make()
-                                    ->title('Unable to Start Resolving Repark Request')
+                                    ->title('Unable to mark Repark Request as Pending')
                                     ->danger()
                                     ->send();
                             }

@@ -5,7 +5,7 @@ namespace App\Enums\Models;
 enum ReparkRequestStatus: string
 {
     case UNRESOLVED = 'unresolved';
-    case RESOLVING = 'resolving';
+    case PENDING = 'pending'; // this means the blocker has reparked and is requesting for confirmation
     case RESOLVED = 'resolved';
 
     public static function toArray(): array
@@ -19,7 +19,7 @@ enum ReparkRequestStatus: string
     {
         return [
             self::RESOLVED->value => 'The repark request has been resolved.',
-            self::RESOLVING->value => 'The repark request is being resolved.',
+            self::PENDING->value => 'The blocker has reparked and is requesting for confirmation.',
             self::UNRESOLVED->value => 'The repark request is unresolved.',
         ];
     }

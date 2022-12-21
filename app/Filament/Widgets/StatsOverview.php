@@ -36,14 +36,13 @@ class StatsOverview extends BaseWidget
 
             PieChartCard::make('Repark Requests', $repark_request_status_counts->total_count)
                 ->slices([
-                    Slice::make('Pending', $repark_request_status_counts->unresolved_count),
-                    Slice::make('Resolving', $repark_request_status_counts->resolving_count)->color('yellow'),
+                    Slice::make('Unresolved', $repark_request_status_counts->unresolved_count),
+                    Slice::make('Pending', $repark_request_status_counts->pending_count)->color('yellow'),
                     Slice::make('Resolved', $repark_request_status_counts->resolved_count)->color('green'),
                 ])->size('sm'),
 
             Stack::make([
                 Card::make('No of drivers registered', $drivers),
-
                 Card::make('No of Vehicles registered', $vehicles),
 
                 Card::make('Help', '')

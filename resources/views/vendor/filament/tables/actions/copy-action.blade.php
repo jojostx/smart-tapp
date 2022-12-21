@@ -6,7 +6,7 @@
             :icon="$action->getGroupedIcon()"
             component="tables::dropdown.item"
             class="filament-tables-grouped-action"
-            x-on:click.prevent="$clipboard('{{ $getContent() }}'); $tooltip('{{ $getSuccessMessage() }}')"
+            x-on:click.prevent="navigator.clipboard.writeText('{{ $getContent() }}'); $tooltip('{{ $getSuccessMessage() }}')"
         >
             {{ $getLabel() }}
         </x-tables::actions.action>
@@ -19,7 +19,7 @@
             :label="$getLabel()"
             component="tables::icon-button"
             class="-my-2 filament-tables-icon-button-action"
-            x-on:click.prevent="$clipboard('{{ $getContent() }}'); $tooltip('{{ $getSuccessMessage() }}')"
+            x-on:click.prevent="navigator.clipboard.writeText('{{ $getContent() }}'); $tooltip('{{ $getSuccessMessage() }}')"
         />
         @break
  
@@ -31,7 +31,7 @@
             :icon-position="$getIconPosition()"
             component="tables::button"
             class="filament-tables-button-action"
-            x-on:click.prevent="$clipboard('{{ $getContent() }}'); $tooltip('{{ $getSuccessMessage() }}')"
+            x-on:click.prevent="navigator.clipboard.writeText('{{ $getContent() }}'); $tooltip('{{ $getSuccessMessage() }}')"
         >
             {{ $getLabel() }}
         </x-tables::actions.action>
