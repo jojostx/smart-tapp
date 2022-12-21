@@ -125,7 +125,7 @@ class ParkingLotResource extends Resource
 
     protected static function detailsSection(): Section
     {
-        return Section::make(__('User Details'))
+        return Section::make(__('Parking Lot Details'))
             ->schema([
                 Forms\Components\TextInput::make('name')
                     ->label('Name')
