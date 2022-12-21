@@ -8,25 +8,26 @@ use App\Models\Receipt;
 use App\Models\Tenant;
 use App\Repositories\PlanRepository;
 use Illuminate\Bus\Queueable;
-use Illuminate\Contracts\Queue\ShouldBeUnique;
 use Illuminate\Contracts\Queue\ShouldQueue;
 use Illuminate\Foundation\Bus\Dispatchable;
-use Illuminate\Http\Client\Pool;
 use Illuminate\Queue\InteractsWithQueue;
+use Illuminate\Queue\Middleware\ThrottlesExceptionsWithRedis;
 use Illuminate\Queue\SerializesModels;
 use Illuminate\Support\Arr;
 use Illuminate\Support\Facades\DB;
-use Illuminate\Support\Facades\Http;
 use Jojostx\Larasubs\Models\Plan;
-use Jojostx\Larasubs\Models\Subscription;
 use KingFlamez\Rave\Facades\Rave as Flutterwave;
 
 class ProcessVerifiedTokenChargeJob implements ShouldQueue
 {
     use Dispatchable, InteractsWithQueue, Queueable, SerializesModels;
 
-    public $tries = 2;
     public $maxExceptions = 3;
+
+    public function retryUntil()
+    {
+        return now()->addHours(12);
+    }
 
     /**
      * Create a new job instance.
@@ -35,6 +36,16 @@ class ProcessVerifiedTokenChargeJob implements ShouldQueue
      */
     public function __construct(public $data)
     {
+    }
+
+    /**
+     * Get the middleware the job should pass through.
+     *
+     * @return array
+     */
+    public function middleware()
+    {
+        return [(new ThrottlesExceptionsWithRedis(10, 5))->by('flw_api_verify_charge')];
     }
 
     /**
@@ -86,7 +97,7 @@ class ProcessVerifiedTokenChargeJob implements ShouldQueue
 
             return $result;
         } catch (\Exception $exp) {
-            DB::rollBack(); // Tell Laravel, "It's not you, it's me. Please don't persist to DB"
+            DB::rollBack();
 
             return false;
         }

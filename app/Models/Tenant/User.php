@@ -2,6 +2,7 @@
 
 namespace App\Models\Tenant;
 
+use App\Enums\Models\FeatureResources;
 use App\Enums\Models\UserAccountStatus;
 use App\Enums\Roles\UserRole;
 use App\Notifications\Tenant\User\ResetPassword;
@@ -19,6 +20,7 @@ use Illuminate\Foundation\Auth\User as Authenticatable;
 use Illuminate\Notifications\Notifiable;
 use Illuminate\Support\Carbon;
 use Illuminate\Support\Facades\Password;
+use Jojostx\Larasubs\Models\Subscription;
 use Laravel\Sanctum\HasApiTokens;
 use Spatie\Permission\Traits\HasRoles;
 
@@ -78,12 +80,71 @@ class User extends Authenticatable implements MustVerifyEmail, FilamentUser
     protected static function booted()
     {
         static::creating(function (User $user) {
-            if (tenant()) {
-                $user->tenant_id = tenant('id');
-            }
-
             if (filled($user->phone_number)) {
                 $user->phone_number_e164 = phone($user->phone_number, 'NG')->formatE164();
+            }
+
+            $user->tenant_id = tenant('id');
+        });
+
+        static::saving(function (User $user) {
+            if (filled($user->phone_number)) {
+                $user->phone_number_e164 = phone($user->phone_number, 'NG')->formatE164();
+            }
+
+            $user->tenant_id = tenant('id');
+        });
+
+        static::updating(function (User $user) {
+            if (filled($user->phone_number)) {
+                $user->phone_number_e164 = phone($user->phone_number, 'NG')->formatE164();
+            }
+
+            $user->tenant_id = tenant('id');
+        });
+
+        /** 
+         * @note we use the created and deleted event in order to
+         * prevent error: call to member function on null
+         */
+        static::created(function (User $user) {
+            if (filled($user->phone_number)) {
+                $user->phone_number_e164 = phone($user->phone_number, 'NG')->formatE164();
+            }
+
+            if ($tenant = \tenant()) {
+                \tenancy()->central(function () use ($tenant) {
+                    /** @var Subscription */
+                    $subscription = $tenant->subscription;
+                    $featureSlug = FeatureResources::TEAM_MEMBERS->value;
+
+                    if ($subscription->missingFeature($featureSlug)) {
+                        return false;
+                    }
+
+
+                    $feature = $subscription->plan->getFeatureBySlug($featureSlug);
+
+                    $subscription->useUnitsOnFeature($feature, 1);
+                });
+            }
+        });
+
+        static::deleted(function (User $user) {
+            if ($tenant = \tenant()) {
+                \tenancy()->central(function () use ($tenant) {
+                    /** @var Subscription */
+                    $subscription = $tenant->subscription;
+                    $featureSlug = FeatureResources::TEAM_MEMBERS->value;
+
+                    if ($subscription->missingFeature($featureSlug)) {
+                        return false;
+                    }
+
+                    $feature = $subscription->plan->getFeatureBySlug($featureSlug);
+
+                    $subscription->useUnitsOnFeature($feature, -1);
+                });
             }
         });
     }
@@ -180,6 +241,16 @@ class User extends Authenticatable implements MustVerifyEmail, FilamentUser
     public function isDeactivated(): bool
     {
         return $this->status == UserAccountStatus::DEACTIVATED;
+    }
+
+    /**
+     * Check if the user's account status is activated their account.
+     */
+    public function hasActivatedAccount()
+    {
+        return $this->created_at !== $this->updated_at &&
+            $this->email_verified_at != null && 
+            !$this->isInactive();
     }
 
     /**

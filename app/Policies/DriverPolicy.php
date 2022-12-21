@@ -3,6 +3,7 @@
 namespace App\Policies;
 
 use App\Enums\Models\AccessStatus;
+use App\Models\Tenant\Access;
 use App\Models\Tenant\Driver;
 use App\Models\Tenant\User;
 use Illuminate\Auth\Access\HandlesAuthorization;
@@ -12,18 +13,6 @@ class DriverPolicy
     use HandlesAuthorization;
 
     /**
-     * Perform pre-authorization checks.
-     *
-     * @param  \App\Models\Tenant\User  $user
-     * @param  string  $ability
-     * @return void|bool
-     */
-    public function before(User $user, $ability)
-    {
-        return $user->isSuperAdmin();
-    }
-
-    /**
      * Determine whether the user can view any models.
      *
      * @param  \App\Models\Tenant\User  $user
@@ -31,6 +20,10 @@ class DriverPolicy
      */
     public function viewAny(User $user)
     {
+        if ($user->isSuperAdmin()) {
+            return true;
+        }
+
         return $user->isAdmin() && $user->isActive();
     }
 
@@ -43,32 +36,13 @@ class DriverPolicy
      */
     public function view(User $user, Driver $driver)
     {
-        // can only view drivers with access to the parking lot they supervise
-        // algo:
-        // retrieve all the accesses for the driver with a status of
-        // 1. check if the access's status is active and it's parking lot is administered by the admin, if yes allow
-        return $driver
-            ->accesses()
-            ->getQuery()
-            ->whereNot('status', AccessStatus::INACTIVE)
-            ->whereIn(
-                'parking_lot_id',
-                $user->parkingLots()->getQuery()->select('parking_lots.id')
-            )
-            ->exists();
+        if ($user->isSuperAdmin()) {
+            return true;
+        }
 
-        //    $parkingLot_ids = $user
-        //     ->parkingLots()
-        //     ->getQuery()
-        //     ->pluck("parking_lots.id")
-        //     ->toArray();
-        //
-        //    $driver
-        //     ->accesses()
-        //     ->getQuery()
-        //     ->whereNot('status', AccessStatus::INACTIVE)
-        //     ->whereIntegerInRaw('parking_lot_id', $parkingLot_ids)
-        //     ->exists();
+        // can only view drivers with access to the parking lot they supervise
+        return $driver->accesses
+            ->contains(fn (Access $access) => $user->canAdminParkingLot($access->parkingLot));
     }
 
     /**
@@ -79,6 +53,10 @@ class DriverPolicy
      */
     public function create(User $user)
     {
+        if ($user->isSuperAdmin()) {
+            return true;
+        }
+
         // to create a new access for a vehicle and driver, the conditions below must be met.
         // 1. the driver must not have an access with the same vehicle as the one the driver is trying to create an access for.
         // 2. not have an access with a status !== inactive;
@@ -94,16 +72,13 @@ class DriverPolicy
      */
     public function update(User $user, Driver $driver)
     {
+        if ($user->isSuperAdmin()) {
+            return true;
+        }
+
         // can only update drivers with access to the parking lot they supervise
-        return $driver
-            ->accesses()
-            ->getQuery()
-            ->whereNot('status', AccessStatus::INACTIVE)
-            ->whereIn(
-                'parking_lot_id',
-                $user->parkingLots()->getQuery()->select('parking_lots.id')
-            )
-            ->exists();
+        return $driver->accesses
+            ->contains(fn (Access $access) => $user->canAdminParkingLot($access->parkingLot));
     }
 
     /**
@@ -115,6 +90,10 @@ class DriverPolicy
      */
     public function delete(User $user, Driver $driver)
     {
+        if ($user->isSuperAdmin()) {
+            return true;
+        }
+
         return false;
     }
 
@@ -127,6 +106,10 @@ class DriverPolicy
      */
     public function restore(User $user, Driver $driver)
     {
+        if ($user->isSuperAdmin()) {
+            return true;
+        }
+
         return false;
     }
 
@@ -139,6 +122,10 @@ class DriverPolicy
      */
     public function forceDelete(User $user, Driver $driver)
     {
+        if ($user->isSuperAdmin()) {
+            return true;
+        }
+
         return false;
     }
 }

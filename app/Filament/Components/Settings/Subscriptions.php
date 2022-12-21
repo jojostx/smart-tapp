@@ -40,6 +40,7 @@ class Subscriptions extends Component implements Tables\Contracts\HasTable
             Tables\Columns\TextColumn::make('plan.name'),
             Tables\Columns\TextColumn::make('starts_at')->label('Started at')->date(config('filament.date_format')),
             Tables\Columns\TextColumn::make('ends_at')->date(config('filament.date_format')),
+            Tables\Columns\TextColumn::make('plan_changed_at')->date(config('filament.date_format')),
         ];
     }
 
@@ -53,10 +54,8 @@ class Subscriptions extends Component implements Tables\Contracts\HasTable
                     ->icon('heroicon-o-refresh')
                     ->requiresConfirmation()
                     ->modalHeading(fn (): string => 'Renew Subscription')
-                    ->action(function ($record) {
-                        // redirect to (.renew) checkout page with plan selected
-                        // add support for card payment to checkout page
-                    })
+                    ->url(\route('filament.plans.checkout', ['tenant' => \tenant()->getTenantKey()]))
+                    ->openUrlInNewTab()
                     ->visible(fn (Subscription $record) => $record->hasEnded()),
 
                 Tables\Actions\Action::make('change-plan')
@@ -66,7 +65,7 @@ class Subscriptions extends Component implements Tables\Contracts\HasTable
                     ->modalSubheading('You will be charged a prorated amount for changing plan depending on the time elapsed on your current plan!')
                     ->url(\route('filament.plans.checkout', ['tenant' => \tenant()->getTenantKey()]))
                     ->openUrlInNewTab()
-                    ->visible(fn ($record) => \tenantCanChangePlanFor($record)),
+                    ->visible(fn ($record) => tenantCanChangePlanFor($record)),
 
                 Tables\Actions\Action::make('cancel-subscription')
                     ->label('Cancel')

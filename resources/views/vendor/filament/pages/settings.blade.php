@@ -19,7 +19,16 @@
     <div id="tabs">
         <div x-show="tab === 'plans'" x-cloak class="p-4 py-6 bg-gray-900 rounded-lg dark:bg-gray-800" id="plans" role="tabpanel" aria-labelledby="plans-tab">
             <div>
-                <p class="text-sm text-gray-300 dark:text-gray-300">You can change your plan <strong class="font-medium text-white dark:text-white">only once in 3 months. Please make sure to not exceed the feature allocations for the plan you are downgrading to, otherwise your excess parking lots, accesses and team members will be deleted!</strong></p>
+                <div class="max-w-lg text-sm font-medium text-primary-100">
+                    <ul class="space-y-1">
+                        <li>
+                            <span>• Please make sure to not exceed the feature allocations for the plan you are downgrading to, otherwise your excess parking lots, accesses and team members will be deleted!</span>
+                        </li>
+                        <li>
+                            <span>• You can switch plans for your current subscription only once in {{ \planChangeFrequencyLimit() }}.</span>
+                        </li>
+                    </ul>
+                </div>
                 <x-plan :plans="$this->plans" :params="$this->params" />
             </div>
         </div>

@@ -52,7 +52,8 @@ class EditUser extends EditRecord
                         ->form([
                             static::getCurrentPasswordField(),
                         ])
-                        ->color(fn () => $user->isActive() ? 'warning' : 'primary'),
+                        ->color(fn () => $user->isActive() ? 'warning' : 'primary')
+                        ->visible(fn () => $user->hasActivatedAccount()), // don't show if the user has not set a new password.
                 ],
                 $actions
             );

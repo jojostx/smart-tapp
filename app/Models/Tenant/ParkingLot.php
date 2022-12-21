@@ -2,6 +2,7 @@
 
 namespace App\Models\Tenant;
 
+use App\Enums\Models\FeatureResources;
 use App\Traits\ParkingLotStatusManageable;
 use Dyrynda\Database\Support\BindsOnUuid;
 use Dyrynda\Database\Support\GeneratesUuid;
@@ -10,6 +11,7 @@ use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsToMany;
 use Illuminate\Database\Eloquent\Relations\HasMany;
+use Jojostx\Larasubs\Models\Subscription;
 use SimpleSoftwareIO\QrCode\Facades\QrCode;
 
 class ParkingLot extends Model
@@ -37,6 +39,62 @@ class ParkingLot extends Model
     protected $casts = [
         // 'status' => ParkingLotStatus::class,
     ];
+
+    /**
+     * The "booted" method of the model.
+     *
+     * @return void
+     */
+    protected static function booted()
+    {
+        /** 
+         * @note we use the created and deleted event in order to
+         * prevent error: call to member function on null
+         */
+        static::created(function ($parkingLot) {
+            /** @var Tenant */
+            $tenant = \tenant();
+
+            if ($tenant) {
+                \tenancy()->central(function () use ($tenant) {
+                    /** @var Subscription */
+                    $subscription = $tenant->subscription;
+                    $featureSlug = FeatureResources::PARKING_LOTS->value;
+
+                    if ($subscription->missingFeature($featureSlug)) {
+                        return false;
+                    }
+
+
+                    $feature = $subscription->plan->getFeatureBySlug($featureSlug);
+
+                    $subscription->useUnitsOnFeature($feature, 1);
+                });
+            }
+        });
+
+        static::deleted(function ($parkingLot) {
+            /** @var Tenant */
+            $tenant = \tenant();
+
+            if ($tenant) {
+                \tenancy()->central(function () use ($tenant) {
+                    /** @var Subscription */
+                    $subscription = $tenant->subscription;
+                    $featureSlug = FeatureResources::PARKING_LOTS->value;
+
+                    if ($subscription->missingFeature($featureSlug)) {
+                        return false;
+                    }
+
+
+                    $feature = $subscription->plan->getFeatureBySlug($featureSlug);
+
+                    $subscription->useUnitsOnFeature($feature, -1);
+                });
+            }
+        });
+    }
 
     /**
      * Get the parking lot's qrcode svg.

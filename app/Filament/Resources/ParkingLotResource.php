@@ -5,9 +5,13 @@ namespace App\Filament\Resources;
 use App\Enums\Models\ParkingLotStatus;
 use App\Filament\Forms\Components\Qrcode;
 use App\Filament\Resources\ParkingLotResource\Pages;
+use App\Filament\Resources\ParkingLotResource\Widgets;
 use App\Filament\Traits\WithCurrentPasswordField;
 use App\Models\Tenant\ParkingLot;
+use App\Models\Tenant\User;
+use Filament\Facades\Filament;
 use Filament\Forms;
+use Filament\Forms\Components\Section;
 use Filament\Resources\Form;
 use Filament\Resources\Resource;
 use Filament\Resources\Table;
@@ -33,63 +37,26 @@ class ParkingLotResource extends Resource
     {
         return $form
             ->schema([
-                Forms\Components\Card::make()
-                    ->schema([
-                        Forms\Components\TextInput::make('name')
-                            ->label('Name')
-                            ->required()
-                            ->maxLength(124)
-                            ->minLength(2)
-                            ->rules(['alpha_dash'])
-                            ->unique(ignoreRecord: true),
-                        Forms\Components\Radio::make('status')
-                            ->options([
-                                'open' => 'Open',
-                                'closed' => 'Closed',
-                            ])
-                            ->enum(ParkingLotStatus::class)
-                            ->default(ParkingLotStatus::OPEN)
-                            ->descriptions(ParkingLotStatus::toDescriptionArray())
-                            ->columnSpan('full')
-                            ->required(),
-                    ])->columnSpan([
-                        'sm' => 1,
-                        'md' => 2,
-                        'lg' => 3,
+                self::detailsSection()
+                    ->columnSpan([
+                        'sm' => 2,
                     ]),
 
                 Forms\Components\Card::make()
                     ->schema([
-                        Forms\Components\Fieldset::make('Qrcode')
-                            ->schema([
-                                Qrcode::make('qrcode')
-                                    ->disableLabel()
-                                    ->helperText('<span class="text-xs"><span class="text-sm">&#9432;</span> The Qrcode will have dimensions: [500 X 500] pixels.</span>')
-                                    ->columnSpan('full')
-                                    ->content(fn (?ParkingLot $record) => $record ? $record->qrcode : '-')
-                                    ->downloadName(fn (?ParkingLot $record) => $record ? $record->name : ''),
-                            ])
-                            ->columnSpan(1)
-                            ->hiddenOn(Pages\CreateParkingLot::class),
-                        Forms\Components\Grid::make()
-                            ->schema([
-                                Forms\Components\Placeholder::make('updated_at')
-                                    ->label('Modified at')
-                                    ->content(fn (?ParkingLot $record): string => $record ? $record->updated_at->diffForHumans() : '-'),
-                                Forms\Components\Placeholder::make('created_at')
-                                    ->label('Created at')
-                                    ->content(fn (?ParkingLot $record): string => $record ? $record->created_at->diffForHumans() : '-'),
-                            ])->columnSpan(1)->columns(1),
-                    ])->columns(2)
-                    ->columnSpan([
-                        'sm' => 1,
-                        'md' => 3,
-                        'lg' => 4,
-                    ]),
+                        Forms\Components\Placeholder::make('updated_at')
+                            ->label('Modified at')
+                            ->content(fn (?ParkingLot $record): string => $record ? $record->updated_at->diffForHumans() : '-'),
+                        Forms\Components\Placeholder::make('created_at')
+                            ->label('Created at')
+                            ->content(fn (?ParkingLot $record): string => $record ? $record->created_at->diffForHumans() : '-'),
+                    ])
+                    ->extraAttributes(['class' => 'hidden sm:block'])
+                    ->columns(2)
+                    ->columnSpan(2),
             ])->columns([
-                'sm' => 1,
-                'md' => 5,
-                'lg' => 7,
+                'sm' => 4,
+                'lg' => null,
             ]);
     }
 
@@ -147,5 +114,42 @@ class ParkingLotResource extends Resource
             'create' => Pages\CreateParkingLot::route('/create'),
             'edit' => Pages\EditParkingLot::route('/{record}/edit'),
         ];
+    }
+
+    public static function getWidgets(): array
+    {
+        return [
+            Widgets\QrcodeWidget::class,
+        ];
+    }
+
+    protected static function detailsSection(): Section
+    {
+        return Section::make(__('User Details'))
+            ->schema([
+                Forms\Components\TextInput::make('name')
+                    ->label('Name')
+                    ->required()
+                    ->maxLength(124)
+                    ->minLength(2)
+                    ->rules(['alpha_dash'])
+                    ->unique(ignoreRecord: true)
+                    ->visible(function (ParkingLot $record) {
+                        /** @var User */
+                        $user = Filament::auth()->user();
+
+                        return $user->isSuperAdmin();
+                    }),
+                Forms\Components\Radio::make('status')
+                    ->options([
+                        'open' => 'Open',
+                        'closed' => 'Closed',
+                    ])
+                    ->enum(ParkingLotStatus::class)
+                    ->default(ParkingLotStatus::OPEN)
+                    ->descriptions(ParkingLotStatus::toDescriptionArray())
+                    ->columnSpan('full')
+                    ->required(),
+            ]);
     }
 }

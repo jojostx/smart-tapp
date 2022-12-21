@@ -1,6 +1,7 @@
 <?php
 
 use Illuminate\Support\Facades\Facade;
+use Jojostx\Larasubs\Enums\IntervalType;
 
 return [
 
@@ -232,4 +233,12 @@ return [
         // 'ExampleClass' => App\Example\ExampleClass::class,
     ])->toArray(),
 
+    /*
+    |--------------------------------------------------------------------------
+    | Custom
+    |--------------------------------------------------------------------------
+    */
+    // plan change frequency limit (eg: once in three months)
+    'plan_change_interval' => 3,
+    'plan_change_interval_type' => IntervalType::MONTH,
 ];

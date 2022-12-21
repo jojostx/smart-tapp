@@ -168,7 +168,6 @@ class DriverResource extends Resource
                     ->required()
                     ->reactive()
                     ->unique('drivers', 'phone_number', ignoreRecord: true)
-                    ->tel()
                     ->rule(Rule::phone()->country(['NG'])),
                 Forms\Components\Placeholder::make('location')
                     ->label('Location')

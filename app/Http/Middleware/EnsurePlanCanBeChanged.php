@@ -30,10 +30,10 @@ class EnsurePlanCanBeChanged
         $tenant = tenant();
         $subscription = $tenant?->subscription;
 
-        if (tenantCannotChangePlanFor($subscription)) {
-            return Redirect::route('filament.pages.settings');
+        if (\tenantCanChangePlanFor($subscription)) {
+            return $next($request);
         }
 
-        return $next($request);
+        return Redirect::route('filament.pages.settings');
     }
 }

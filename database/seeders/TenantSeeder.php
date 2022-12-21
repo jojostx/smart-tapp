@@ -3,11 +3,6 @@
 namespace Database\Seeders;
 
 use App\Enums\Roles\UserRole;
-use App\Models\Tenant\Access;
-use App\Models\Tenant\Driver;
-use App\Models\Tenant\ParkingLot;
-use App\Models\Tenant\User;
-use App\Models\Tenant\Vehicle;
 use Illuminate\Database\Seeder;
 use Illuminate\Support\Facades\Schema;
 use Spatie\Permission\Models\Role;
@@ -36,14 +31,6 @@ class TenantSeeder extends Seeder
                     'guard_name' => 'web',
                 ]);
             }
-
-            // Access::factory()
-            //     ->for(ParkingLot::factory()->create())
-            //     ->for(Driver::factory()->create())
-            //     ->for(Vehicle::factory()->create())
-            //     ->for($user, 'creator')
-            //     ->for($user, 'issuer')
-            //     ->create();
         }
     }
 }

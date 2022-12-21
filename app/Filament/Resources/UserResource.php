@@ -8,6 +8,7 @@ use App\Filament\Forms\Components\HelpCard;
 use App\Filament\Forms\Components\SingleOptionMultiSelect;
 use App\Filament\Resources\UserResource\Pages;
 use App\Filament\Resources\UserResource\Pages\CreateUser;
+use App\Filament\Forms\Components\Password as FilamentPasswordRevealPassword;
 use App\Filament\Resources\UserResource\Pages\EditUser;
 use App\Filament\Resources\UserResource\RelationManagers\ParkingLotsRelationManager;
 use App\Models\Tenant\User;
@@ -139,7 +140,8 @@ class UserResource extends Resource
                         ->label(fn (User $record) => $record->isActive() ? 'Deactivate' : 'Activate')
                         ->icon('heroicon-s-lock-closed')
                         ->action(fn (User $record) => $record->isActive() ? $record->deactivateAccount() : $record->activateAccount())
-                        ->color(fn (User $record) => $record->isActive() ? 'danger' : 'primary'),
+                        ->color(fn (User $record) => $record->isActive() ? 'danger' : 'primary')
+                        ->visible(fn (User $record) => $record->hasActivatedAccount()),
                 ])->icon('heroicon-o-dots-vertical'),
             ])
             ->bulkActions([]);
@@ -189,6 +191,7 @@ class UserResource extends Resource
                     ->validationAttribute(__('Name'))
                     ->maxLength(255)
                     ->required(),
+
                 Forms\Components\TextInput::make('email')
                     ->label(__('Email'))
                     ->placeholder('ex: example@gmail.com')
@@ -202,7 +205,8 @@ class UserResource extends Resource
                     ->label('Phone Number')
                     ->required()
                     ->reactive()
-                    ->unique('users', 'phone_number')->placeholder('ex: 09035055833')
+                    ->unique('users', 'phone_number', ignoreRecord: true)
+                    ->placeholder('ex: 09035055833')
                     ->tel()
                     ->rule(Rule::phone()->country(['NG'])),
 
@@ -213,12 +217,22 @@ class UserResource extends Resource
                         fn () => Role::query()
                             ->where('guard_name', 'web')
                             ->whereNot('name', UserRole::SUPER_ADMIN)
+                            ->whereNot('name', UserRole::SUPPORT)
                             ->pluck('name', 'id')
                             ->map(fn (string $name) => str(__($name))->ucfirst())
                             ->all(),
                     )
                     ->required()
                     ->validationAttribute(__('Role')),
+
+                Forms\Components\Select::make('parkingLots')
+                    ->multiple()
+                    ->preload()
+                    ->relationship('parkingLots', 'name')
+                    ->exists('parking_lots', 'id')
+                    ->hiddenOn([
+                        Pages\EditUser::class,
+                    ])
             ]);
     }
 }

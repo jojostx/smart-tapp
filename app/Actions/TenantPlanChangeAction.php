@@ -30,7 +30,9 @@ class TenantPlanChangeAction
             }
         });
 
-        // delete excess resources
-        return $this->deleteExcessTenantResourcesAction->handle($subscription);
+        if (filled($subscription)) {
+            // delete excess resources
+            return $this->deleteExcessTenantResourcesAction->handle($subscription->refresh());
+        }
     }
 }

@@ -3,7 +3,6 @@
 use App\Models\Tenant;
 use Illuminate\Support\Carbon;
 use Illuminate\Support\HtmlString;
-use Jojostx\Larasubs\Enums\IntervalType;
 use Jojostx\Larasubs\Models\Plan;
 use Jojostx\Larasubs\Models\Subscription;
 
@@ -167,7 +166,7 @@ if (!function_exists('calculateProratedAmount')) {
         $tolerance = 50;
         $currentPlan = $subscription->plan;
 
-        if (blank($currentPlan)) {
+        if (blank($currentPlan) || $currentPlan->isFree()) {
             return (int) \money($newPlan->price, $newPlan->currency)->getValue();
         }
 
@@ -197,13 +196,33 @@ if (!function_exists('calculateProratedAmount')) {
     }
 }
 
+if (!function_exists('planChangeFrequencyLimit')) {
+    /**
+     * returns the plan change frequency limit in human readable form
+     * eg: 3 months, 3 weeks, 3 days
+     */
+    function planChangeFrequencyLimit(): string
+    {
+        $interval = (string) config('app.plan_change_interval');
+        return  $interval . ' ' . str(config('app.plan_change_interval_type'))->plural();
+    }
+}
+
 if (!function_exists('tenantCanChangePlanFor')) {
     /**
      * check if a tenant can change the plan for a subscription
+     * 
+     * - a tenant can change plan when they have no sub
+     * - a tenant can change plan when their sub's current plan is free
+     * - a tenant can change a plan if their sub is ended
+     * - a tenant can change a plan if their sub's plan has not been changed within the past 3 months.
      */
     function tenantCanChangePlanFor(Subscription $subscription = null): bool
     {
-        return !tenantCannotChangePlanFor($subscription);
+        return blank($subscription) ||
+            $subscription->isEnded() ||
+            $subscription->plan->isFree() ||
+            ! $subscription->planWasChangedInTimePast(config('app.plan_change_interval'), config('app.plan_change_interval_type'));
     }
 }
 
@@ -213,10 +232,7 @@ if (!function_exists('tenantCannotChangePlanFor')) {
      */
     function tenantCannotChangePlanFor(Subscription $subscription = null): bool
     {
-        return $subscription &&
-            $subscription->inactive() &&
-            $subscription->planWasChangedInTimePast(3, IntervalType::MONTH) &
-            !$subscription->plan->isFree();
+        return !tenantCanChangePlanFor($subscription);
     }
 }
 

@@ -20,11 +20,11 @@ class CreateAccess extends CreateRecord
 {
     protected static string $resource = AccessResource::class;
 
-    public $vehicle;
+    public $vehicle = null;
 
-    public $driver;
+    public $driver = null;
 
-    public $parking_lot;
+    public $parking_lot = null;
 
     protected function getCancelFormAction(): Action
     {
@@ -56,7 +56,7 @@ class CreateAccess extends CreateRecord
             throw ValidationException::withMessages(['parking_lot_id' => __('Unable to create Access for invalid Parking Lot')]);
         }
 
-        if (! $this->canCreateAccessForParkingLot()) {
+        if (!$this->canCreateAccessForParkingLot()) {
             Notification::make()
                 ->body('You have reached the maximum access allocation for the selected parking lot and can not create any more accesses. **Consider upgrading your plan**')
                 ->danger()
@@ -119,9 +119,9 @@ class CreateAccess extends CreateRecord
             $subscription = $tenant->subscription;
             $featureSlug = FeatureResources::PARKING_LOTS->value;
 
-            if ($subscription->missingFeature($featureSlug));
-
-            return false;
+            if ($subscription->missingFeature($featureSlug)) {
+                return false;
+            }
 
             $max = $subscription->getMaxFeatureUnits($featureSlug);
 

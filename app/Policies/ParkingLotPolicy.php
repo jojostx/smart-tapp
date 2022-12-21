@@ -11,18 +11,6 @@ class ParkingLotPolicy
     use HandlesAuthorization;
 
     /**
-     * Perform pre-authorization checks.
-     *
-     * @param  \App\Models\Tenant\User  $user
-     * @param  string  $ability
-     * @return void|bool
-     */
-    public function before(User $user, $ability)
-    {
-        return $user->isSuperAdmin();
-    }
-
-    /**
      * Determine whether the user can view any models.
      *
      * @param  \App\Models\Tenant\User  $user
@@ -30,6 +18,10 @@ class ParkingLotPolicy
      */
     public function viewAny(User $user)
     {
+        if ($user->isSuperAdmin()) {
+            return true;
+        }
+
         return $user->isAdmin() && $user->isActive();
     }
 
@@ -42,6 +34,10 @@ class ParkingLotPolicy
      */
     public function view(User $user, ParkingLot $parkingLot)
     {
+        if ($user->isSuperAdmin()) {
+            return true;
+        }
+
         return $user->isAdmin() && $user->isActive() && $user->canAdminParkingLot($parkingLot);
     }
 
@@ -65,6 +61,10 @@ class ParkingLotPolicy
      */
     public function update(User $user, ParkingLot $parkingLot)
     {
+        if ($user->isSuperAdmin()) {
+            return true;
+        }
+
         // can only update parking lots that the have non-expired admin privilege over
         return $user->isAdmin() && $user->canAdminParkingLot($parkingLot);
     }
@@ -78,7 +78,7 @@ class ParkingLotPolicy
      */
     public function delete(User $user, ParkingLot $parkingLot)
     {
-        return false;
+        return $user->isSuperAdmin();
     }
 
     /**
@@ -90,7 +90,7 @@ class ParkingLotPolicy
      */
     public function restore(User $user, ParkingLot $parkingLot)
     {
-        return false;
+        return $user->isSuperAdmin();
     }
 
     /**
@@ -102,6 +102,6 @@ class ParkingLotPolicy
      */
     public function forceDelete(User $user, ParkingLot $parkingLot)
     {
-        return false;
+        return $user->isSuperAdmin();
     }
 }

@@ -11,18 +11,6 @@ class AccessPolicy
     use HandlesAuthorization;
 
     /**
-     * Perform pre-authorization checks.
-     *
-     * @param  \App\Models\Tenant\User  $user
-     * @param  string  $ability
-     * @return void|bool
-     */
-    public function before(User $user, $ability)
-    {
-        return $user->isSuperAdmin();
-    }
-
-    /**
      * Determine whether the user can view any models.
      *
      * @param  \App\Models\Tenant\User  $user
@@ -30,6 +18,10 @@ class AccessPolicy
      */
     public function viewAny(User $user)
     {
+        if ($user->isSuperAdmin()) {
+            return true;
+        }
+
         return $user->isAdmin() && $user->isActive();
     }
 
@@ -42,7 +34,12 @@ class AccessPolicy
      */
     public function view(User $user, Access $access)
     {
-        return $user->isAdmin() || $user->isSuperAdmin();
+        if ($user->isSuperAdmin()) {
+            return true;
+        }
+
+        //can only view an access if it belongs to a parking lot governed by the admin
+        return $user->canAdminParkingLot($access->parkingLot);
     }
 
     /**
@@ -65,7 +62,11 @@ class AccessPolicy
      */
     public function update(User $user, Access $access)
     {
-        return $user->isAdmin() || $user->isSuperAdmin();
+        if ($user->isSuperAdmin()) {
+            return true;
+        }
+
+        return $user->canAdminParkingLot($access->parkingLot);
     }
 
     /**
@@ -77,7 +78,11 @@ class AccessPolicy
      */
     public function delete(User $user, Access $access)
     {
-        return $user->isAdmin() || $user->isSuperAdmin();
+        if ($user->isSuperAdmin()) {
+            return true;
+        }
+
+        return $user->canAdminParkingLot($access->parkingLot);
     }
 
     /**
@@ -89,7 +94,11 @@ class AccessPolicy
      */
     public function restore(User $user, Access $access)
     {
-        return $user->isAdmin() || $user->isSuperAdmin();
+        if ($user->isSuperAdmin()) {
+            return true;
+        }
+
+        return $user->canAdminParkingLot($access->parkingLot);
     }
 
     /**
@@ -101,6 +110,10 @@ class AccessPolicy
      */
     public function forceDelete(User $user, Access $access)
     {
-        return $user->isAdmin() || $user->isSuperAdmin();
+        if ($user->isSuperAdmin()) {
+            return true;
+        }
+
+        return $user->canAdminParkingLot($access->parkingLot);
     }
 }

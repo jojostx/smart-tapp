@@ -63,12 +63,10 @@ class ParkingLotsRelationManager extends RelationManager
                 Tables\Columns\TextColumn::make('expires_at')
                     ->date(config('filament.date_format'))
                     ->description(function (Tables\Columns\TextColumn $column) {
-                        if (today()->isSameDay($column->getState())) {
+                        if (filled($column->getState()) && today()->isSameDay($column->getState())) {
                             return str('<div class="text-xs filament-badge-danger"><span>Expired</span></div>')
                                 ->toHtmlString();
                         }
-
-                        return null;
                     })
                     ->sortable(),
                 Tables\Columns\TextColumn::make('administrators.updated_at')

@@ -2,7 +2,7 @@
 
 namespace App\Policies;
 
-use App\Enums\Models\AccessStatus;
+use App\Models\Tenant\Access;
 use App\Models\Tenant\User;
 use App\Models\Tenant\Vehicle;
 use Illuminate\Auth\Access\HandlesAuthorization;
@@ -12,18 +12,6 @@ class VehiclePolicy
     use HandlesAuthorization;
 
     /**
-     * Perform pre-authorization checks.
-     *
-     * @param  \App\Models\Tenant\User  $user
-     * @param  string  $ability
-     * @return void|bool
-     */
-    public function before(User $user, $ability)
-    {
-        return $user->isSuperAdmin();
-    }
-
-    /**
      * Determine whether the user can view any models.
      *
      * @param  \App\Models\Tenant\User  $user
@@ -31,6 +19,10 @@ class VehiclePolicy
      */
     public function viewAny(User $user)
     {
+        if ($user->isSuperAdmin()) {
+            return true;
+        }
+
         return $user->isAdmin() && $user->isActive();
     }
 
@@ -43,20 +35,15 @@ class VehiclePolicy
      */
     public function view(User $user, Vehicle $vehicle)
     {
+        if ($user->isSuperAdmin()) {
+            return true;
+        }
+
         // can only view vehicles with access to the parking lot they supervise
-        // algo:
-        // retrieve all the accesses for the vehicle with a status not inactive
-        // 1. check if the access's status is active and it's parking lot is administered by the admin, if yes allow
-        return $vehicle
-            ->accesses()
-            ->getQuery()
-            ->whereNot('status', AccessStatus::INACTIVE)
-            ->whereIn(
-                'parking_lot_id',
-                $user->parkingLots()->getQuery()->select('parking_lots.id')
-            )
-            ->exists();
+        return $vehicle->accesses
+            ->contains(fn (Access $access) => $user->canAdminParkingLot($access->parkingLot));
     }
+
 
     /**
      * Determine whether the user can create models.
@@ -66,6 +53,10 @@ class VehiclePolicy
      */
     public function create(User $user)
     {
+        if ($user->isSuperAdmin()) {
+            return true;
+        }
+
         return $user->isAdmin();
     }
 
@@ -78,15 +69,13 @@ class VehiclePolicy
      */
     public function update(User $user, Vehicle $vehicle)
     {
-        return $vehicle
-            ->accesses()
-            ->getQuery()
-            ->whereNot('status', AccessStatus::INACTIVE)
-            ->whereIn(
-                'parking_lot_id',
-                $user->parkingLots()->getQuery()->select('parking_lots.id')
-            )
-            ->exists();
+        if ($user->isSuperAdmin()) {
+            return true;
+        }
+
+        // can only view vehicles with access to the parking lot they supervise
+        return $vehicle->accesses
+            ->contains(fn (Access $access) => $user->canAdminParkingLot($access->parkingLot));
     }
 
     /**
@@ -98,6 +87,10 @@ class VehiclePolicy
      */
     public function delete(User $user, Vehicle $vehicle)
     {
+        if ($user->isSuperAdmin()) {
+            return true;
+        }
+
         return false;
     }
 
@@ -110,6 +103,10 @@ class VehiclePolicy
      */
     public function restore(User $user, Vehicle $vehicle)
     {
+        if ($user->isSuperAdmin()) {
+            return true;
+        }
+
         return false;
     }
 
@@ -122,6 +119,10 @@ class VehiclePolicy
      */
     public function forceDelete(User $user, Vehicle $vehicle)
     {
+        if ($user->isSuperAdmin()) {
+            return true;
+        }
+
         return false;
     }
 }
