@@ -30,7 +30,7 @@ class Subdomain implements Rule
         'enable', 'encrypted', 'engine', 'error', 'errorlog', 'fag', 'faggot', 'fbi', 'feature', 'feck',
         'feed', 'feedburner', 'feedproxy', 'feeds', 'felching', 'fellate', 'fellatio', 'file', 'files', 'finance',
         'flange', 'folder', 'forgotpassword', 'forum', 'friend', 'ftp', 'fuck', 'fuckme', 'fudgepacker', 'fun', 'fusion',
-        'gadget', 'gear', 'geographic', 'gettingstarted', 'git', 'gitlab','github' , 'gmail', 'go', 'goddamn', 'goto',
+        'gadget', 'gear', 'geographic', 'gettingstarted', 'git', 'gitlab', 'github', 'gmail', 'go', 'goddamn', 'goto',
         'gov', 'graph', 'graphs', 'group', 'hell', 'help', 'home', 'homo', 'html', 'html5', 'htrnl',
         'http', 'https', 'i', 'image', 'images', 'imap', 'img', 'img1', 'img2', 'img3',
         'investor', 'invoice', 'invoices', 'io', 'ios', 'ipad', 'iphone', 'irnage', 'irng', 'item',
@@ -58,20 +58,19 @@ class Subdomain implements Rule
         'translation', 'translator', 'trend', 'turd', 'twat', 'txt', 'ul', 'upload', 'uploads', 'vagina',
         'validation', 'validations', 'vid', 'video', 'video-stat', 'videos', 'voice', 'w', 'wank', 'wave',
         'webdisk', 'webmail', 'webmaster', 'webrnail', 'whm', 'whoi', 'whois', 'whore', 'wifi', 'wiki',
-        'wtf', 'ww', 'www', 'www1', 'www2', 'wwww', 'xhtml', 'xhtrnl', 'xml', 'xxx'
+        'wtf', 'ww', 'www', 'www1', 'www2', 'wwww', 'xhtml', 'xhtrnl', 'xml', 'xxx',
     ];
 
     /**
      * Determine if the validation rule passes.
      *
-     * @param  string $attribute
+     * @param  string  $attribute
      * @param  mixed  $value
-     *
      * @return bool
      */
     public function passes($attribute, $value)
     {
-        if (!preg_match('/^[A-Za-z](?:[A-Za-z0-9\-]{0,61}[A-Za-z0-9])?$/', $value)) {
+        if (! preg_match('/^[A-Za-z](?:[A-Za-z0-9\-]{0,61}[A-Za-z0-9])?$/', $value)) {
             return false;
         }
 

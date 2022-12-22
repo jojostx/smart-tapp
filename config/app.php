@@ -1,6 +1,7 @@
 <?php
 
 use Illuminate\Support\Facades\Facade;
+use Jojostx\Larasubs\Enums\IntervalType;
 
 return [
 
@@ -16,6 +17,19 @@ return [
     */
 
     'name' => env('APP_NAME', 'Laravel'),
+
+    /*
+    |--------------------------------------------------------------------------
+    | Application Mail Subject Prefix
+    |--------------------------------------------------------------------------
+    |
+    | This value is the name of your application. This value is used when the
+    | framework needs to place the application's name in a notification or
+    | any other location as required by the application or its packages.
+    |
+    */
+
+    'mail_subject_prefix' => env('APP_NAME', 'Laravel'),
 
     /*
     |--------------------------------------------------------------------------
@@ -196,9 +210,12 @@ return [
         App\Providers\RouteServiceProvider::class,
 
         /*
-         * Custom Service Providers and Service Providers from Third-party package 
-         */
+        * Custom Service Providers and Service Providers from Third-party package
+        */
+        App\Providers\BladeServiceProvider::class,
         App\Providers\TenancyServiceProvider::class,
+        App\Providers\FilamentServiceProvider::class,
+        App\Providers\FakerServiceProvider::class,
     ],
 
     /*
@@ -216,4 +233,12 @@ return [
         // 'ExampleClass' => App\Example\ExampleClass::class,
     ])->toArray(),
 
+    /*
+    |--------------------------------------------------------------------------
+    | Custom
+    |--------------------------------------------------------------------------
+    */
+    // plan change frequency limit (eg: once in three months)
+    'plan_change_interval' => 3,
+    'plan_change_interval_type' => IntervalType::MONTH,
 ];

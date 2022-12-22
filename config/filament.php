@@ -1,10 +1,13 @@
 <?php
 
+use App\Filament\Widgets\SmarttappInfoWidget;
+use App\Http\Middleware\EnsureAccountIsNotDeactivated;
+use App\Http\Middleware\EnsureSubscriptionIsActive;
+use App\Http\Middleware\FilamentRedirectIfAuthenticated;
 use Filament\Http\Middleware\Authenticate;
 use Filament\Http\Middleware\DispatchServingFilamentEvent;
 use Filament\Http\Middleware\MirrorConfigToSubpackages;
 use Filament\Pages;
-use Filament\Tables\Actions\Action;
 use Filament\Widgets;
 use Illuminate\Cookie\Middleware\AddQueuedCookiesToResponse;
 use Illuminate\Cookie\Middleware\EncryptCookies;
@@ -13,7 +16,6 @@ use Illuminate\Routing\Middleware\SubstituteBindings;
 use Illuminate\Session\Middleware\AuthenticateSession;
 use Illuminate\Session\Middleware\StartSession;
 use Illuminate\View\Middleware\ShareErrorsFromSession;
-use Stancl\Tenancy\Middleware\InitializeTenancyBySubdomain;
 use Stancl\Tenancy\Middleware\PreventAccessFromCentralDomains;
 
 return [
@@ -30,19 +32,17 @@ return [
 
     'path' => env('FILAMENT_PATH', '/admin'),
 
-
     /*
     |--------------------------------------------------------------------------
     | Filament Core Path
     |--------------------------------------------------------------------------
     |
-    | This is the path which Filament will use to load it's core routes and assets.
+    | This is the path which Filament will use to load its core routes and assets.
     | You may change it if it conflicts with your other routes.
     |
     */
 
     'core_path' => env('FILAMENT_CORE_PATH', 'filament'),
-
 
     /*
     |--------------------------------------------------------------------------
@@ -92,7 +92,7 @@ return [
     'auth' => [
         'guard' => env('FILAMENT_AUTH_GUARD', 'web'),
         'pages' => [
-            'login' => \Filament\Http\Livewire\Auth\Login::class,
+            'login' => App\Filament\Livewire\Auth\Login::class,
         ],
     ],
 
@@ -145,7 +145,7 @@ return [
         'path' => app_path('Filament/Widgets'),
         'register' => [
             Widgets\AccountWidget::class,
-            Widgets\FilamentInfoWidget::class,
+            SmarttappInfoWidget::class,
         ],
     ],
 
@@ -178,6 +178,44 @@ return [
 
     /*
     |--------------------------------------------------------------------------
+    | Database notifications
+    |--------------------------------------------------------------------------
+    |
+    | By enabling this feature, your users are able to open a slide-over within
+    | the admin panel to view their database notifications.
+    |
+    */
+
+    'database_notifications' => [
+        'enabled' => true,
+        'polling_interval' => '30s',
+    ],
+
+    /*
+    |--------------------------------------------------------------------------
+    | Broadcasting
+    |--------------------------------------------------------------------------
+    |
+    | By uncommenting the Laravel Echo configuration, you may connect your
+    | admin panel to any Pusher-compatible websockets server.
+    |
+    | This will allow your admin panel to receive real-time notifications.
+    |
+    */
+
+    'broadcasting' => [
+
+        // 'echo' => [
+        //     'broadcaster' => 'pusher',
+        //     'key' => env('VITE_PUSHER_APP_KEY'),
+        //     'cluster' => env('VITE_PUSHER_APP_CLUSTER'),
+        //     'forceTLS' => true,
+        // ],
+
+    ],
+
+    /*
+    |--------------------------------------------------------------------------
     | Layout
     |--------------------------------------------------------------------------
     |
@@ -189,6 +227,16 @@ return [
     */
 
     'layout' => [
+        'actions' => [
+            'modal' => [
+                'actions' => [
+                    'alignment' => 'right',
+                ],
+            ],
+            'cell' => [
+                'alignment' => 'right',
+            ],
+        ],
         'forms' => [
             'actions' => [
                 'alignment' => 'left',
@@ -196,18 +244,19 @@ return [
             'have_inline_labels' => false,
         ],
         'footer' => [
-            'should_show_logo' => true,
+            'should_show_logo' => false,
         ],
-        'max_content_width' => null,
+        'max_content_width' => '7xl',
         'notifications' => [
             'vertical_alignment' => 'top',
             'alignment' => 'center',
         ],
         'sidebar' => [
-            'is_collapsible_on_desktop' => false,
+            'is_collapsible_on_desktop' => true,
             'groups' => [
                 'are_collapsible' => true,
             ],
+            'width' => null,
         ],
         'tables' => [
             'actions' => [
@@ -264,7 +313,7 @@ return [
     |
     */
 
-    'google_fonts' => 'https://fonts.googleapis.com/css2?family=DM+Sans:ital,wght@0,400;0,500;0,700;1,400;1,500;1,700&display=swap',
+    'google_fonts' => 'https://fonts.googleapis.com/css2?family=Inter:ital,wght@0,400;0,500;0,700;1,400;1,500;1,700&display=swap',
 
     /*
     |--------------------------------------------------------------------------
@@ -279,6 +328,8 @@ return [
     'middleware' => [
         'auth' => [
             Authenticate::class,
+            EnsureAccountIsNotDeactivated::class,
+            EnsureSubscriptionIsActive::class,
         ],
         'base' => [
             EncryptCookies::class,
@@ -292,10 +343,23 @@ return [
             MirrorConfigToSubpackages::class,
 
             // custom middleware & middleware from third party packages
+            FilamentRedirectIfAuthenticated::class,
+
             'universal',
             PreventAccessFromCentralDomains::class,
-            InitializeTenancyBySubdomain::class
+            App\Http\Middleware\InitializeTenancyByDomain::class,
         ],
     ],
+
+    /*
+    |--------------------------------------------------------------------------
+    | Date Format
+    |--------------------------------------------------------------------------
+    |
+    | This is the format for date\datetime columns on the tables.
+    |
+    */
+
+    'date_format' => 'd M Y',
 
 ];

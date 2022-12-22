@@ -1,0 +1,229 @@
+
+    public static function cacheableDatabaseQuery(?bool $use_auth_id = true): static
+    {
+        dd(static::query());
+
+        if (Cache::has(static::cacheKey($use_auth_id))) {
+            // check cache first
+            // is value present?
+            // Yes: retrieve from cache
+            // No: retrieve from database
+            return Cache::remember(static::cacheKey($use_auth_id), 15, function () {
+                return static::query();
+            });
+        }
+
+        return static::query();
+    }
+
+    public function cacheKey(?bool $use_auth_id = true): string
+    {
+        // if auth_id is passed in use it else try to resolve using auth()->id else set to empty string
+        $auth_id = $use_auth_id ? auth()?->id() : '';
+
+        // if auth_id has a value return eg: accesses/{auth_id}/1515650910
+        // else return eg: accesses/1515650910
+        return sprintf(
+            "%s/%s%s",
+            $this->getTable(),
+            $auth_id . '/',
+            $this->updated_at->timestamp
+        );
+    }
+
+    if (method_exists(static::getModel(), 'driver') && method_exists(static::getModel(), 'vehicle')) {
+        dd('hm',  $this->form->getLivewire()->data, $data);
+    }
+
+    {
+        // I] after sending a notification, save the:
+        //      1. message_id of the notification from the response of the network call to the API
+        //      2. the response of the network call to the API
+        //      3. the notification and notifiable 
+        //      4. the tenant->id
+        //      5. the admin user->id
+        // to redis with proper tagging based on time period of 5 minutes interval.
+        // ======================================================================
+
+        // A - II] when delivery report returns from the API,
+        // use the message_id from the request body to retrieve the metadata of the notification from redis
+        // deliver the response the correct user in the correct tenant through webhook
+
+        // B - II] 
+        // after sending a notification, 
+        // [] save the message_id from the response to the data column of the notification in the notifications table:[set the status to sending]
+        // [✓] if network failure occurs, set the status of the notification to failed in the notifications table:
+        // when delivery report returns from the API,
+        //      [] use the message_id from the request body to retrieve and update the status of the notification to whatever status 
+        //      [] in the response in the notification's table.
+        // [] check the notifications table every 5 minutes to know if any sms activation notification has been updated
+        // [] if so, dispatch a filament notification for each
+    }
+
+    {
+        // issued - [Activate (default do not Send)], Deactivate, Send access activation notification
+        // active - Deactivate, Send access activation notification
+        // expired - Deactivate, [Issue (default Send), Activate (default do not Send)] -> Send access activation notification,
+        // inactive|deactivated - [Issue (default Send), Activate (default Send)] -> shows modal for Send access activation notification confirmation
+    }
+
+    <div>
+      <x-notification-card class="bg-white border-b border-gray-200 rounded dark:border-gray-700" :action="false">
+        <x-slot:icon>
+          <div tabindex="0" aria-label="group icon" role="img" class="flex items-center justify-center flex-shrink-0 w-8 h-8 border border-gray-200 rounded-full focus:outline-none">
+            <img src="https://tuk-cdn.s3.amazonaws.com/can-uploader/notification_1-svg2.svg" alt="icon" />
+          </div>
+        </x-slot>
+        <x-slot:body>
+          <p tabindex="0" class="text-sm leading-tight focus:outline-none"><span class="text-indigo-700">James Doe</span> favourited an <span class="text-indigo-700">item</span></p>
+          <p tabindex="0" class="pt-1 text-xs leading-3 text-gray-500 focus:outline-none">2 hours ago</p>
+        </x-slot>
+      </x-notification-card>
+
+      <x-notification-card class="bg-white border-b border-gray-200 rounded dark:border-gray-700" :action="false">
+        <x-slot:icon>
+          <div tabindex="0" aria-label="group icon" role="img" class="flex items-center justify-center flex-shrink-0 w-8 h-8 border border-gray-200 rounded-full focus:outline-none">
+            <img src="https://tuk-cdn.s3.amazonaws.com/can-uploader/notification_1-svg5.svg" alt="icon" />
+          </div>
+        </x-slot>
+        <x-slot:body>
+          <p tabindex="0" class="text-sm leading-tight focus:outline-none"><span class="text-indigo-700">Sarah</span> posted in the thread: <span class="text-indigo-700">Update gone wrong</span></p>
+          <p tabindex="0" class="pt-1 text-xs leading-3 text-gray-500 focus:outline-none">2 hours ago</p>
+        </x-slot>
+      </x-notification-card>
+
+      <x-notification-card class="bg-white border-b border-gray-200 rounded dark:border-gray-700" :action="false">
+        <x-slot:icon>
+          <div tabindex="0" aria-label="group icon" role="img" class="flex items-center justify-center flex-shrink-0 w-8 h-8 border border-gray-200 rounded-full focus:outline-none">
+            <img src="https://tuk-cdn.s3.amazonaws.com/can-uploader/notification_1-svg7.svg" alt="icon" />
+          </div>
+        </x-slot>
+        <x-slot:body>
+          <p tabindex="0" class="text-sm leading-tight focus:outline-none">Shipment delayed for order<span class="text-indigo-700"> #25551</span></p>
+          <p tabindex="0" class="pt-1 text-xs leading-3 text-gray-500 focus:outline-none">2 hours ago</p>
+        </x-slot>
+      </x-notification-card>
+
+      <x-notification-card class="flex items-center border-b border-gray-200 rounded bg-danger-100 dark:border-gray-700" :action="false">
+        <x-slot:icon>
+          <div tabindex="0" aria-label="storage icon" role="img" class="flex items-center justify-center flex-shrink-0 w-8 h-8 border rounded-full border-danger-200 focus:outline-none">
+            <img src="https://tuk-cdn.s3.amazonaws.com/can-uploader/notification_1-svg6.svg" alt="icon" />
+          </div>
+        </x-slot>
+        <x-slot:body>
+          <p tabindex="0" class="text-sm leading-tight text-danger-700 focus:outline-none">Low on storage: 2.5/32gb remaining</p>
+        </x-slot>
+
+        <x-slot:action>
+          <p tabindex="0" class="text-xs leading-3 text-right underline cursor-pointer text-danger-700 focus:outline-none">Manage</p>
+        </x-slot>
+      </x-notification-card>
+
+      <x-notification-card class="bg-white rounded shadow">
+        <x-slot:icon>
+          <div tabindex="0" aria-label="group icon" role="img" class="flex items-center justify-center flex-shrink-0 w-8 h-8 border border-gray-200 rounded-full focus:outline-none">
+            <img src="https://tuk-cdn.s3.amazonaws.com/can-uploader/notification_1-svg3.svg" alt="icon">
+          </div>
+        </x-slot>
+        <x-slot:body>
+          <p tabindex="0" class="text-sm leading-tight focus:outline-none"><span class="text-primary-700">Sash</span> added you to the group: <span class="text-primary-700">UX Designers</span></p>
+          <p tabindex="0" class="pt-1 mt-1 text-xs leading-3 text-gray-500 focus:outline-none">2 hours ago</p>
+        </x-slot>
+      </x-notification-card>
+
+      <h2 tabindex="0" class="pt-8 pb-2 text-sm leading-normal text-gray-600 border-b border-gray-300 focus:outline-none">YESTERDAY</h2>
+      
+      <x-notification-card class="bg-white border-b border-gray-200 rounded dark:border-gray-700" :action="false">
+        <x-slot:icon>
+          <div tabindex="0" aria-label="group icon" role="img" class="flex items-center justify-center flex-shrink-0 w-8 h-8 border border-gray-200 rounded-full focus:outline-none">
+            <img src="https://tuk-cdn.s3.amazonaws.com/can-uploader/notification_1-svg2.svg" alt="icon" />
+          </div>
+        </x-slot>
+        <x-slot:body>
+          <p tabindex="0" class="text-sm leading-tight focus:outline-none"><span class="text-indigo-700">James Doe</span> favourited an <span class="text-indigo-700">item</span></p>
+          <p tabindex="0" class="pt-1 text-xs leading-3 text-gray-500 focus:outline-none">2 hours ago</p>
+        </x-slot>
+      </x-notification-card>
+
+      <x-notification-card class="bg-white border-b border-gray-200 rounded dark:border-gray-700" :action="false">
+        <x-slot:icon>
+          <div tabindex="0" aria-label="group icon" role="img" class="flex items-center justify-center flex-shrink-0 w-8 h-8 border border-gray-200 rounded-full focus:outline-none">
+            <img src="https://tuk-cdn.s3.amazonaws.com/can-uploader/notification_1-svg5.svg" alt="icon" />
+          </div>
+        </x-slot>
+        <x-slot:body>
+          <p tabindex="0" class="text-sm leading-tight focus:outline-none"><span class="text-indigo-700">Sarah</span> posted in the thread: <span class="text-indigo-700">Update gone wrong</span></p>
+          <p tabindex="0" class="pt-1 text-xs leading-3 text-gray-500 focus:outline-none">2 hours ago</p>
+        </x-slot>
+      </x-notification-card>
+
+      <x-notification-card class="bg-white border-b border-gray-200 rounded dark:border-gray-700" :action="false">
+        <x-slot:icon>
+          <div tabindex="0" aria-label="group icon" role="img" class="flex items-center justify-center flex-shrink-0 w-8 h-8 border border-gray-200 rounded-full focus:outline-none">
+            <img src="https://tuk-cdn.s3.amazonaws.com/can-uploader/notification_1-svg7.svg" alt="icon" />
+          </div>
+        </x-slot>
+        <x-slot:body>
+          <p tabindex="0" class="text-sm leading-tight focus:outline-none">Shipment delayed for order<span class="text-indigo-700"> #25551</span></p>
+          <p tabindex="0" class="pt-1 text-xs leading-3 text-gray-500 focus:outline-none">2 hours ago</p>
+        </x-slot>
+      </x-notification-card>
+
+      <x-notification-card class="flex items-center border-b border-gray-200 rounded bg-success-100 dark:border-gray-700" :action="false">
+        <x-slot:icon>
+          <div tabindex="0" aria-label="success icon" role="img" class="flex items-center justify-center flex-shrink-0 w-8 h-8 border rounded-full border-success-200 focus:outline-none">
+            <img src="https://tuk-cdn.s3.amazonaws.com/can-uploader/notification_1-svg11.svg" alt="icon" />
+          </div>
+        </x-slot>
+        <x-slot:body>
+          <p tabindex="0" class="text-sm leading-tight text-success-700 focus:outline-none">Design sprint completed</p>
+        </x-slot>
+
+        <x-slot:action>
+          <p tabindex="0" class="text-xs leading-3 underline cursor-pointer text-success-700 focus:outline-none focus:text-indigo-600">View</p>
+        </x-slot>
+      </x-notification-card>
+
+      <div class="flex items-center justiyf-between">
+        <hr class="w-full">
+        <p tabindex="0" class="flex flex-shrink-0 px-3 py-16 text-sm leading-normal text-gray-500 focus:outline-none">Thats it for now :)</p>
+        <hr class="w-full">
+      </div>
+    </div>
+
+                <div x-data class="relative">
+                <x-filament-support::icon-button
+                    x-on:click="$refs.panel_2.toggle"
+                    :dark-mode="$darkMode"
+                    icon="heroicon-o-dots-vertical"
+                    class="-my-2"
+                >
+                    <x-slot name="label">
+                        trigger
+                    </x-slot>
+                </x-filament-support::icon-button>
+
+                <div
+                    x-ref="panel_2"
+                    x-transition
+                    x-cloak
+                    x-float.placement.bottom-end.flip.offset.shift.teleport="{ offset: 8 }"
+                    @class([
+                        'filament-action-group-dropdown absolute hidden z-20 border-t-2 shadow-xl ring-1 ring-gray-900/10 overflow-hidden w-52',
+                        'dark:ring-white/20' => $darkMode,
+                    ])
+                >
+                    <ul @class([
+                        'py-1 space-y-1 bg-white shadow',
+                        'dark:bg-gray-700 dark:divide-gray-600' => $darkMode,
+                    ])>
+                      <li>
+                        <button type="button" class="w-full">
+                            <span class="">
+                                Mark As Read
+                            </span>
+                        </button>
+                      </li>
+                    </ul>
+                </div>
+              </div>

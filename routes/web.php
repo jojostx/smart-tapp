@@ -1,13 +1,11 @@
 <?php
 
-use App\Http\Controllers\Auth\EmailVerificationController;
-use App\Http\Controllers\Auth\LogoutController;
-use App\Http\Livewire\Auth\Login;
-use App\Http\Livewire\Auth\Passwords\Confirm;
-use App\Http\Livewire\Auth\Passwords\Email;
-use App\Http\Livewire\Auth\Passwords\Reset;
-use App\Http\Livewire\Auth\Register;
-use App\Http\Livewire\Auth\Verify;
+use App\Filament\Livewire\Auth\Login;
+use App\Filament\Livewire\Auth\PasswordRequest;
+use App\Filament\Livewire\Auth\Register;
+use App\Filament\Livewire\Auth\Verify;
+use App\Http\Controllers\HandleAfricasTalkingWebhookReport;
+use App\Http\Controllers\Subscription\PlanController;
 use Illuminate\Support\Facades\Route;
 
 /*
@@ -23,34 +21,25 @@ use Illuminate\Support\Facades\Route;
 
 Route::view('/', 'welcome')->name('home');
 
-Route::middleware('guest')->group(function () {
-    Route::get('login', Login::class)
-        ->name('login');
-
-    Route::get('register', Register::class)
-        ->name('register');
+Route::group(['prefix' => 'plans', 'as' => 'plans.'], function () {
+    Route::get('/pricing', [PlanController::class, 'index'])->name('pricing');
 });
 
-Route::get('password/reset', Email::class)
-    ->name('password.request');
+Route::middleware(['web', 'guest'])
+    ->withoutMiddleware('cookie_consent')
+    ->group(function () {
+        Route::get('register', Register::class)
+            ->name('register');
 
-Route::get('password/reset/{token}', Reset::class)
-    ->name('password.reset');
+        Route::get('login', Login::class)
+            ->name('login');
 
-Route::middleware('auth')->group(function () {
-    Route::get('email/verify', Verify::class)
-        ->middleware('throttle:6,1')
-        ->name('verification.notice');
+        Route::get('email/verify/{id?}', Verify::class)
+            ->name('verification.notice');
 
-    Route::get('password/confirm', Confirm::class)
-        ->name('password.confirm');
-});
+        Route::get('password/request', PasswordRequest::class)
+            ->name('password.request');
+    });
 
-Route::middleware('auth')->group(function () {
-    Route::get('email/verify/{id}/{hash}', EmailVerificationController::class)
-        ->middleware('signed')
-        ->name('verification.verify');
-
-    Route::post('logout', LogoutController::class)
-        ->name('logout');
-});
+Route::post('africastalking-webhook-url', HandleAfricasTalkingWebhookReport::class);
+Route::webhooks('termii-webhook-url', 'termii-webhook-url');

@@ -13,10 +13,28 @@ require("laravel-mix-tailwind");
  |
  */
 
-mix.js("resources/js/app.js", "public/js/app.js")
-    .sass("resources/sass/app.scss", "public/css/app.css")
-    .tailwind("./tailwind.config.js")
+mix.js("resources/js/app.js", "public/js")
+    .postCss("resources/css/app.css", "public/css", [
+        require("postcss-import"),
+        require("tailwindcss"),
+        require("autoprefixer"),
+    ])
+    .postCss("resources/css/filament.css", "public/css", [
+        require("tailwindcss"),
+        require("autoprefixer"),
+    ])
     .sourceMaps();
+
+mix.js(
+    "resources/js/filament/forms/phoneinput",
+    "public/js/phoneinput.js"
+).sourceMaps();
+
+mix.js("resources/js/qr-scanner.js", "public/js").version().sourceMaps();
+mix.js("resources/js/filament/table/actionable-text-column.js", "public/js/actionable-text-column.js").version().sourceMaps();
+
+mix.js("resources/js/filament/filament-turbo.js", "public/js/filament-turbo.js").version().sourceMaps();
+mix.js("resources/js/filament/filament-stimulus.js", "public/js/filament-stimulus.js").version().sourceMaps();
 
 if (mix.inProduction()) {
     mix.version();

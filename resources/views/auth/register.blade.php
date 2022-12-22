@@ -32,7 +32,7 @@
                     </div>
                 </div>
 
-                <x-input-group-end x-data="" :x-mask="'a' . str_repeat('*', config('tenancy.subdomain_maxlength') - 1)" id="domain" placeholder="(Ex. acme)" name="domain" suffix="{{ '.' . config('tenancy.central_domains')[0] }}" :maxlength="config('tenancy.subdomain_maxlength')" :value="old('domain')" required />
+                <x-input-group-end x-data="" :x-mask="'a' . str_repeat('*', config('tenancy.subdomain_maxlength') - 1)" id="domain" placeholder="(Ex. acme)" name="domain" suffix="{{ '.' . config('tenancy.central_domains.main') }}" :maxlength="config('tenancy.subdomain_maxlength')" :value="old('domain')" required />
             </div>
 
 
@@ -67,7 +67,7 @@
             <!-- terms and conditions -->
             <div class="mt-4">
                 <label class="flex items-center text-sm font-medium text-gray-700">
-                    <input name="terms" id="terms" type="checkbox" required class="w-4 h-4 mr-2 text-blue-600 bg-gray-100 border-gray-300 rounded shadow-sm focus:border-indigo-300 focus:ring focus:ring-indigo-200 focus:ring-opacity-50">
+                    <input name="terms" id="terms" type="checkbox" required class="w-4 h-4 mr-2 text-blue-600 bg-gray-100 border-gray-300 rounded shadow-sm focus:border-primary-300 focus:ring focus:ring-primary-200 focus:ring-opacity-50">
 
                     {{ __('I agree with the') }}&nbsp;<a target="_blank" href="{{ $terms_route ?? '#' }}" class="text-blue-600 hover:underline">{{ __('Terms and Conditions') }}</a>.
                 </label>

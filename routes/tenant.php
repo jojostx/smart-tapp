@@ -2,8 +2,11 @@
 
 declare(strict_types=1);
 
+use App\Filament\Livewire\Tenant\Access\Dashboard;
+use App\Filament\Livewire\Tenant\Access\QrcodeScanner;
+use App\Http\Middleware\InitializeTenancyByDomain;
 use Illuminate\Support\Facades\Route;
-use Stancl\Tenancy\Middleware\InitializeTenancyBySubdomain;
+use Stancl\Tenancy\Features\UserImpersonation;
 use Stancl\Tenancy\Middleware\PreventAccessFromCentralDomains;
 
 /*
@@ -18,13 +21,38 @@ use Stancl\Tenancy\Middleware\PreventAccessFromCentralDomains;
 |
 */
 
+// logout and redirect after access timeout
+
 Route::middleware([
     'web',
-    InitializeTenancyBySubdomain::class,
+    InitializeTenancyByDomain::class,
     PreventAccessFromCentralDomains::class,
 ])->group(function () {
-    Route::get('/', function () {
-        dd(\App\Models\User::all());
-        return 'This is your multi-tenant application. The id of the current tenant is ' . tenant('id');
+    Route::group(['prefix' => 'access', 'as' => 'access.'], function () {
+        Route::get('/{access}/scan', QrcodeScanner::class)
+            ->name('scan');
+
+        Route::get('/{access}/dashboard', Dashboard::class)
+            ->middleware('auth:driver', 'access.valid')
+            ->name('dashboard');
+
+        Route::get('/{key?}', function (?string $key = null) {
+            abort_if(blank($key), 404);
+
+            $id = str($key)->substr(0, 1);
+            $uuid_first_segment = str($key)->substr(1);
+
+            $access = \App\Models\Tenant\Access::where('id', $id)->where('uuid', 'LIKE', "{$uuid_first_segment}-%")->first();
+
+            abort_if(blank($access), 404);
+
+            return redirect()->route('access.scan', compact('access'));
+        })->name('redirect');
+    });
+
+    Route::get('/impersonate/{token}', function ($token) {
+        $redirectResponse = UserImpersonation::makeResponse($token);
+
+        return $redirectResponse;
     });
 });

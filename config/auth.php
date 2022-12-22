@@ -40,6 +40,16 @@ return [
             'driver' => 'session',
             'provider' => 'users',
         ],
+
+        'driver' => [
+            'driver' => 'session',
+            'provider' => 'drivers',
+        ],
+
+        'landlord' => [
+            'driver' => 'session',
+            'provider' => 'landlords',
+        ],
     ],
 
     /*
@@ -60,9 +70,19 @@ return [
     */
 
     'providers' => [
+        'drivers' => [
+            'driver' => 'eloquent',
+            'model' => App\Models\Tenant\Driver::class,
+        ],
+
+        'landlords' => [
+            'driver' => 'eloquent',
+            'model' => App\Models\Landlord::class,
+        ],
+
         'users' => [
             'driver' => 'eloquent',
-            'model' => App\Models\User::class,
+            'model' => App\Models\Tenant\User::class,
         ],
 
         // 'users' => [
@@ -87,6 +107,13 @@ return [
     */
 
     'passwords' => [
+        'landlords' => [
+            'provider' => 'landlords',
+            'table' => 'landlord_password_resets',
+            'expire' => 60,
+            'throttle' => 60,
+        ],
+
         'users' => [
             'provider' => 'users',
             'table' => 'password_resets',
@@ -107,5 +134,4 @@ return [
     */
 
     'password_timeout' => 10800,
-
 ];

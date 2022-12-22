@@ -29,14 +29,13 @@ return [
     */
 
     'connections' => [
-
         'sync' => [
             'driver' => 'sync',
         ],
 
         'database' => [
             'driver' => 'database',
-            'connection' => 'central',
+            'connection' => env('DB_CONNECTION', 'mysql'),
             'table' => 'jobs',
             'queue' => 'default',
             'retry_after' => 90,

@@ -2,13 +2,11 @@
 
 declare(strict_types=1);
 
-use App\Models\Domain;
-
 return [
     'tenant_model' => \App\Models\Tenant::class,
     'id_generator' => Stancl\Tenancy\UUIDGenerator::class,
 
-    'domain_model' => Domain::class,
+    'domain_model' => App\Models\Domain::class,
 
     /**
      * The list of domains hosting your central app.
@@ -16,9 +14,23 @@ return [
      * Only relevant if you're using the domain or subdomain identification middleware.
      */
     'central_domains' => [
-        env('TENANCY_CENTRAL_DOMAIN'),
-        env('TENANCY_CENTRAL_ADMIN_DOMAIN'),
+        'main' => env('TENANCY_CENTRAL_DOMAIN'),
+        'admin' => env('TENANCY_CENTRAL_ADMIN_DOMAIN'),
     ],
+
+    'tenancy_middleware' => App\Http\Middleware\InitializeTenancyByDomain::class,
+
+    /*
+    |--------------------------------------------------------------------------
+    | Tenancy Session Cookie Name
+    |--------------------------------------------------------------------------
+    |
+    | Here you may change the name of the cookie used to identify a tenancy session
+    | instance by ID [tenant_id]. The name specified here will get used every time a
+    | new tenancy session cookie is created.
+    |
+    */
+    'cookie' => env('TENANCY_SESSION_COOKIE', 'tenancy_session'),
 
     /**
      * The list of domains hosting your central app.
@@ -38,14 +50,14 @@ return [
         Stancl\Tenancy\Bootstrappers\CacheTenancyBootstrapper::class,
         Stancl\Tenancy\Bootstrappers\FilesystemTenancyBootstrapper::class,
         Stancl\Tenancy\Bootstrappers\QueueTenancyBootstrapper::class,
-        // Stancl\Tenancy\Bootstrappers\RedisTenancyBootstrapper::class, // Note: phpredis is needed
+        Stancl\Tenancy\Bootstrappers\RedisTenancyBootstrapper::class, // Note: phpredis is needed
     ],
 
     /**
      * Database tenancy config. Used by DatabaseTenancyBootstrapper.
      */
     'database' => [
-        'central_connection' => env('DB_CONNECTION', 'central'),
+        'central_connection' => env('DB_CONNECTION', 'mysql'),
 
         /**
          * Connection used as a "template" for the dynamically created tenant database connection.
@@ -58,7 +70,7 @@ return [
          * prefix + tenant_id + suffix.
          */
         'prefix' => 'tenant:',
-        'suffix' => ':'. env('APP_NAME', 'Smart-tapp'),
+        'suffix' => ':' . env('APP_NAME', 'Smart-tapp'),
 
         /**
          * TenantDatabaseManagers are classes that handle the creation & deletion of tenant databases.
@@ -94,7 +106,7 @@ return [
      * You can clear cache selectively by specifying the tag.
      */
     'cache' => [
-        'tag_base' => 'tenant', // This tag_base, followed by the tenant_id, will form a tag that will be applied on each cache call.
+        'tag_base' => 'tenant_', // This tag_base, followed by the tenant_id, will form a tag that will be applied on each cache call.
     ],
 
     /**
@@ -141,7 +153,7 @@ return [
          * disable asset() helper tenancy and explicitly use tenant_asset() calls in places
          * where you want to use tenant-specific assets (product images, avatars, etc).
          */
-        'asset_helper_tenancy' => true,
+        'asset_helper_tenancy' => false,
     ],
 
     /**
@@ -154,7 +166,7 @@ return [
      * either using the Redis facade or by injecting it as a dependency.
      */
     'redis' => [
-        'prefix_base' => 'tenant', // Each key in Redis will be prepended by this prefix_base, followed by the tenant id.
+        'prefix_base' => 'tenant_', // Each key in Redis will be prepended by this prefix_base, followed by the tenant id.
         'prefixed_connections' => [ // Redis connections whose keys are prefixed, to separate one tenant's keys from another.
             // 'default',
         ],
@@ -169,7 +181,7 @@ return [
      * understand which ones you want to enable.
      */
     'features' => [
-        // Stancl\Tenancy\Features\UserImpersonation::class,
+        Stancl\Tenancy\Features\UserImpersonation::class,
         // Stancl\Tenancy\Features\TelescopeTags::class,
         // Stancl\Tenancy\Features\TenantConfig::class, // https://tenancyforlaravel.com/docs/v3/features/tenant-config
         Stancl\Tenancy\Features\UniversalRoutes::class,
@@ -198,7 +210,7 @@ return [
      * Parameters used by the tenants:seed command.
      */
     'seeder_parameters' => [
-        '--class' => 'DatabaseSeeder', // root seeder class
-        // '--force' => true,
+        '--class' => 'TenantSeeder', // root seeder class
+        '--force' => true,
     ],
 ];

@@ -1,7 +1,5 @@
 <?php
 
-use Stancl\Tenancy\Middleware\InitializeTenancyBySubdomain;
-
 return [
 
     /*
@@ -17,7 +15,7 @@ return [
     |
     */
 
-    'class_namespace' => 'App\\Http\\Livewire',
+    'class_namespace' => 'App\\Filament',
 
     /*
     |--------------------------------------------------------------------------
@@ -88,7 +86,7 @@ return [
 
         // custom middleware & middleware from third party packages
         'universal',
-        InitializeTenancyBySubdomain::class, // or whatever tenancy middleware you use
+        App\Http\Middleware\InitializeTenancyByDomain::class, // or whatever tenancy middleware you use
     ],
 
     /*

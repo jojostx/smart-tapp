@@ -1,0 +1,65 @@
+@import 'tailwindcss/base';
+@import 'tailwindcss/components';
+@import 'tailwindcss/utilities';
+@import '../../vendor/filament/filament/resources/css/app.css';
+@import '../../node_modules/intl-tel-input/build/css/intlTelInput.css';
+
+html {
+    font-family: 'Inter', "JetBrains Mono", monospace !important;
+}
+.iti {
+    position: relative;
+    display: inline-block;
+    width: 100%;
+}
+
+@layer components {
+    .tab {
+        @apply inline-block p-4 border-b-2 rounded-t-lg;
+    }
+    .active-tab {
+        @apply text-primary-600 border-primary-600 dark:text-primary-500 dark:border-primary-500;
+    }
+    .inactive-tab {
+        @apply border-transparent hover:text-gray-600 hover:border-gray-300 dark:hover:text-gray-300;
+    }
+    .filament-badge-danger {
+        @apply inline-flex items-center justify-center space-x-1 rtl:space-x-reverse min-h-[20px] px-2 py-0.5 text-sm font-medium tracking-tight rounded-xl whitespace-nowrap text-danger-700 bg-danger-500/10;
+    }
+    .filament-forms-field-wrapper-label {
+        @apply font-medium opacity-100;
+    }
+    .filament-forms-range-component {
+        width: calc(100% - (75px));
+        @apply appearance-none h-1.5 rounded-md outline-0 bg-gray-400 opacity-70 transition-opacity duration-[0.2s] cursor-pointer;
+    }
+    .filament-forms-range-component:hover {
+        @apply opacity-100;
+    }
+    .filament-forms-range-component::-webkit-slider-thumb {
+        @apply bg-primary-600 w-5 h-5 appearance-none cursor-pointer rounded-[50%] border border-primary-300 motion-reduce:transition-none;
+    }
+    .filament-forms-range-component::-moz-range-thumb {
+        @apply bg-primary-600 w-5 h-5 appearance-none cursor-pointer rounded-[50%] border-2 border-primary-300 motion-reduce:transition-none;
+    }
+    .filament-forms-range-component:focus::-webkit-slider-thumb {
+        @apply bg-primary-600 border-primary-600;
+    }
+    .filament-forms-range-component:focus::-moz-range-thumb {
+        @apply bg-primary-600 border-primary-600;
+    }
+    .filament-forms-range-component:disabled::-webkit-slider-thumb {
+        @apply cursor-not-allowed;
+    }
+    .filament-forms-range-component:disabled::-moz-range-thumb {
+        @apply cursor-not-allowed;
+    }
+    .filament-forms-range-component__value {
+        @apply inline-block relative w-[60px] bg-gray-800 text-white py-[5px] px-2.5 ml-2 leading-5 text-center rounded;
+    }
+    .filament-forms-range-component__value::after {
+        content: "";
+        @apply absolute top-2 -left-1.5 w-0 h-0 border-y-[7px] border-y-transparent border-r-[7px] border-r-gray-800;
+    }
+}
+

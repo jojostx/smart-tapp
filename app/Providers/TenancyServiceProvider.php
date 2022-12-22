@@ -4,7 +4,10 @@ declare(strict_types=1);
 
 namespace App\Providers;
 
-use App\Jobs\Tenant\CreateFrameworkDirectoriesForTenant;
+use App\Events\Tenant\TenantVerified;
+use App\Http\Middleware\InitializeTenancyByDomain;
+use App\Jobs\Tenant;
+use App\Jobs\Tenant\SendTenantVerificationEmail;
 use Illuminate\Support\Facades\Event;
 use Illuminate\Support\Facades\Route;
 use Illuminate\Support\ServiceProvider;
@@ -14,7 +17,6 @@ use Stancl\Tenancy\Events;
 use Stancl\Tenancy\Jobs;
 use Stancl\Tenancy\Listeners;
 use Stancl\Tenancy\Middleware;
-use Stancl\Tenancy\Middleware\InitializeTenancyBySubdomain;
 
 class TenancyServiceProvider extends ServiceProvider
 {
@@ -28,26 +30,31 @@ class TenancyServiceProvider extends ServiceProvider
             Events\CreatingTenant::class => [],
             Events\TenantCreated::class => [
                 JobPipeline::make([
-                    Jobs\CreateDatabase::class,
-                    Jobs\MigrateDatabase::class,
-                    // Jobs\SeedDatabase::class,
-
-                    // Your own jobs to prepare the tenant.
-                    // Provision API keys, create S3 buckets, anything you want!
-                    CreateFrameworkDirectoriesForTenant::class,
+                    SendTenantVerificationEmail::class,
 
                 ])->send(function (Events\TenantCreated $event) {
                     return $event->tenant;
-                })->shouldBeQueued(false), // `false` by default, but you probably want to make this `true` for production.
+                })->shouldBeQueued(true),
             ],
+
+            // fired when a tenant is verified (email or phone number)
+            TenantVerified::class => [
+                JobPipeline::make([
+                    Jobs\CreateDatabase::class,
+                ])->send(function (TenantVerified $event) {
+                    return $event->tenant;
+                })->shouldBeQueued(true), // `false` by default, but you probably want to make this `true` for production.
+            ],
+
             Events\SavingTenant::class => [],
             Events\TenantSaved::class => [],
             Events\UpdatingTenant::class => [],
             Events\TenantUpdated::class => [],
             Events\DeletingTenant::class => [],
+
             Events\TenantDeleted::class => [
                 JobPipeline::make([
-                    Jobs\DeleteDatabase::class,
+                    Tenant\DeleteTenantDatabase::class,
                 ])->send(function (Events\TenantDeleted $event) {
                     return $event->tenant;
                 })->shouldBeQueued(false), // `false` by default, but you probably want to make this `true` for production.
@@ -55,7 +62,9 @@ class TenancyServiceProvider extends ServiceProvider
 
             // Domain events
             Events\CreatingDomain::class => [],
+
             Events\DomainCreated::class => [],
+
             Events\SavingDomain::class => [],
             Events\DomainSaved::class => [],
             Events\UpdatingDomain::class => [],
@@ -64,9 +73,36 @@ class TenancyServiceProvider extends ServiceProvider
             Events\DomainDeleted::class => [],
 
             // Database events
-            Events\DatabaseCreated::class => [],
-            Events\DatabaseMigrated::class => [],
-            Events\DatabaseSeeded::class => [],
+            Events\DatabaseCreated::class => [
+                JobPipeline::make([
+                    Jobs\MigrateDatabase::class,
+                ])->send(function (Events\DatabaseCreated $event) {
+                    return $event->tenant;
+                })->shouldBeQueued(true),
+            ],
+
+            Events\DatabaseMigrated::class => [
+                JobPipeline::make([
+                    Jobs\SeedDatabase::class,
+                ])->send(function (Events\DatabaseMigrated $event) {
+                    return $event->tenant;
+                })->shouldBeQueued(true),
+            ],
+
+            Events\DatabaseSeeded::class => [
+                JobPipeline::make([
+                    // Your own jobs to prepare the tenant.
+                    Tenant\CreateFrameworkDirectoriesForTenant::class,
+
+                    // create Tenant Subdomain
+                    Tenant\CreateTenantSubdomain::class,
+
+                    // create Tenant Super Admin user
+                    Tenant\CreateTenantAdminUser::class,
+                ])->send(function (Events\DatabaseSeeded $event) {
+                    return $event->tenant;
+                })->shouldBeQueued(true),
+            ],
             Events\DatabaseRolledBack::class => [],
             Events\DatabaseDeleted::class => [],
 
@@ -104,11 +140,14 @@ class TenancyServiceProvider extends ServiceProvider
     public function boot()
     {
         $this->bootEvents();
+
         $this->mapRoutes();
 
         $this->makeTenancyMiddlewareHighestPriority();
 
-        TenantAssetsController::$tenancyMiddleware = InitializeTenancyBySubdomain::class;
+        $this->setTenantAssetMiddleware();
+
+        $this->redirectToCentralDomainOnFail();
     }
 
     protected function bootEvents()
@@ -138,7 +177,7 @@ class TenancyServiceProvider extends ServiceProvider
             // Even higher priority than the initialization middleware
             Middleware\PreventAccessFromCentralDomains::class,
 
-            Middleware\InitializeTenancyByDomain::class,
+            InitializeTenancyByDomain::class,
             Middleware\InitializeTenancyBySubdomain::class,
             Middleware\InitializeTenancyByDomainOrSubdomain::class,
             Middleware\InitializeTenancyByPath::class,
@@ -148,5 +187,17 @@ class TenancyServiceProvider extends ServiceProvider
         foreach (array_reverse($tenancyMiddleware) as $middleware) {
             $this->app[\Illuminate\Contracts\Http\Kernel::class]->prependToMiddlewarePriority($middleware);
         }
+    }
+
+    protected function redirectToCentralDomainOnFail()
+    {
+        InitializeTenancyByDomain::$onFail = function () {
+            return redirect(config('app.url'));
+        };
+    }
+
+    protected function setTenantAssetMiddleware()
+    {
+        TenantAssetsController::$tenancyMiddleware = InitializeTenancyByDomain::class;
     }
 }

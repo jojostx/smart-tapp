@@ -1,4 +1,10 @@
 {
-    "/js/app.js": "/js/app.js",
-    "/css/app.css": "/css/app.css"
+    "/js/app.js": "/js/app.js?id=89c6702ea6c7ecb686225b6dc19c3941",
+    "/js/phoneinput.js": "/js/phoneinput.js?id=8a5332f0248c8bd7a94ce46bf50aba99",
+    "/js/qr-scanner.js": "/js/qr-scanner.js?id=8cd4f2e339e3a6f4d047a5d227a488b7",
+    "/js/actionable-text-column.js": "/js/actionable-text-column.js?id=be8befcca097ccfdeafdbbd8904d7b88",
+    "/js/filament-turbo.js": "/js/filament-turbo.js?id=80236dbb8feb822035ae4af9be95ac39",
+    "/js/filament-stimulus.js": "/js/filament-stimulus.js?id=77c2f2e582d4d792d7068ed6a337ff5d",
+    "/css/filament.css": "/css/filament.css?id=2ffd088b655fcc26dab7ee21b63a803d",
+    "/css/app.css": "/css/app.css?id=6ef996468229e8e6e0c3fd4b94852f48"
 }
