@@ -68,9 +68,10 @@ jobs:
           port: ${{ matrix.server.port }}
           user: ${{ matrix.server.username }} 
           key: ${{ secrets.SSH_KEY }}
-          remote: ${{ matrix.server.path }}
-          src: ${{ github.sha }}
-          options: -v    
+          src: ${{ github.sha }}.tar.gz
+          remote: ${{ matrix.server.path }}/artifacts
+          options: -v
+
       - name: Extract archive and create directories
         uses: appleboy/ssh-action@master
         env:
