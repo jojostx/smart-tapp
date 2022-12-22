@@ -10,7 +10,7 @@ jobs:
     name: Create deployment artifacts
     runs-on: ubuntu-latest
     outputs:
-      deployment-matrix: ${{ steps.export-deployment-matrix.outputs.deployment-matrix }}
+      DEPLOYMENT_MATRIX: ${{ steps.export-deployment-matrix.outputs.DEPLOYMENT_MATRIX }}
     steps:
       - uses: actions/checkout@v3
 
@@ -42,10 +42,12 @@ jobs:
 
       - name: Export deployment matrix
         id: export-deployment-matrix
-        uses: JoshuaTheMiller/conditional-build-matrix@main
-        with:
-          inputFile: ".github/workflows/deployment_matrix.json"
-          filter: "[?runOnBranch==`${{ github.ref }}` || runOnBranch==`always`]"
+        run: |
+            delimiter="$(openssl rand -hex 8)"
+            JSON="$(cat ./.github/workflows/servers.json)"
+            echo "DEPLOYMENT_MATRIX<<${delimiter}" >> "${GITHUB_OUTPUT}"
+            echo "$JSON" >> "${GITHUB_OUTPUT}"
+            echo "${delimiter}" >> "${GITHUB_OUTPUT}"
 
   prepare-release-on-servers:
     name: "${{ matrix.server.name }}: Prepare release"
@@ -53,7 +55,7 @@ jobs:
     needs: create-deployment-artifacts
     strategy:
       matrix:
-        server: ${{ fromJson(needs.create-deployment-artifacts.outputs.deployment-matrix) }}
+        server: ${{ fromJson(needs.create-deployment-artifacts.outputs.DEPLOYMENT_MATRIX) }}
     steps:
       - uses: actions/download-artifact@v3
         with:
@@ -100,7 +102,7 @@ jobs:
   #   needs: [create-deployment-artifacts, prepare-release-on-servers]
   #   strategy:
   #     matrix:
-  #       server: ${{ fromJson(needs.create-deployment-artifacts.outputs.deployment-matrix) }}
+  #       server: ${{ fromJson(needs.create-deployment-artifacts.outputs.DEPLOYMENT_MATRIX) }}
   #   steps:
   #     - name: Run before hooks
   #       uses: appleboy/ssh-action@master
@@ -130,7 +132,7 @@ jobs:
   #     ]
   #   strategy:
   #     matrix:
-  #       server: ${{ fromJson(needs.create-deployment-artifacts.outputs.deployment-matrix) }}
+  #       server: ${{ fromJson(needs.create-deployment-artifacts.outputs.DEPLOYMENT_MATRIX) }}
   #   steps:
   #     - name: Activate release
   #       uses: appleboy/ssh-action@master
@@ -166,7 +168,7 @@ jobs:
   #     ]
   #   strategy:
   #     matrix:
-  #       server: ${{ fromJson(needs.create-deployment-artifacts.outputs.deployment-matrix) }}
+  #       server: ${{ fromJson(needs.create-deployment-artifacts.outputs.DEPLOYMENT_MATRIX) }}
   #   steps:
   #     - name: Run after hooks
   #       uses: appleboy/ssh-action@master
@@ -198,7 +200,7 @@ jobs:
   #     ]
   #   strategy:
   #     matrix:
-  #       server: ${{ fromJson(needs.create-deployment-artifacts.outputs.deployment-matrix) }}
+  #       server: ${{ fromJson(needs.create-deployment-artifacts.outputs.DEPLOYMENT_MATRIX) }}
   #   steps:
   #     - name: Run after hooks
   #       uses: appleboy/ssh-action@master
