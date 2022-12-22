@@ -62,15 +62,15 @@ jobs:
           name: app-build
 
       - name: upload artifacts
-        uses: mdallasanta/ssh-scp-deploy@1.2.0
+        uses: nogsantos/scp-deploy@master
         with:
-          local: ${{ github.sha }}.tar.gz                                                  # Local file path - REQUIRED false - DEFAULT ./
-          remote: ${{ matrix.server.path }}/artifacts                                                 # Remote file path - REQUIRED false - DEFAULT ~/
-          host: ${{ matrix.server.ip }}                                      # Remote server address - REQUIRED true
-          port: ${{ matrix.server.port }}                                      # Remote server port - REQUIRED false - DEFAULT 22
-          user: ${{ matrix.server.username }}                                      # Remote server user - REQUIRED true 
-          key: ${{ secrets.SSH_KEY }}                                        # Remote server private key - REQUIRED at least one of "password" or "key" 
-          scp_options: -v    
+          host: ${{ matrix.server.ip }}
+          port: ${{ matrix.server.port }}
+          user: ${{ matrix.server.username }} 
+          key: ${{ secrets.SSH_KEY }}
+          remote: ${{ matrix.server.path }}
+          src: ${{ github.sha }}
+          options: -v    
       - name: Extract archive and create directories
         uses: appleboy/ssh-action@master
         env:
