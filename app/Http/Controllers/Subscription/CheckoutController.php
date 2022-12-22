@@ -247,17 +247,17 @@ class CheckoutController extends Controller
                 return \back()->with('checkout_error', 'Unable to complete checkout and subscription to plan');
             }
 
-            DB::beginTransaction(); // Tell Laravel all the code beneath this is a transaction
+            DB::beginTransaction();
 
             $this->createReceipt($tenant, $data);
             $this->updatePaymentMethod($tenant, $data['card']);
             $result = $this->handleSubscriptionPlanChange($plan);
 
-            DB::commit(); // Tell Laravel this transacion's all good and it can persist to DB
+            DB::commit();
 
             return $result;
         } catch (\Exception $exp) {
-            DB::rollBack(); // Tell Laravel, "It's not you, it's me. Please don't persist to DB"
+            DB::rollBack();
 
             return back(400)->with('checkout_error', $exp->getMessage());
         }
@@ -329,12 +329,12 @@ class CheckoutController extends Controller
             return $tenant->createReceipt([
                 'currency' => $data['currency'],
                 'amount' => $data['amount'],
-                'organization' => $data['meta']['organization'],
-                'name' => $data['meta']['name'] ?? $data['customer']['name'],
-                'email' => $data['meta']['email'] ?? $data['customer']['email'],
-                'tax_number' => $data['meta']['tax_number'],
-                'address' => $data['meta']['address'],
-                'zip_code' => $data['meta']['zip_code'],
+                'organization' => $data['meta']['organization'] ?? $tenant->billingInfo?->organization ?? $tenant->organization,
+                'name' => $data['meta']['name'] ?? $data['customer']['name'] ?? $tenant->billingInfo?->name ?? $tenant->name,
+                'email' => $data['meta']['email'] ?? $data['customer']['email'] ?? $tenant->billingInfo?->email ?? $tenant->email,
+                'tax_number' => $data['meta']['tax_number'] ?? $tenant->billingInfo?->tax_number,
+                'address' => $data['meta']['address'] ?? $tenant->billingInfo?->address,
+                'zip_code' => $data['meta']['zip_code'] ?? $tenant->billingInfo?->zip_code,
             ]);
         });
     }
