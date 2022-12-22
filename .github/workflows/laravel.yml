@@ -62,7 +62,7 @@ jobs:
           name: app-build
 
       - name: upload artifacts
-        uses: mdallasanta/ssh-scp-deploy@latest
+        uses: mdallasanta/ssh-scp-deploy@1.2.0
         with:
           local: ${{ github.sha }}.tar.gz                                                  # Local file path - REQUIRED false - DEFAULT ./
           remote: ${{ matrix.server.path }}/artifacts                                                 # Remote file path - REQUIRED false - DEFAULT ~/
