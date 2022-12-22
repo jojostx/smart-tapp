@@ -55,6 +55,10 @@ class InitializeTokenizedChargeJob implements ShouldQueue
             return;
         }
 
+        if ($this->subscription->plan->isFree()) {
+            return $this->subscription->renew();
+        }
+
         $data = $this->buildData();
 
         $response = $this->initializeCharge($data);

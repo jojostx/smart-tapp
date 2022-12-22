@@ -10,9 +10,8 @@ use Illuminate\Foundation\Bus\Dispatchable;
 use Illuminate\Queue\InteractsWithQueue;
 use Illuminate\Queue\SerializesModels;
 use Illuminate\Support\Facades\Bus;
+use Illuminate\Support\Facades\Log;
 use Jojostx\Larasubs\Models\Subscription;
-use Symfony\Component\HttpKernel\Exception\TooManyRequestsHttpException;
-use Throwable;
 
 class RenewTenantsSubscriptionJob implements ShouldQueue, ShouldBeUnique
 {
@@ -33,12 +32,16 @@ class RenewTenantsSubscriptionJob implements ShouldQueue, ShouldBeUnique
             ->whereNotCancelled()
             ->get();
 
+        if ($subscriptions->isEmpty()) {
+            return;
+        }
+
         Bus::batch(
             $subscriptions->map(function (Subscription $subscription) {
                 return app(InitializeTokenizedChargeJob::class, compact('subscription'));
             })->toArray()
         )->name('Initialize Tokenized Charges')
-        ->allowFailures()
-        ->dispatch();
+            ->allowFailures()
+            ->dispatch();
     }
 }
