@@ -60,15 +60,17 @@ jobs:
       - uses: actions/download-artifact@v3
         with:
           name: app-build
-      - name: Upload
-        uses: appleboy/scp-action@master
+
+      - name: upload artifacts
+        uses: mdallasanta/ssh-scp-deploy@latest
         with:
-          host: ${{ matrix.server.ip }}
-          username: ${{ matrix.server.username }}
-          key: ${{ secrets.SSH_KEY }}
-          port: ${{ matrix.server.port }}
-          source: ${{ github.sha }}.tar.gz
-          target: ${{ matrix.server.path }}/artifacts
+          local: ${{ github.sha }}.tar.gz                                                  # Local file path - REQUIRED false - DEFAULT ./
+          remote: ${{ matrix.server.path }}/artifacts                                                 # Remote file path - REQUIRED false - DEFAULT ~/
+          host: ${{ matrix.server.ip }}                                      # Remote server address - REQUIRED true
+          port: ${{ matrix.server.port }}                                      # Remote server port - REQUIRED false - DEFAULT 22
+          user: ${{ matrix.server.username }}                                      # Remote server user - REQUIRED true 
+          key: ${{ secrets.SSH_KEY }}                                        # Remote server private key - REQUIRED at least one of "password" or "key" 
+          scp_options: -v    
       - name: Extract archive and create directories
         uses: appleboy/ssh-action@master
         env:
@@ -80,6 +82,7 @@ jobs:
           port: ${{ matrix.server.port }}
           envs: GITHUB_SHA
           script: |
+
             mkdir -p "${{ matrix.server.path }}/releases/${GITHUB_SHA}"
 
             tar xzf ${{ matrix.server.path }}/artifacts/${GITHUB_SHA}.tar.gz -C "${{ matrix.server.path }}/releases/${GITHUB_SHA}"
