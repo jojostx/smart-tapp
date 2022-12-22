@@ -68,7 +68,7 @@ jobs:
           port: ${{ matrix.server.port }}
           user: ${{ matrix.server.username }} 
           key: ${{ secrets.SSH_KEY }}
-          pre_upload: mkdir -p "${{ matrix.server.path }}/artifacts"
+          pre_upload: sudo mkdir -p "${{ matrix.server.path }}/artifacts"
           local: ${{ github.sha }}.tar.gz
           remote: ${{ matrix.server.path }}/artifacts
           scp_options: -v
