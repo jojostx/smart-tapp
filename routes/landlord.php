@@ -7,7 +7,6 @@ use App\Filament\Livewire\Landlord\Auth\Passwords\Reset;
 use App\Filament\Livewire\Landlord\Auth\Verify;
 use App\Filament\Livewire\Landlord\Dashboard;
 use App\Http\Controllers\EmailVerificationController;
-use App\Http\Controllers\Landlord\Auth\LogoutController;
 use Illuminate\Support\Facades\Route;
 
 // Dashboard
@@ -39,7 +38,4 @@ Route::middleware('landlord.auth')->group(function () {
 
     Route::get('password/confirm', Confirm::class)
         ->name('password.confirm');
-
-    Route::post('logout', LogoutController::class)
-        ->name('logout');
 });
