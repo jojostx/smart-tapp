@@ -42,12 +42,9 @@ jobs:
 
       - name: Export deployment matrix
         id: export-deployment-matrix
-        run: |
-          JSON="$(cat ./deployment-config.json)"
-          JSON="${JSON//'%'/'%25'}"
-          JSON="${JSON//$'\n'/'%0A'}"
-          JSON="${JSON//$'\r'/'%0D'}"
-          echo "name=deployment-matrix" >> $GITHUB_OUTPUT
+        uses: zoexx/github-action-json-file-properties@release
+        with:
+          file_path: "deployment-config.json"
 
   prepare-release-on-servers:
     name: "${{ matrix.server.name }}: Prepare release"
@@ -55,7 +52,7 @@ jobs:
     needs: create-deployment-artifacts
     strategy:
       matrix:
-        server: ${{ fromJson(needs.create-deployment-artifacts.outputs.deployment-matrix) }}
+        server: ${{ needs.create-deployment-artifacts.outputs.deployment-matrix }}
     steps:
       - uses: actions/download-artifact@v3
         with:
@@ -80,7 +77,6 @@ jobs:
           port: ${{ matrix.server.port }}
           envs: GITHUB_SHA
           script: |
-
             mkdir -p "${{ matrix.server.path }}/releases/${GITHUB_SHA}"
 
             tar xzf ${{ matrix.server.path }}/artifacts/${GITHUB_SHA}.tar.gz -C "${{ matrix.server.path }}/releases/${GITHUB_SHA}"
@@ -103,7 +99,7 @@ jobs:
   #   needs: [create-deployment-artifacts, prepare-release-on-servers]
   #   strategy:
   #     matrix:
-  #       server: ${{ fromJson(needs.create-deployment-artifacts.outputs.deployment-matrix) }}
+  #       server: ${{ needs.create-deployment-artifacts.outputs.deployment-matrix }}
   #   steps:
   #     - name: Run before hooks
   #       uses: appleboy/ssh-action@master
@@ -133,7 +129,7 @@ jobs:
   #     ]
   #   strategy:
   #     matrix:
-  #       server: ${{ fromJson(needs.create-deployment-artifacts.outputs.deployment-matrix) }}
+  #       server: ${{ needs.create-deployment-artifacts.outputs.deployment-matrix }}
   #   steps:
   #     - name: Activate release
   #       uses: appleboy/ssh-action@master
@@ -169,7 +165,7 @@ jobs:
   #     ]
   #   strategy:
   #     matrix:
-  #       server: ${{ fromJson(needs.create-deployment-artifacts.outputs.deployment-matrix) }}
+  #       server: ${{ needs.create-deployment-artifacts.outputs.deployment-matrix }}
   #   steps:
   #     - name: Run after hooks
   #       uses: appleboy/ssh-action@master
@@ -201,7 +197,7 @@ jobs:
   #     ]
   #   strategy:
   #     matrix:
-  #       server: ${{ fromJson(needs.create-deployment-artifacts.outputs.deployment-matrix) }}
+  #       server: ${{ needs.create-deployment-artifacts.outputs.deployment-matrix }}
   #   steps:
   #     - name: Run after hooks
   #       uses: appleboy/ssh-action@master
