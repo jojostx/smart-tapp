@@ -83,6 +83,8 @@ return [
 
     'middleware_group' => [
         'web',
+
+        // custom middleware & middleware from third party packages
         'universal',
         App\Http\Middleware\InitializeTenancyByDomain::class, // or whatever tenancy middleware you use
     ],
