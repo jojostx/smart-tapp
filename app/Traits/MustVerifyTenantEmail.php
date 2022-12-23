@@ -4,6 +4,7 @@ namespace App\Traits;
 
 use Closure;
 use Illuminate\Auth\Notifications\VerifyEmail;
+use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Notifications\Messages\MailMessage;
 use Illuminate\Support\Facades\Lang;
@@ -92,5 +93,21 @@ trait MustVerifyTenantEmail
     public function getEmailForVerification()
     {
         return $this->email;
+    }
+
+    /**
+     * Scope a query to only return tenants with unverified emails
+     */
+    public function scopeWhereUnverified(Builder $query, string $email, ?string $domain = null)
+    {
+        $data = array_filter(
+            [
+                'domain' => $domain,
+                'email' => $email,
+            ],
+            fn ($val) => filled($val),
+        );
+
+        return $query->where(['email_verified_at' => null, ...$data]);
     }
 }
