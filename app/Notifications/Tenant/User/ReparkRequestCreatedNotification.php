@@ -60,6 +60,7 @@ class ReparkRequestCreatedNotification extends Notification
             ->title('Repark Requested')
             ->body("Driver of Vehicle **[{$blockee_plate_number}]** requested a repark for Vehicle **[{$blocker_plate_number}]**")
             ->icon('heroicon-o-exclamation')
+            ->danger()
             ->actions([
                 Action::make('view')
                     ->url(route('filament.resources.tenant/repark-requests.index', ['tableSearchQuery' => $this->reparkRequest->uuid])),
