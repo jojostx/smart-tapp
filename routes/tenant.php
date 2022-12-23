@@ -5,6 +5,7 @@ declare(strict_types=1);
 use App\Filament\Livewire\Tenant\Access\Dashboard;
 use App\Filament\Livewire\Tenant\Access\QrcodeScanner;
 use App\Http\Middleware\InitializeTenancyByDomain;
+use Illuminate\Support\Facades\Redirect;
 use Illuminate\Support\Facades\Route;
 use Stancl\Tenancy\Features\UserImpersonation;
 use Stancl\Tenancy\Middleware\PreventAccessFromCentralDomains;
@@ -28,6 +29,11 @@ Route::middleware([
     InitializeTenancyByDomain::class,
     PreventAccessFromCentralDomains::class,
 ])->group(function () {
+    Route::get('/', function ()
+    {
+        return Redirect::intended(config('app.url'));
+    });
+
     Route::group(['prefix' => 'access', 'as' => 'access.'], function () {
         Route::get('/{access}/scan', QrcodeScanner::class)
             ->name('scan');
