@@ -25,24 +25,20 @@ class Verify extends Component
 
     public ?Tenant $tenant = null;
 
-    public function mount(?string $id = null)
+    public function mount(?string $id = null, bool $emailSent = false)
     {
         if (!blank($id)) {
             $this->tenant = Tenant::findOrFail($id);
-
             $this->email = $this->tenant->email;
-
-            $this->emailSent = true;
-        } else {
-            $this->emailSent = false;
         }
+
+        $this->emailSent = $emailSent;
     }
 
     public function sendVerificationNotification()
     {
         // validate credentials
         $this->validateOnly('email', [
-            'otp' => ['required', 'string'],
             'email' => ['required', 'string', 'email', 'exists:tenants,email'],
         ]);
 

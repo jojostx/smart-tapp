@@ -3,6 +3,7 @@
 namespace App\Filament\Livewire\Auth;
 
 use App\Filament\Traits\WithDomainValidation;
+use App\Models\Tenant;
 use App\Models\Tenant\User;
 use DanHarrin\LivewireRateLimiting\WithRateLimiting;
 use Illuminate\Support\Facades\Hash;
@@ -47,16 +48,21 @@ class Login extends Component
 
     public function authenticate()
     {
-        // // set the user's session [user_id & tenant_id] on the central db session table before login
-        // setTenantCentralSession(request());
         $this->rateLimit(20);
 
         $validated = $this->validate();
 
+        // check if a tenant with the email && domain exists in the
+        if ($tenant = Tenant::whereUnverified($validated['email'], $validated['domain'])->first()) {
+            // redirect to email verification page
+            return redirect()->intended(route('verification.notice', ['id' => $tenant->getKey(), 'emailSent' => false]));
+        }
+
         /** @var \App\Models\Tenant $tenant */
-        $tenant = $this->currentTenant ?? tenancy()->query()->where([
-            'domain' => $validated['domain'],
-        ])->first();
+        $tenant = $this->currentTenant ??
+            tenancy()->query()->where([
+                'domain' => $validated['domain'],
+            ])->first();
 
         $user = $tenant->run(function ($tenant) use ($validated) {
             return User::firstWhere('email', $validated['email']);
@@ -68,7 +74,7 @@ class Login extends Component
             return;
         }
 
-        if (! Hash::check($validated['password'], $user->password)) {
+        if (!Hash::check($validated['password'], $user->password)) {
             $this->addError('password', __('auth.password'));
 
             return;
@@ -76,11 +82,6 @@ class Login extends Component
 
         $token = tenancy()->impersonate($tenant, $user->id, $this->redirectUrl);
         $domain = $tenant->domain;
-
-        // $central_domain = '.' . \config('tenancy.central_domains.main');
-        // $tenant_route = $domain . '/' . $this->redirectUrl;
-
-        // Cookie::queue('impersonated', $tenant_route, 2628000, null, $central_domain);
 
         return redirect("https://$domain/impersonate/{$token->token}");
     }

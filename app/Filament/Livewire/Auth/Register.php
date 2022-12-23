@@ -4,12 +4,15 @@ namespace App\Filament\Livewire\Auth;
 
 use App\Models\Tenant;
 use App\Rules\Subdomain;
+use DanHarrin\LivewireRateLimiting\WithRateLimiting;
 use Illuminate\Support\Facades\Hash;
 use Illuminate\Validation\Rules\Password;
 use Livewire\Component;
 
 class Register extends Component
 {
+    use WithRateLimiting;
+
     /** @var string */
     public $organization = '';
 
@@ -71,20 +74,25 @@ class Register extends Component
 
     public function register()
     {
+        $this->rateLimit(20);
+
         // validate
-        $result = $this->validate();
+        $validated = $this->validate();
 
         // create temporary unverified tenant
         $tenant = Tenant::create([
-            'name' => $result['name'],
-            'email' => $result['email'],
-            'password' => Hash::make($result['password']),
-            'organization' => $result['organization'],
-            'domain' => $result['fqsd'],
+            'name' => $validated['name'],
+            'email' => $validated['email'],
+            'password' => Hash::make($validated['password']),
+            'organization' => $validated['organization'],
+            'domain' => $validated['fqsd'],
         ]);
 
+        // send verification notification
+        $tenant->sendEmailVerificationNotification();
+
         // redirect to email verification page
-        return redirect()->intended(route('verification.notice', ['id' => $tenant->getKey()]));
+        return redirect()->intended(route('verification.notice', ['id' => $tenant->getKey(), 'emailSent' => true]));
     }
 
     public function render()
