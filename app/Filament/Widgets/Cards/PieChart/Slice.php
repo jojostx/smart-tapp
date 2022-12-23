@@ -119,7 +119,6 @@ class Slice extends Component implements Htmlable
 
     public function getPercentage(): float
     {
-        // \dd($this->value, $this->totalValue * 100);
         if ($this->totalValue == 0) {
             return number_format($this->totalValue, $this->getDecimals());
         }
