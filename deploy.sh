@@ -8,6 +8,7 @@ composer install --no-interaction --prefer-dist --optimize-autoloader --no-dev
 
 echo "## Changing permission"
 sudo chown -R :www-data .
+sudo chmod -R 775 bootstrap\/cache
 
 echo "## Restart FPM"
 ( flock -w 10 9 || exit 1
@@ -18,17 +19,12 @@ sudo supervisorctl restart all
 
 echo "## Run database migrations && Run tenant migrations"
 php artisan migrate --no-interaction --force
-php artisan tenants:migrate
 
 echo "## Run optimization commands for laravel"
 php artisan auth:clear-resets
-php artisan optimize
-php artisan cache:clear
 php artisan route:cache
-php artisan view:clear
 php artisan view:cache
 php artisan config:cache
-php artisan event:clear
 php artisan event:cache
 php artisan livewire:discover
 
