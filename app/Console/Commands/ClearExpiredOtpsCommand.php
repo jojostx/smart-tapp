@@ -5,7 +5,7 @@ namespace App\Console\Commands;
 use App\Models\Otp;
 use Illuminate\Console\Command;
 
-class ClearExpiredOtps extends Command
+class ClearExpiredOtpsCommand extends Command
 {
     /**
      * The name and signature of the console command.
@@ -38,18 +38,14 @@ class ClearExpiredOtps extends Command
      */
     public function handle()
     {
-        try {
-            $otps = Otp::where('is_valid', false)->count();
+        $this->info('Deleting expired otps...');
 
-            $this->info("Found {$otps} expired otps.");
+        $count = Otp::where('is_valid', false)
+            ->where('created_at', '<', now()->subHour())
+            ->delete();
 
-            Otp::where('is_valid', false)->delete();
+        $this->comment("Deleted {$count} expired otps.");
 
-            $this->info('expired tokens deleted');
-        } catch (\Exception $e) {
-            $this->error("Error:: {$e->getMessage()}");
-        }
-
-        return 0;
+        $this->info('All done!');
     }
 }
