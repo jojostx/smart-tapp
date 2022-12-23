@@ -1,5 +1,4 @@
 #!/bin/bash
-cd ${ACTIVE_RELEASE_PATH}
 
 echo "## Turn on maintenance mode"
 php artisan down || true
