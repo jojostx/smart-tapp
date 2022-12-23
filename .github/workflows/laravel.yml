@@ -102,6 +102,8 @@ jobs:
 
             sudo chmod -R 0777 ${{ matrix.server.path }}/storage/*
 
+            sudo chmod 775 ${{ matrix.server.path }}/releases/${GITHUB_SHA}/deploy.sh
+
   run-before-hooks:
     name: "${{ matrix.server.name }}: Before hook"
     runs-on: ubuntu-latest

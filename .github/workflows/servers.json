@@ -4,6 +4,6 @@
   "username": "jojostx",
   "port": "22",
   "beforeHooks": "echo before_Hooks",
-  "afterHooks" : "cd ${RELEASE_PATH} && ./deploy.sh",
+  "afterHooks" : "sudo ./deploy.sh",
   "path": "/var/www/smart-tapp"
 }]
