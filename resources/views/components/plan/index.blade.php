@@ -1,7 +1,7 @@
 @props(['params' => [], 'plans'])
 
 
-<div class="grid grid-cols-1 gap-8 mt-12 md:grid-cols-2 lg:grid-cols-3">
+<div class="mt-12 space-y-4 sm:mt-16 sm:space-y-0 sm:grid sm:grid-cols-2 sm:gap-6 lg:max-w-4xl lg:mx-auto xl:max-w-none xl:mx-0 xl:grid-cols-4">
     @foreach ($plans as $plan)
         <x-plan.card :$plan :$params/>
     @endforeach

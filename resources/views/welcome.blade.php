@@ -2,7 +2,7 @@
 
 @section('content')
 
-<x-navbar/>
+<x-navbar />
 
 <section class="relative flex flex-col justify-center px-4 pb-24 mx-auto overflow-hidden md:px-8 pt-36 md:py-48 max-w-8xl bg-gray-50">
     <div class="absolute inset-x-0 flex justify-center w-full -top-1/3 md:-top-3/4 opacity-20">
@@ -55,7 +55,7 @@
 
 <section class="py-16 text-white bg-gray-900 sm:py-24">
     <div class="container grid grid-cols-1 px-4 m-auto sm:px-6 md:px-12 lg:grid-cols-2 gap-y-8 lg:gap-x-16 lg:items-center">
-        <div class="max-w-lg mx-auto text-center lg:text-left lg:mx-0">
+        <div class="max-w-lg mx-auto my-4 text-center lg:text-left lg:mx-0">
             <h2 class="text-4xl font-bold tracking-tight sm:text-5xl">Find your career path</h2>
 
             <p class="mt-4 text-lg text-gray-300">
@@ -77,6 +77,7 @@
             .active {
                 opacity: 1;
             }
+
         </style>
 
         <div class="relative w-full">
@@ -348,6 +349,6 @@
     </div>
 </section>
 
-<x-footer/>
+<x-footer />
 
 @endsection

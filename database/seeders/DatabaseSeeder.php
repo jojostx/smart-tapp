@@ -25,8 +25,8 @@ class DatabaseSeeder extends Seeder
         $free = Plan::create([
             'name' => 'free',
             'description' => [
-                'tag' => 'Ideal for testing out our services',
-                'body' => 'Ideal for individuals and low traffic organizations that need to control parking efficiently.',
+                'tag' => 'Ideal for individuals and low traffic organizations testing out our services.',
+                'body' => 'Ideal for individuals and low traffic organizations testing out our services.',
                 'icon' => 'heroicon-o-calculator',
                 'highlight' => false,
             ],
@@ -45,8 +45,8 @@ class DatabaseSeeder extends Seeder
         $standard = Plan::create([
             'name' => 'standard',
             'description' => [
-                'tag' => 'Ideal for smaller organizations that need to control parking efficiently.',
-                'body' => 'Ideal for smaller organizations that need to control parking efficiently.',
+                'tag' => 'Ideal for medium organizations that need to control parking efficiently.',
+                'body' => 'Ideal for medium organizations that need to control parking efficiently.',
                 'icon' => 'heroicon-o-scale',
                 'highlight' => false,
             ],
@@ -85,8 +85,8 @@ class DatabaseSeeder extends Seeder
         $enterprise = Plan::create([
             'name' => 'enterprise',
             'description' => [
-                'tag' => 'Available for establishments with large parking traffic, customized or unique business models',
-                'body' => 'Available for establishments with large parking traffic, customized or unique business models',
+                'tag' => 'Ideal for establishments with large parking traffic, customized or unique business models',
+                'body' => 'Ideal for establishments with large parking traffic, customized or unique business models',
                 'icon' => 'heroicon-o-globe',
                 'highlight' => false,
             ],
@@ -110,7 +110,7 @@ class DatabaseSeeder extends Seeder
             ],
             'consumable' => true,
             'active' => true,
-            'interval' => 6,
+            'interval' => 12,
             'interval_type' => IntervalType::MONTH,
         ]);
 
@@ -122,7 +122,7 @@ class DatabaseSeeder extends Seeder
             ],
             'consumable' => true,
             'active' => true,
-            'interval' => 6,
+            'interval' => 12,
             'interval_type' => IntervalType::MONTH,
         ]);
 
@@ -134,7 +134,7 @@ class DatabaseSeeder extends Seeder
             ],
             'consumable' => true,
             'active' => true,
-            'interval' => 6,
+            'interval' => 12,
             'interval_type' => IntervalType::MONTH,
         ]);
 
@@ -148,19 +148,19 @@ class DatabaseSeeder extends Seeder
             'active' => true,
         ]);
 
-        $free->features()->attach($teamMembers, ['units' => 1]);
+        $free->features()->attach($teamMembers, ['units' => 2]);
         $free->features()->attach($parkingLots, ['units' => 1]);
         $free->features()->attach($accesses_per_parking_lot, ['units' => 50]);
         $free->features()->attach($dedicated_support);
 
-        $standard->features()->attach($teamMembers, ['units' => 2]);
+        $standard->features()->attach($teamMembers, ['units' => 4]);
         $standard->features()->attach($parkingLots, ['units' => 5]);
-        $standard->features()->attach($accesses_per_parking_lot, ['units' => 50]);
+        $standard->features()->attach($accesses_per_parking_lot, ['units' => 60]);
         $standard->features()->attach($dedicated_support);
 
         $premium->features()->attach($teamMembers, ['units' => 5]);
         $premium->features()->attach($parkingLots, ['units' => 10]);
-        $premium->features()->attach($accesses_per_parking_lot, ['units' => 100]);
+        $premium->features()->attach($accesses_per_parking_lot, ['units' => 120]);
         $premium->features()->attach($dedicated_support);
 
         $enterprise->features()->attach($teamMembers, ['units' => 10]);
