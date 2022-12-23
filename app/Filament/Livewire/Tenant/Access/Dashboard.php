@@ -5,6 +5,7 @@ namespace App\Filament\Livewire\Tenant\Access;
 use App\Models\Tenant\Access;
 use App\Models\Tenant\ReparkRequest;
 use App\Models\Tenant\User;
+use App\Notifications\Tenant\User\ReparkConfirmedNotification;
 use App\Notifications\Tenant\User\ReparkRequestCreatedNotification;
 use DanHarrin\LivewireRateLimiting\Exceptions\TooManyRequestsException;
 use DanHarrin\LivewireRateLimiting\WithRateLimiting;
@@ -195,15 +196,8 @@ class Dashboard extends Component implements Forms\Contracts\HasForms
 
         $reparkRequest->resolve();
 
-        NotificationsNotification::make()
-            ->title('Repark Confirmed')
-            ->body("The Confirmation request for the driver blocking another has been confirmed")
-            ->success()
-            ->actions([
-                Action::make('view')
-                    ->url(route('filament.resources.tenant/repark-requests.index', ['tableSearchQuery' => $reparkRequest->uuid])),
-            ])
-            ->sendToDatabase($notifiables);
+        /** send notifications to admin and blockers */
+        Notification::sendNow($notifiables, new ReparkConfirmedNotification($reparkRequest));
 
         $this->emit('refreshPage');
 

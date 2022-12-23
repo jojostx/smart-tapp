@@ -8,7 +8,7 @@ use Filament\Notifications\Actions\Action;
 use Illuminate\Bus\Queueable;
 use Illuminate\Notifications\Notification;
 
-class ReparkRequestCreatedNotification extends Notification
+class ReparkConfirmedNotification extends Notification
 {
     use Queueable;
 
@@ -46,8 +46,8 @@ class ReparkRequestCreatedNotification extends Notification
         return [
             'repark_request_id' => $this->reparkRequest->id,
             'repark_request_uuid' => $this->reparkRequest->uuid,
-            'title' => 'Repark Requested',
-            'content' => "Driver of Vehicle **[{$blockee_plate_number}]** requested a repark for Vehicle **[{$blocker_plate_number}]**",
+            'title' => 'Repark Confirmed',
+            'content' => "The vehicle **[{$blocker_plate_number}]** blocking vehicle **[{$blockee_plate_number}]** has been reparked.",
         ];
     }
 
@@ -57,9 +57,9 @@ class ReparkRequestCreatedNotification extends Notification
         $blocker_plate_number = $this->reparkRequest->blockerVehicle->plate_number;
 
         return NotificationsNotification::make()
-            ->title('Repark Requested')
-            ->body("Driver of Vehicle **[{$blockee_plate_number}]** requested a repark for Vehicle **[{$blocker_plate_number}]**")
-            ->icon('heroicon-o-exclamation')
+            ->title('Repark Confirmed')
+            ->body("The vehicle **[{$blocker_plate_number}]** blocking vehicle **[{$blockee_plate_number}]** has been reparked.")
+            ->success()
             ->actions([
                 Action::make('view')
                     ->url(route('filament.resources.tenant/repark-requests.index', ['tableSearchQuery' => $this->reparkRequest->uuid])),
