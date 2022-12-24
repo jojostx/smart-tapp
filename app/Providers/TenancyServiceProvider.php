@@ -31,7 +31,6 @@ class TenancyServiceProvider extends ServiceProvider
             Events\TenantCreated::class => [
                 JobPipeline::make([
                     SendTenantVerificationEmail::class,
-
                 ])->send(function (Events\TenantCreated $event) {
                     return $event->tenant;
                 })->shouldBeQueued(true),
@@ -57,7 +56,7 @@ class TenancyServiceProvider extends ServiceProvider
                     Tenant\DeleteTenantDatabase::class,
                 ])->send(function (Events\TenantDeleted $event) {
                     return $event->tenant;
-                })->shouldBeQueued(false), // `false` by default, but you probably want to make this `true` for production.
+                })->shouldBeQueued(true), // `false` by default, but you probably want to make this `true` for production.
             ],
 
             // Domain events
@@ -91,9 +90,6 @@ class TenancyServiceProvider extends ServiceProvider
 
             Events\DatabaseSeeded::class => [
                 JobPipeline::make([
-                    // Your own jobs to prepare the tenant.
-                    Tenant\CreateFrameworkDirectoriesForTenant::class,
-
                     // create Tenant Subdomain
                     Tenant\CreateTenantSubdomain::class,
 
