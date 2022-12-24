@@ -74,8 +74,6 @@ class CheckoutController extends Controller
 
         $plan = $this->planRepository()->getActiveBySlug($validated['plan']);
 
-        $credit_card = $validated['credit_card'];
-
         if (blank($plan)) {
             throw ValidationException::withMessages([
                 'plan' => __('Invalid Plan'),
@@ -87,7 +85,9 @@ class CheckoutController extends Controller
             return $this->handleSubscriptionPlanChange($plan);
         }
 
-        if ($request->hasChargeableCard($credit_card)) {
+        $credit_card = Arr::get($validated, 'credit_card');
+
+        if ($credit_card && $request->hasChargeableCard($credit_card)) {
             // perform tokenized charge
             return $this->handleCardPaymentRequest($plan, $validated);
         }
@@ -203,19 +203,19 @@ class CheckoutController extends Controller
             //---------------------InitializeTokenizedChargeJob----------------------------//
             /** @todo refactor to queued job */
             $response = Flutterwave::initializeTokenizedCharge($data);
-            
+
             if ($response['status'] != 'success') {
                 // notify something went wrong
                 return \back()->with('checkout_error', $response['message']);
             }
-            
+
             $transactionID = Arr::get($response, 'data.id');
             //-------------------------------------------------------//
-            
+
             //---------------------ProcessTokenizedChargeJob----------------------------//
             /** @todo refactor to queued job */
             $verif_response = Flutterwave::verifyTransaction($transactionID);
-            
+
             // validate transaction and update subscription
             return $this->processVerificationResponse($verif_response['data']);
             //-------------------------------------------------------//
