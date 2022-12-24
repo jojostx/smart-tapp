@@ -7,6 +7,7 @@ use Illuminate\Contracts\Queue\ShouldQueue;
 use Illuminate\Foundation\Bus\Dispatchable;
 use Illuminate\Queue\InteractsWithQueue;
 use Illuminate\Queue\SerializesModels;
+use Illuminate\Support\Facades\Storage;
 use Stancl\Tenancy\Contracts\Tenant;
 
 class CreateFrameworkDirectoriesForTenant implements ShouldQueue
@@ -33,7 +34,9 @@ class CreateFrameworkDirectoriesForTenant implements ShouldQueue
         $this->tenant->run(function ($tenant) {
             $storage_path = storage_path();
 
-            mkdir("$storage_path/framework/cache", 0777, true);
+            if (Storage::directoryMissing("$storage_path/framework/cache")) {
+                mkdir("$storage_path/framework/cache", 0777, true);
+            }
         });
     }
 }
