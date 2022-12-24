@@ -2,9 +2,10 @@
 
 namespace App\Console\Commands;
 
+use App\Jobs\Tenant\DeleteTenantDatabase;
+use App\Jobs\Tenant\DeleteTenantSubdomain;
 use App\Models\Tenant;
 use Illuminate\Console\Command;
-use Illuminate\Support\Facades\DB;
 
 class DeleteOldUnverifiedTenantsCommand extends Command
 {
@@ -21,8 +22,11 @@ class DeleteOldUnverifiedTenantsCommand extends Command
             ->get();
 
         $oldUnverifiedTenants->each(function (Tenant $tenant) {
-            $db = \config('tenancy.database.prefix') . $tenant->getTenantKey() . config('tenancy.database.suffix');
-            DB::select("DROP DATABASE IF EXISTS `$db`");
+            // delete tenant db
+            app(Dispatcher::class)->dispatch(new DeleteTenantDatabase($tenant));
+
+            // delete tenant domains
+            app(Dispatcher::class)->dispatch(new DeleteTenantSubdomain($tenant));
         });
 
         $count = Tenant::query()
