@@ -61,7 +61,7 @@ class ParkingLot extends Model
                     $subscription = $tenant->subscription;
                     $featureSlug = FeatureResources::PARKING_LOTS->value;
 
-                    if ($subscription->missingFeature($featureSlug)) {
+                    if (blank($subscription) || $subscription->missingFeature($featureSlug)) {
                         return false;
                     }
 
@@ -83,7 +83,7 @@ class ParkingLot extends Model
                     $subscription = $tenant->subscription;
                     $featureSlug = FeatureResources::PARKING_LOTS->value;
 
-                    if ($subscription->missingFeature($featureSlug)) {
+                    if (blank($subscription) || $subscription->missingFeature($featureSlug)) {
                         return false;
                     }
 

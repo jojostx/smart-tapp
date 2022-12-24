@@ -118,10 +118,9 @@ class User extends Authenticatable implements MustVerifyEmail, FilamentUser
                     $subscription = $tenant->subscription;
                     $featureSlug = FeatureResources::TEAM_MEMBERS->value;
 
-                    if ($subscription->missingFeature($featureSlug)) {
+                    if (blank($subscription) || $subscription->missingFeature($featureSlug)) {
                         return false;
                     }
-
 
                     $feature = $subscription->plan->getFeatureBySlug($featureSlug);
 
@@ -137,7 +136,7 @@ class User extends Authenticatable implements MustVerifyEmail, FilamentUser
                     $subscription = $tenant->subscription;
                     $featureSlug = FeatureResources::TEAM_MEMBERS->value;
 
-                    if ($subscription->missingFeature($featureSlug)) {
+                    if (blank($subscription) || $subscription->missingFeature($featureSlug)) {
                         return false;
                     }
 

@@ -69,7 +69,7 @@ class CreateUser extends CreateRecord
             $subscription = $tenant->subscription;
             $featureSlug = FeatureResources::TEAM_MEMBERS->value;
 
-            if ($subscription->missingFeature($featureSlug)) {
+            if (blank($subscription) || $subscription->missingFeature($featureSlug)) {
                 return false;
             }
 
