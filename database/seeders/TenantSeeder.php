@@ -23,13 +23,12 @@ class TenantSeeder extends Seeder
     public function run()
     {
         if (Schema::hasTable('users')) {
-            // $user = User::find(1);
-
             foreach (self::$roles as $role_) {
-                Role::create([
-                    'name' => $role_->value,
-                    'guard_name' => 'web',
-                ]);
+                Role::query()
+                    ->firstOrCreate([
+                        'name' => $role_->value,
+                        'guard_name' => 'web',
+                    ]);
             }
         }
     }
