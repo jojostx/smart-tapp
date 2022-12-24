@@ -55,7 +55,7 @@ class Login extends Component
         // check if a tenant with the email && domain exists in the
         if ($tenant = Tenant::whereUnverified($validated['email'], $validated['domain'])->first()) {
             // redirect to email verification page
-            return redirect()->intended(route('verification.notice', ['id' => $tenant->getKey(), 'emailSent' => false]));
+            return redirect()->intended(route('verification.notice', ['id' => $tenant->getKey(), 'email_sent' => false]));
         }
 
         /** @var \App\Models\Tenant $tenant */

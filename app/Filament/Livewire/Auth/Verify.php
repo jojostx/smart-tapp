@@ -32,7 +32,7 @@ class Verify extends Component
             $this->email = $this->tenant->email;
         }
 
-        $this->emailSent = $emailSent;
+        $this->emailSent = \request('email_sent', $emailSent);
     }
 
     public function sendVerificationNotification()
@@ -88,11 +88,13 @@ class Verify extends Component
         // show tenant onboarding loading modal
         $this->isCreatingAccount = true;
 
+        // @ this point we check if the database has been created already,
         if ($this->tenantDatabaseAlreadyExists()) {
-            if ($this->tenantAdminUserExists()) return $this->redirectIfSubdomainIsCreated();
+            if ($this->tenantAdminUserExists()) {
+                return $this->redirectIfSubdomainIsCreated();
+            }
 
-            // @ this point we check if the database has been created already,
-            // and dispatch DatabaseCreated to trigger tenancy pipeline
+            // dispatch DatabaseCreated to trigger tenancy pipeline
             \event(new DatabaseCreated($this->tenant));
 
             return;
@@ -109,6 +111,8 @@ class Verify extends Component
         // retrieve tenant from database
         $this->tenant ??= Tenant::where(['email' => $this->email])->firstOrFail();
 
+        // \dd($this->tenant, !$this->tenant->hasVerifiedEmail());
+
         if (blank($this->tenant) || !$this->tenant->hasVerifiedEmail()) {
             return;
         }
@@ -119,14 +123,14 @@ class Verify extends Component
         }
 
         if ($this->tenantDatabaseAlreadyExists()) {
-            // if tenant super-admin does not exist, create one from the tenant model
-            if (!$this->tenantAdminUserExists()) {
-                if (blank((new CreateTenantAdminUserAction)($this->tenant))) {
-                    return;
-                }
+            if ($this->tenantAdminUserExists()) {
+                $this->redirectToTenant();
             }
 
-            $this->redirectToTenant();
+            // if tenant super-admin does not exist, create one from the tenant model
+            if (blank((new CreateTenantAdminUserAction)($this->tenant))) {
+                return;
+            }
         }
     }
 
@@ -162,7 +166,11 @@ class Verify extends Component
 
     public function getTenantAlreadyPreparedProperty()
     {
-        return $this->tenant && $this->tenant->hasVerifiedEmail() && $this->tenantHasDomain;
+        return $this->tenant &&
+            $this->tenant->hasVerifiedEmail() &&
+            $this->tenantDatabaseAlreadyExists() &&
+            $this->tenantAdminUserExists() &&
+            $this->tenantHasDomain;
     }
 
     public function render()

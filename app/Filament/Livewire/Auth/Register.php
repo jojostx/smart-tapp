@@ -79,7 +79,8 @@ class Register extends Component
         // validate
         $validated = $this->validate();
 
-        // create temporary unverified tenant
+        /** @todo consider implementing something similar to propangandist pending email feature **/
+        // create temporary unverified tenant 
         $tenant = Tenant::create([
             'name' => $validated['name'],
             'email' => $validated['email'],
@@ -88,11 +89,8 @@ class Register extends Component
             'domain' => $validated['fqsd'],
         ]);
 
-        // send verification notification
-        $tenant->sendEmailVerificationNotification();
-
         // redirect to email verification page
-        return redirect()->intended(route('verification.notice', ['id' => $tenant->getKey(), 'emailSent' => true]));
+        return redirect()->intended(route('verification.notice', ['id' => $tenant->getKey(), 'email_sent' => true]));
     }
 
     public function render()
