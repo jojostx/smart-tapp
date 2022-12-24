@@ -108,9 +108,7 @@ class Settings extends Page implements Tables\Contracts\HasTable
 
     public function getPlansProperty(PlanRepository $plans): Collection
     {
-        $slug = tenant()->subscription?->plan?->slug ?? '';
-
-        return $plans->getActiveExcept($slug);
+        return $plans->getActive();
     }
 
     public function getParamsProperty(): array
@@ -149,6 +147,13 @@ class Settings extends Page implements Tables\Contracts\HasTable
         }
 
         $saved && $this->showSuccessNotification('Details saved successfully.');
+    }
+
+    public function getCurrentPlanProperty()
+    {
+        $tenant = tenant();
+
+        return $tenant->subscription?->plan;
     }
 
     protected function showSuccessNotification(string | Closure $body)

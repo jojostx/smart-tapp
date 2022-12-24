@@ -30,7 +30,21 @@ class Card extends Component
      *
      * @var null|bool
      */
-    public $should_highlight;
+    public $shouldHighlight;
+
+    /**
+     * the route to be use in the link button of plan in the blade view.
+     *
+     * @var null|bool
+     */
+    public string $route;
+
+    /**
+     * the label to be use in the link button of plan in the blade view.
+     *
+     * @var null|bool
+     */
+    public string $routeLabel;
 
     /**
      * Create a new component instance.
@@ -39,21 +53,19 @@ class Card extends Component
      * @param  bool  $should_highlight
      * @return void
      */
-    public function __construct($plan, $should_highlight = null, array $params = [])
-    {
+    public function __construct(
+        $plan,
+        $shouldHighlight = null,
+        $route = '',
+        $routeLabel = '',
+        array $params = []
+    ) {
         $this->plan = $plan;
-        $this->should_highlight = $should_highlight;
+        $this->shouldHighlight = $shouldHighlight;
+        $this->route = \filled($route) ? $route : 'register';
+        $this->routeLabel = \filled($routeLabel) ? $routeLabel : __('Start now');
         $this->currency = currency($this->plan->currency);
         $this->params = $params;
-    }
-
-    public function is_highlighted()
-    {
-        if ($this->should_highlight === null) {
-            $this->should_highlight = $this->plan->description->get('highlight', false);
-        }
-
-        return $this->should_highlight;
     }
 
     public function getCurrency()
@@ -103,11 +115,7 @@ class Card extends Component
 
     public function getRoute()
     {
-        if (\tenant()) {
-            return route('filament.plans.checkout', $this->getParams());
-        }
-
-        return \route('register', $this->getParams());
+        return \route($this->route, $this->getParams());
     }
 
     /**

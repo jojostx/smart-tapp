@@ -29,7 +29,17 @@
                         </li>
                     </ul>
                 </div>
-                <x-plan :plans="$this->plans" :params="$this->params" />
+                <div class="mt-12 space-y-4 sm:mt-16 sm:space-y-0 sm:grid sm:grid-cols-2 sm:gap-6 lg:max-w-4xl lg:mx-auto xl:max-w-none xl:mx-0 xl:grid-cols-4">
+                    @foreach ($this->plans as $plan)
+                        <x-plan.card
+                            :$plan 
+                            :params="$this->currentPlan?->is($plan) ? [] : $this->params" 
+                            :should-highlight="$this->currentPlan?->is($plan)"
+                            :route="$this->currentPlan?->is($plan) ? 'filament.pages.settings' : 'filament.plans.checkout'"
+                            :route-label="$this->currentPlan?->is($plan) ? __('View Plan') : __('Start now')"
+                         />
+                    @endforeach
+                </div>
             </div>
         </div>
 

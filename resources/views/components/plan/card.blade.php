@@ -1,30 +1,32 @@
 @php
-$classes = $is_highlighted() ?
+$classes = $shouldHighlight ?
 'border-2 border-primary-500 bg-primary-500/30 hover:shadow-primary-500/20 hover:border-primary-500/90 '
 : 'border border-gray-600 hover:shadow-primary-500/10 hover:border-primary-500/10 ';
 @endphp
 
-<div class="shadow-xl rounded-xl block p-6 transition {{ $classes }}">
+<div class="flex flex-col shadow-xl rounded-xl p-4 transition {{ $classes }}">
     @if ($icon = $getIcon())
     <x-dynamic-component :component="$icon" class="w-8 h-8 text-primary-500" />
     @endif
 
-    <h3 class="mt-4 text-lg leading-6 font-semibold text-white capitalize">{{ $plan->name }}</h3>
+    <h3 class="mt-4 text-lg font-semibold leading-6 text-white capitalize">{{ $plan->name }}</h3>
 
     <div class="mt-4 text-white">
-        <span class="text-3xl font-bold">{{ $getCurrencySymbol() }}</span>
-        <span class="font-bold text-3xl">{{ number_format($getPricePerInterval()) }}</span>
-        <span class="text-sm text-gray-400">per {{ $getIntervalType() }}</span>
-        <span class="block text-sm text-gray-400">Billed annually</span>
+        <span class="text-2xl font-bold">{{ $getCurrencySymbol() }}</span>
+        <span class="text-3xl font-bold">{{ number_format($getPricePerInterval()) }}</span>
+        <span class="text-sm text-gray-400">/{{ str_ireplace('month', 'mon', $getIntervalType()) }}</span>
+        @unless ($plan->isFree())
+        <span class="block text-xs text-gray-300">Billed annually</span>
+        @endunless
     </div>
 
     @if ($tag = $getTag())
-    <p class="text-sm leading-normal mt-4 text-gray-300">
+    <p class="mt-4 text-sm leading-normal text-gray-300">
         {{ $tag }}
     </p>
     @endif
 
-    <ul class="mt-4 -mb-2 text-gray-400 grow">
+    <ul class="my-4 text-gray-400 grow">
         @foreach ($plan->features as $feature)
         <li class="flex items-center mb-2 text-sm">
             <svg class="w-3 h-3 mr-3 fill-current text-primary-400 shrink-0" viewBox="0 0 12 12" xmlns="http://www.w3.org/2000/svg">
@@ -35,9 +37,9 @@ $classes = $is_highlighted() ?
         @endforeach
     </ul>
 
-    <div class="mt-12 text-center">
+    <div class="mt-auto text-center">
         <a href="{{ $getRoute() }}" class="flex items-center justify-center w-full py-3 text-sm font-medium text-white uppercase rounded-lg bg-primary-600 hover:bg-primary-700 focus:ring-4 focus:outline-none focus:ring-primary-300">
-            Start now
+            {{ $routeLabel }}
         </a>
     </div>
 </div>
