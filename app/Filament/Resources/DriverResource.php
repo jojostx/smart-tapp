@@ -49,9 +49,7 @@ class DriverResource extends Resource
         return $form
             ->schema([
                 self::detailsSection()
-                    ->columnSpan([
-                        'sm' => 2,
-                    ]),
+                    ->columnSpan(2),
 
                 Forms\Components\Card::make()
                     ->schema([
@@ -71,10 +69,7 @@ class DriverResource extends Resource
                     ->extraAttributes(['class' => 'hidden sm:block'])
                     ->columns(2)
                     ->columnSpan(2),
-            ])->columns([
-                'sm' => 4,
-                'lg' => null,
-            ]);
+            ])->columns(4);
     }
 
     public static function table(Table $table): Table
@@ -134,13 +129,6 @@ class DriverResource extends Resource
                         static::getCurrentPasswordField(),
                     ]),
             ]);
-    }
-
-    public static function getRelations(): array
-    {
-        return [
-            //
-        ];
     }
 
     public static function getPages(): array

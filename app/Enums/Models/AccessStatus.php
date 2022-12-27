@@ -28,10 +28,10 @@ enum AccessStatus: string
     public static function toDescriptionArray(): array
     {
         return [
-            self::INACTIVE->value => 'The Access will be deactivated and cannot be used by the customer.',
-            self::ISSUED->value => "The Access will be sent to the customer's phone and can be activated.",
-            self::ACTIVE->value => "The Access will be activated and sent to the customer's phone.",
-            self::EXPIRED->value => 'The Access will be deactivated and cannot be used by the customer.',
+            self::INACTIVE->value => 'The Access will be deactivated and cannot be used by the driver.',
+            self::ISSUED->value => "The Access will be sent to the driver's phone and can be activated.",
+            self::ACTIVE->value => "The Access will be activated and sent to the driver's phone.",
+            self::EXPIRED->value => 'The Access will be deactivated and cannot be used by the driver.',
         ];
     }
 }

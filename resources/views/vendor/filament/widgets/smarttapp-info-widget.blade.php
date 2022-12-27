@@ -1,49 +1,32 @@
-<x-filament::widget class="smarttapp-info-widget">
-    <x-filament::card class="relative">
-        <div class="relative flex flex-col items-center justify-center h-12 space-y-2">
-            <div class="space-y-1">
-                <a
-                    href="{{ config('app.url') }}"
-                    target="_blank"
-                    rel="noopener noreferrer"
-                    @class([
-                        'flex items-end space-x-2 rtl:space-x-reverse text-gray-800 hover:text-primary-500 transition',
-                        'dark:text-primary-500 dark:hover:text-primary-400' => config('filament.dark_mode'),
-                    ])
-                >
-                  <x-logo class="flex-shrink-0 w-auto text-primary-600 h-9" alt="{{ config('app.name') }} Logo" />
-                  <span class="self-center text-xl font-semibold whitespace-nowrap">{{ config('app.name') }}</span>
-                </a>
-            </div>
+<x-filament::widget class="filament-account-widget">
+    <x-filament::card>
+        @php
+        $user = \Filament\Facades\Filament::auth()->user();
+        @endphp
 
-            <div class="flex space-x-2 text-sm rtl:space-x-reverse">
-                <a
-                    href="{{ config('app.url') }}#faqs"
-                    target="_blank"
-                    rel="noopener noreferrer"
-                    @class([
-                        'text-gray-600 hover:text-primary-500 focus:outline-none focus:underline',
-                        'dark:text-gray-300 dark:hover:text-primary-500' => config('filament.dark_mode'),
-                    ])
-                >
-                    {{ __('Faqs') }}
+        <div class="flex items-center h-12 space-x-4 rtl:space-x-reverse">
+            <a href="{{ config('app.url') }}" target="_blank" rel="noopener noreferrer">
+                <x-logo class="flex-shrink-0 w-auto h-12 text-primary-600" alt="{{ config('app.name') }} Logo" />
+            </a>
+
+            <div>
+                <a href="{{ config('app.url') }}" target="_blank" rel="noopener noreferrer" @class([ 'text-lg font-bold tracking-tight sm:text-xl text-gray-800 hover:text-primary-500 transition flex items-end space-x-2 rtl:space-x-reverse ' , 'dark:text-primary-500 dark:hover:text-primary-400'=> config('filament.dark_mode')])>
+                    {{ config('app.name') }}
                 </a>
 
-                <span>
-                    &bull;
-                </span>
+                <div class="text-sm">
+                    <a href="{{ config('app.url') }}#faqs" target="_blank" rel="noopener noreferrer" @class(['text-gray-600 hover:text-primary-500 focus:outline-none focus:underline' , 'dark:text-gray-300 dark:hover:text-primary-500'=> config('filament.dark_mode')])>
+                        {{ __('Faqs') }}
+                    </a>
 
-                <a
-                    href="{{ config('app.url') }}#help"
-                    target="_blank"
-                    rel="noopener noreferrer"
-                    @class([
-                        'text-gray-600 hover:text-primary-500 focus:outline-none focus:underline',
-                        'dark:text-gray-300 dark:hover:text-primary-500' => config('filament.dark_mode'),
-                    ])
-                >
-                    {{ __('Help') }}
-                </a>
+                    <span>
+                        &bull;
+                    </span>
+
+                    <a href="{{ config('app.url') }}#help" target="_blank" rel="noopener noreferrer" @class(['text-gray-600 hover:text-primary-500 focus:outline-none focus:underline' , 'dark:text-gray-300 dark:hover:text-primary-500'=> config('filament.dark_mode')])>
+                        {{ __('Help') }}
+                    </a>
+                </div>
             </div>
         </div>
     </x-filament::card>

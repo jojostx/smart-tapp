@@ -15,7 +15,7 @@
   @endif
 
   @pushOnce('scripts:body-end')
-  <script>
+  <script data-turbo-eval="false">
     document.addEventListener('alpine:init', () => {
       Alpine.data('toast', () => ({
         show_toast: '{{ $showToast }}',

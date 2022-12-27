@@ -73,9 +73,22 @@ class ReparkRequestResource extends Resource
                                 return '';
                             }),
                     ])
-                    ->columnSpan([
-                        'sm' => 2,
-                    ]),
+                    ->columnSpan(2),
+
+
+                Forms\Components\Card::make()
+                    ->schema([
+                        Forms\Components\Fieldset::make('Instructions')
+                            ->disabled()
+                            ->schema([
+                                Forms\Components\Placeholder::make('instructions')
+                                    ->disableLabel()
+                                    ->columnSpanFull()
+                                    ->content(fn () => \view('filament::components.instructions.create-repark-request-instructions')),
+                            ])
+                    ])
+                    ->visibleOn('create')
+                    ->columnSpan(2),
 
                 Forms\Components\Card::make()
                     ->schema([
@@ -85,14 +98,11 @@ class ReparkRequestResource extends Resource
                         Forms\Components\Placeholder::make('updated_at')
                             ->label('Last modified at')
                             ->content(fn (?ReparkRequest $record): string => $record ? $record->updated_at->diffForHumans() : '-'),
-                    ])
+                    ])->hiddenOn('create')
                     ->extraAttributes(['class' => 'hidden sm:block'])
                     ->columns(2)
                     ->columnSpan(2),
-            ])->columns([
-                'sm' => 4,
-                'lg' => null,
-            ]);
+            ])->columns(4);
     }
 
     public static function table(Table $table): Table
@@ -224,13 +234,6 @@ class ReparkRequestResource extends Resource
             ->bulkActions([
                 Tables\Actions\DeleteBulkAction::make(),
             ]);
-    }
-
-    public static function getRelations(): array
-    {
-        return [
-            //
-        ];
     }
 
     protected static function getNavigationBadge(): ?string

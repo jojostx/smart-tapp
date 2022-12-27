@@ -38,9 +38,7 @@ class ParkingLotResource extends Resource
         return $form
             ->schema([
                 self::detailsSection()
-                    ->columnSpan([
-                        'sm' => 2,
-                    ]),
+                    ->columnSpan(2),
 
                 Forms\Components\Card::make()
                     ->schema([
@@ -50,16 +48,11 @@ class ParkingLotResource extends Resource
                                 Forms\Components\Placeholder::make('instructions')
                                     ->disableLabel()
                                     ->columnSpanFull()
-                                    ->content(fn () => \view('filament::components.parking-lot-instructions')),
+                                    ->content(fn () => \view('filament::components.instructions.parking-lot-instructions')),
                             ])
                     ])
-                    ->extraAttributes(['class' => 'hidden sm:block'])
-                    ->columns(2)
-                    ->columnSpan(3),
-            ])->columns([
-                'sm' => 5,
-                'lg' => 5,
-            ]);
+                    ->columnSpan(2),
+            ])->columns(4);
     }
 
     public static function table(Table $table): Table
@@ -100,13 +93,6 @@ class ParkingLotResource extends Resource
                         static::getCurrentPasswordField(),
                     ]),
             ]);
-    }
-
-    public static function getRelations(): array
-    {
-        return [
-            //
-        ];
     }
 
     public static function getPages(): array

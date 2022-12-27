@@ -251,7 +251,7 @@ class AccessResource extends Resource
                             ->min(30)
                             ->max(120)
                             ->hint('<span>&#9432;</span> Time in minutes')
-                            ->helperText('<span class="text-sm"><span>&#9432;</span> The Access will expire if it is not activated by the customer before the timeout.</span>'),
+                            ->helperText('<span class="text-sm"><span>&#9432;</span> The Access will expire if it is not activated by the driver before the timeout.</span>'),
 
                         Forms\Components\Radio::make('status')
                             ->reactive()
@@ -261,9 +261,23 @@ class AccessResource extends Resource
                             ->required()
                             ->descriptions(AccessStatus::toDescriptionArray())->columnSpan('full'),
                     ])
-                    ->columnSpan([
-                        'sm' => 2,
-                    ]),
+                    ->columnSpan(2),
+
+
+                Forms\Components\Card::make()
+                    ->schema([
+                        Forms\Components\Fieldset::make('Instructions')
+                            ->disabled()
+                            ->schema([
+                                Forms\Components\Placeholder::make('instructions')
+                                    ->disableLabel()
+                                    ->columnSpanFull()
+                                    ->content(fn () => \view('filament::components.instructions.create-access-instructions')),
+                            ])
+                    ])
+                    ->visibleOn('create')
+                    ->columnSpan(2),
+
                 Forms\Components\Card::make()
                     ->schema([
                         Forms\Components\Placeholder::make('issued_at')
@@ -275,12 +289,10 @@ class AccessResource extends Resource
                         Forms\Components\Placeholder::make('created_at')
                             ->label('Created at')
                             ->content(fn (?Access $record): string => $record ? $record->created_at->diffForHumans() : '-'),
-                    ])
-                    ->columnSpan(1),
-            ])->columns([
-                'sm' => 3,
-                'lg' => null,
-            ]);
+                    ])->hiddenOn('create')
+                    ->columns(2)
+                    ->columnSpan(2),
+            ])->columns(4);
     }
 
     public static function table(Table $table): Table
@@ -484,13 +496,6 @@ class AccessResource extends Resource
                         static::getCurrentPasswordField(),
                     ]),
             ]);
-    }
-
-    public static function getRelations(): array
-    {
-        return [
-            //
-        ];
     }
 
     public static function getPages(): array

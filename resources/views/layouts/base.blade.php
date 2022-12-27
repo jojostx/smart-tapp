@@ -3,6 +3,7 @@
 
 <head>
     <meta charset="utf-8">
+    <meta name="turbo-visit-control" content="reload">
     <meta name="viewport" content="width=device-width, initial-scale=1">
     <meta name="apple-mobile-web-app-capable" content="yes">
     <meta name="description" content="Reliable Parking Control System">
@@ -42,7 +43,6 @@
     <x-toast :type="'info'" :hasCloseButton="true" :showToast="false"></x-toast>
 
     @livewireScripts
-
     @stack('scripts:body-end')
 </body>
 

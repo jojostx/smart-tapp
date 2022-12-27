@@ -8,7 +8,6 @@ use App\Filament\Forms\Components\HelpCard;
 use App\Filament\Forms\Components\SingleOptionMultiSelect;
 use App\Filament\Resources\UserResource\Pages;
 use App\Filament\Resources\UserResource\Pages\CreateUser;
-use App\Filament\Forms\Components\Password as FilamentPasswordRevealPassword;
 use App\Filament\Resources\UserResource\Pages\EditUser;
 use App\Filament\Resources\UserResource\RelationManagers\ParkingLotsRelationManager;
 use App\Models\Tenant\User;
@@ -43,30 +42,20 @@ class UserResource extends Resource
         return $form
             ->schema([
                 self::detailsSection()
-                    ->columnSpan([
-                        'sm' => 2,
-                    ]),
+                    ->columnSpan(2),
 
-                HelpCard::make('user-creation-help')
-                    ->content(
-                        str(
-                            '
-                            <ul class="space-y-4 text-primary-800">
-                                <li>
-                                    <span>• You can assign multiple available Parking lot per admin user.</span>
-                                </li>
-                                <li>
-                                    <span>• After creating an Admin User an email containing instructions to complete the account creation will be sent to their email address.</span>
-                                </li>
-                                <li>
-                                    <span>• The Admin user will have access to the dashboard for administering the Parking lots assigned to them.</span>
-                                </li>
-                            </ul>'
-                        )->toHtmlString()
-                    )
-                    ->visibleOn([
-                        CreateUser::class,
+                Forms\Components\Card::make()
+                    ->schema([
+                        Forms\Components\Fieldset::make('Instructions')
+                            ->disabled()
+                            ->schema([
+                                Forms\Components\Placeholder::make('instructions')
+                                    ->disableLabel()
+                                    ->columnSpanFull()
+                                    ->content(fn () => \view('filament::components.instructions.create-user-instructions')),
+                            ])
                     ])
+                    ->visibleOn('create')
                     ->columnSpan(2),
 
                 Forms\Components\Card::make()
@@ -87,10 +76,7 @@ class UserResource extends Resource
                     ->extraAttributes(['class' => 'hidden sm:block'])
                     ->columns(2)
                     ->columnSpan(2),
-            ])->columns([
-                'sm' => 4,
-                'lg' => null,
-            ]);
+            ])->columns(4);
     }
 
     public static function table(Table $table): Table
