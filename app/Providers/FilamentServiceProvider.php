@@ -31,9 +31,9 @@ class FilamentServiceProvider extends ServiceProvider
             Filament::registerScripts([asset('js/filament-stimulus.js')]);
         });
 
-        // Filament::registerRenderHook(
-        //     'global-search.end',
-        //     fn (): string => Blade::render('@livewire(\'components.notifications-panel\')'),
-        // );
+        Filament::registerRenderHook(
+            'global-search.start',
+            fn (): string => Blade::render('@livewire(\'components.subscription-indicator\')'),
+        );
     }
 }

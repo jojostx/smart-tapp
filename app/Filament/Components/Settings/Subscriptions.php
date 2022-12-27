@@ -36,7 +36,7 @@ class Subscriptions extends Component implements Tables\Contracts\HasTable
                     'secondary' => static fn ($state): bool => $state === Subscription::STATUS_ENDED,
                     'danger' => static fn ($state): bool => $state === Subscription::STATUS_CANCELLED,
                 ]),
-            Tables\Columns\TextColumn::make('name')->label('Id'),
+            Tables\Columns\TextColumn::make('name')->label('Id')->limit(6),
             Tables\Columns\TextColumn::make('plan.name'),
             Tables\Columns\TextColumn::make('starts_at')->label('Started at')->date(config('filament.date_format')),
             Tables\Columns\TextColumn::make('ends_at')->date(config('filament.date_format')),
