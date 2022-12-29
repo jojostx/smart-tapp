@@ -32,9 +32,9 @@ class Subscriptions extends Component implements Tables\Contracts\HasTable
                 ->colors([
                     'primary' => static fn ($state): bool => $state === Subscription::STATUS_TRAILLING,
                     'success' => static fn ($state): bool => $state === Subscription::STATUS_ACTIVE,
-                    'warning' => static fn ($state): bool => $state === Subscription::STATUS_OVERDUE,
+                    'danger' => static fn ($state): bool => $state === Subscription::STATUS_OVERDUE,
                     'secondary' => static fn ($state): bool => $state === Subscription::STATUS_ENDED,
-                    'danger' => static fn ($state): bool => $state === Subscription::STATUS_CANCELLED,
+                    'warning' => static fn ($state): bool => $state === Subscription::STATUS_CANCELLED,
                 ]),
             Tables\Columns\TextColumn::make('name')->label('Id')->limit(6),
             Tables\Columns\TextColumn::make('plan.name'),
@@ -74,7 +74,10 @@ class Subscriptions extends Component implements Tables\Contracts\HasTable
                     ->requiresConfirmation()
                     ->modalHeading('Cancel Subscription?')
                     ->modalSubheading('This will cancel the subscription at the end of the period and will disable auto-renewal.')
-                    ->action(fn (Subscription $record) => $record->cancel())
+                    ->action(function (Subscription $record) {
+                        $record->cancel();
+                        $this->emit('refresh');
+                    })
                     ->visible(fn (Subscription $record) => $record->notCancelled() && $record->hasNotEnded()),
 
                 Tables\Actions\Action::make('reactivate-subscription')
@@ -84,7 +87,10 @@ class Subscriptions extends Component implements Tables\Contracts\HasTable
                     ->requiresConfirmation()
                     ->modalHeading('Reactivate Subscription?')
                     ->modalSubheading('This will reactivate the subscription and will enable auto-renewal.')
-                    ->action(fn (Subscription $record) => $record->reactivate())
+                    ->action(function (Subscription $record) {
+                        $record->reactivate();
+                        $this->emit('refresh');
+                    })
                     ->visible(fn (Subscription $record) => $record->isCancelled() && $record->hasNotEnded()),
             ])
         ];
