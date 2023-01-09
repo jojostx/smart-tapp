@@ -149,7 +149,7 @@ class DriverResource extends Resource
                     ->required(),
                 Forms\Components\TextInput::make('email')
                     ->string()
-                    ->email()
+                    ->rule('email:strict,dns,spoof')
                     ->maxLength(255)
                     ->required(),
                 Forms\Components\TextInput::make('phone_number')

@@ -50,7 +50,7 @@ class Register extends Component
             'organization' => ['required', 'string', 'max:255'],
             'domain' => ['bail', 'required', 'string', 'min:2', 'max:' . config('tenancy.subdomain_maxlength'), new Subdomain],
             'fqsd' => ['bail', 'required', 'string', 'min:2', 'unique:domains,domain', 'unique:tenants,domain'],
-            'email' => ['required', 'string', 'email', 'unique:tenants,email', 'max:255', 'string'],
+            'email' => ['required', 'string', 'email:strict,dns,spoof', 'unique:tenants,email', 'max:255', 'string'],
             'password' => ['required', 'min:8', 'same:passwordConfirmation', Password::defaults()],
             'terms' => ['required', 'accepted'],
         ];

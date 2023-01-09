@@ -144,7 +144,7 @@ class AccessResource extends Resource
                                             ->placeholder('ex: JohnDoe@example.com')
                                             ->hint("The Driver's email (optional)")
                                             ->string()
-                                            ->email()
+                                            ->rule('email:strict,dns,spoof')
                                             ->maxLength(255)
                                             ->unique('drivers', 'email')
                                             ->dehydrateStateUsing(fn ($state) => str($state)->lower()),

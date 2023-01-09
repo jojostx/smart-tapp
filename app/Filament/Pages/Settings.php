@@ -80,7 +80,7 @@ class Settings extends Page implements Tables\Contracts\HasTable
                     TextInput::make('email')
                         ->label('Email')
                         ->maxLength(255)
-                        ->email(),
+                        ->rule('email:strict,dns,spoof'),
                     TextInput::make('tax_number')
                         ->label('Tax/VAT Number')
                         ->string()

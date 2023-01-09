@@ -97,7 +97,7 @@ class Profile extends Page
                         ->maxLength(255)
                         ->unique('pending_user_emails', 'email')
                         ->unique('users', 'email', $this->getFormModel())
-                        ->email(),
+                        ->rule('email:strict,dns,spoof'),
                     TextInput::make('phone_number')
                         ->label('Phone Number')
                         ->required()
