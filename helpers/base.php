@@ -255,3 +255,17 @@ if (!function_exists('getTokenizationCurrency')) {
         return 'NGN';
     }
 }
+
+if (! function_exists('central_route')) {
+    function central_route(string $centralDomain, $route, $parameters = [], $absolute = true)
+    {
+        // replace first occurance of hostname fragment with $centralDomain
+        $url = route($route, $parameters, $absolute);
+        $hostname = parse_url($url, PHP_URL_HOST);
+        $position = strpos($url, $hostname);
+
+        $centralDomain = str_replace('https://', '', $centralDomain);
+
+        return substr_replace($url, $centralDomain, $position, strlen($hostname));
+    }
+}
