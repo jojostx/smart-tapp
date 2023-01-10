@@ -3,7 +3,7 @@
 use App\Filament\Livewire\Auth\AccountDeactivated;
 use App\Filament\Livewire\Auth\PasswordRequest;
 use App\Filament\Livewire\Auth\PasswordReset;
-use App\Filament\Livewire\Auth\VerifyNewEmail;
+use App\Filament\Livewire\Auth\VerifyPendingNewEmail;
 use App\Http\Controllers\Subscription\AddCardController;
 use App\Http\Controllers\Subscription\CheckoutController;
 use Illuminate\Support\Facades\Route;
@@ -28,7 +28,7 @@ Route::name('filament.')
             Route::get('password/request', PasswordRequest::class)
                 ->name('auth.password.request');
 
-            Route::get('pending-email/verify/{token}', VerifyNewEmail::class)
+            Route::get('pending-email/verify/{token}', VerifyPendingNewEmail::class)
                 ->name('auth.pending-email.verify')
                 ->middleware(['signed']);
         });

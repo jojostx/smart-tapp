@@ -11,7 +11,7 @@ use Illuminate\Support\Facades\DB;
 use Livewire\Component;
 use Stancl\Tenancy\Contracts\TenantCouldNotBeIdentifiedException;
 
-class VerifyNewEmail extends Component
+class VerifyPendingNewEmail extends Component
 {
     use WithRateLimiting;
 
