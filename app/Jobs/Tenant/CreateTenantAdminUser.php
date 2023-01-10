@@ -17,25 +17,20 @@ class CreateTenantAdminUser implements ShouldQueue
     use Queueable;
     use SerializesModels;
 
-    protected $tenant;
-
     /**
      * Create a new job instance.
      *
      * @return void
      */
-    public function __construct(Tenant $tenant)
+    public function __construct(protected Tenant $tenant)
     {
-        $this->tenant = $tenant;
     }
 
     /**
      * Execute the job.
-     *
-     * @return
      */
-    public function handle()
+    public function handle(CreateTenantAdminUserAction $createTenantAdminUserAction)
     {
-        (new CreateTenantAdminUserAction)($this->tenant);
+        return filled($createTenantAdminUserAction($this->tenant));
     }
 }
