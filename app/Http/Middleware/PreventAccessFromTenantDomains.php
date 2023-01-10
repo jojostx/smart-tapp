@@ -9,10 +9,9 @@ use Illuminate\Contracts\Foundation\Application;
 use Illuminate\Contracts\Support\Responsable;
 use Illuminate\Cookie\CookieValuePrefix;
 use Illuminate\Cookie\Middleware\EncryptCookies;
-use Illuminate\Http\Response;
 use Illuminate\Routing\Route;
-use Illuminate\Session\TokenMismatchException;
 use Illuminate\Support\Facades\Route as Router;
+use Illuminate\Support\Facades\URL;
 use Illuminate\Support\InteractsWithTime;
 use Symfony\Component\HttpFoundation\Cookie;
 
@@ -62,8 +61,15 @@ class PreventAccessFromTenantDomains
     {
         $this->app = $app;
         $this->encrypter = $encrypter;
-        $this->central404 = $central404 ?? function () {
-            return 404;
+        $this->central404 = $central404 ?? function (\Illuminate\Http\Request $request, $next, $redirectDomain) {
+            $redirectDomain = blank($redirectDomain) ? 'main' : $redirectDomain;
+
+            if ($centralDomain = config('tenancy.central_domains.' . $redirectDomain, null)) {
+                // redirect to the central context
+                return redirect(central_route($centralDomain, $request->route()->getName()));
+            }
+
+            abort(404);
         };
     }
 
@@ -74,17 +80,23 @@ class PreventAccessFromTenantDomains
      * @param  \Closure(\Illuminate\Http\Request): (\Illuminate\Http\Response|\Illuminate\Http\RedirectResponse)  $next
      * @return \Illuminate\Http\Response|\Illuminate\Http\RedirectResponse
      */
-    public function handle($request, Closure $next)
+    public function handle($request, Closure $next, string $redirectDomain = '')
     {
-        $response = $next($request);
+        $isExemptDomain = in_array($request->getHost(), config('tenancy.central_domains'));
 
-        // If the route is universal, always let the request pass.
-        \dd($request->cookie(), $request->cookies, config()->get('tenancy.cookie'), config()->get('session.cookie'));
-
-        if (! $response instanceof Response) {
-            return $response;
+        if ($isExemptDomain) {
+            return $next($request);
         }
-        // check the request for tenancy_cookie and
+
+        try {
+            $tenant = \tenant();
+
+            if (\filled($tenant)) { // accessing routes from tenant. redirect to 404 if a tenant is identified
+                return ($this->central404)($request, $next, $redirectDomain);
+            }
+        } catch (\Stancl\Tenancy\Contracts\TenantCouldNotBeIdentifiedException $th) {
+            return $next($request);
+        }
     }
 
     public static function routeHasMiddleware(Route $route, $middleware): bool
@@ -97,42 +109,14 @@ class PreventAccessFromTenantDomains
         // groups have a `tenancy` middleware group inside them
         $middlewareGroups = Router::getMiddlewareGroups();
 
-        \dd($middleware);
-
         foreach ($route->gatherMiddleware() as $inner) {
-            if (! $inner instanceof Closure && isset($middlewareGroups[$inner]) && in_array($middleware, $middlewareGroups[$inner], true)) {
+            if (!$inner instanceof Closure && isset($middlewareGroups[$inner]) && in_array($middleware, $middlewareGroups[$inner], true)) {
                 return true;
             }
         }
 
         return false;
     }
-
-    // /**
-    //  * Handle an incoming request.
-    //  *
-    //  * @param  \Illuminate\Http\Request  $request
-    //  * @param  \Closure  $next
-    //  * @return mixed
-    //  *
-    //  * @throws \Illuminate\Session\TokenMismatchException
-    //  */
-    // public function handle($request, Closure $next)
-    // {
-    //     if (
-    //         $this->runningUnitTests() ||
-    //         $this->inExceptArray($request) ||
-    //         $this->tokensMatch($request)
-    //     ) {
-    //         return tap($next($request), function ($response) use ($request) {
-    //             if ($this->shouldAddTenancyCookie()) {
-    //                 $this->addCookieToResponse($request, $response);
-    //             }
-    //         });
-    //     }
-
-    //     throw new TokenMismatchException('CSRF token mismatch.');
-    // }
 
     /**
      * Determine if the application is running unit tests.
@@ -176,8 +160,8 @@ class PreventAccessFromTenantDomains
         $token = $this->getTokenFromRequest($request);
 
         return is_string($request->session()->token()) &&
-               is_string($token) &&
-               hash_equals($request->session()->token(), $token);
+            is_string($token) &&
+            hash_equals($request->session()->token(), $token);
     }
 
     /**
@@ -190,7 +174,7 @@ class PreventAccessFromTenantDomains
     {
         $token = $request->input('_token') ?: $request->header('X-TENANT-TOKEN');
 
-        if (! $token && $header = $request->header('X-XTENANT-TOKEN')) {
+        if (!$token && $header = $request->header('X-XTENANT-TOKEN')) {
             try {
                 $token = CookieValuePrefix::remove($this->encrypter->decrypt($header, static::serialized()));
             } catch (DecryptException $e) {
