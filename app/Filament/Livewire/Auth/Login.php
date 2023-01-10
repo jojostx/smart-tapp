@@ -3,10 +3,13 @@
 namespace App\Filament\Livewire\Auth;
 
 use App\Filament\Traits\WithDomainValidation;
+use App\Models\PendingTenant;
 use App\Models\Tenant;
 use App\Models\Tenant\User;
 use DanHarrin\LivewireRateLimiting\WithRateLimiting;
 use Illuminate\Support\Facades\Hash;
+use Illuminate\Support\Facades\Route;
+use Illuminate\Support\Facades\URL;
 use Livewire\Component;
 
 class Login extends Component
@@ -52,10 +55,8 @@ class Login extends Component
 
         $validated = $this->validate();
 
-        // check if a tenant with the email && domain exists in the
-        if ($tenant = Tenant::whereUnverified($validated['email'], $validated['domain'])->first()) {
-            // redirect to email verification page
-            return redirect()->intended(route('verification.notice', ['id' => $tenant->getKey(), 'email_sent' => false]));
+        if (filled($redirectTo = $this->redirectIfUnverified($validated))) {
+            return $redirectTo;
         }
 
         /** @var \App\Models\Tenant $tenant */
@@ -84,6 +85,29 @@ class Login extends Component
         $domain = $tenant->domain;
 
         return redirect("https://$domain/impersonate/{$token->token}");
+    }
+
+    protected function redirectIfUnverified(array $validated)
+    {
+        // check if a tenant with the email && domain exists
+        if ($tenant = Tenant::whereUnverified($validated['email'], $validated['domain'])->first()) {
+            // redirect to email verification page
+            return redirect()->route('verification.notice', ['id' => $tenant->getKey(), 'email_sent' => false]);
+        }
+
+        return tenancy()->central(function () use ($validated) {
+            // check if a pending tenant with the email && domain exists
+            if ($tenant = PendingTenant::whereUnverified($validated['email'], $validated['domain'])->first()) {
+                // redirect to pending tenant email verification page
+                return redirect(central_route(
+                    config('tenancy.central_domains.main'),
+                    'verification.pending.notice',
+                    ['id' => $tenant->getKey(), 'email_sent' => false]
+                ));
+            }
+
+            return null;
+        });
     }
 
     public function render()

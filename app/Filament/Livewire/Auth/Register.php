@@ -2,7 +2,7 @@
 
 namespace App\Filament\Livewire\Auth;
 
-use App\Models\Tenant;
+use App\Models\PendingTenant;
 use App\Rules\Subdomain;
 use DanHarrin\LivewireRateLimiting\WithRateLimiting;
 use Illuminate\Support\Facades\Hash;
@@ -81,16 +81,25 @@ class Register extends Component
 
         /** @todo consider implementing something similar to propangandist pending email feature **/
         // create temporary unverified tenant 
-        $tenant = Tenant::create([
-            'name' => $validated['name'],
-            'email' => $validated['email'],
-            'password' => Hash::make($validated['password']),
-            'organization' => $validated['organization'],
-            'domain' => $validated['fqsd'],
-        ]);
+        $pendingTenant = PendingTenant::query()
+            ->firstOrCreate(
+                [
+                    'email' => $validated['email'],
+                    'domain' => $validated['fqsd']
+                ],
+                [
+                    'name' => $validated['name'],
+                    'email' => $validated['email'],
+                    'password' => Hash::make($validated['password']),
+                    'domain' => $validated['fqsd'],
+                    'organization' => $validated['organization'],
+                ]
+            );
+
+        $pendingTenant->sendEmailVerificationNotification();
 
         // redirect to email verification page
-        return redirect()->intended(route('verification.notice', ['id' => $tenant->getKey(), 'email_sent' => true]));
+        return redirect()->intended(route('verification.pending.notice', ['id' => $pendingTenant->getKey(), 'email_sent' => true]));
     }
 
     public function render()

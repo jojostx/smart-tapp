@@ -4,8 +4,10 @@ use App\Filament\Livewire\Auth\Login;
 use App\Filament\Livewire\Auth\PasswordRequest;
 use App\Filament\Livewire\Auth\Register;
 use App\Filament\Livewire\Auth\Verify;
+use App\Filament\Livewire\Auth\VerifyPendingTenant;
 use App\Http\Controllers\HandleAfricasTalkingWebhookReport;
 use App\Http\Controllers\Subscription\PlanController;
+use App\Http\Middleware\PreventAccessFromTenantDomains;
 use Illuminate\Support\Facades\Route;
 
 /*
@@ -28,11 +30,16 @@ Route::group(['prefix' => 'plans', 'as' => 'plans.'], function () {
 Route::middleware(['web', 'guest'])
     ->withoutMiddleware('cookie_consent')
     ->group(function () {
-        Route::get('register', Register::class)
-            ->name('register');
-
         Route::get('login', Login::class)
             ->name('login');
+
+        Route::get('register', Register::class)
+            ->name('register')
+            ->middleware('central'); // can only be accessed from central context
+
+        Route::get('email/verify-pending/{id?}', VerifyPendingTenant::class)
+            ->name('verification.pending.notice')
+            ->middleware('central');
 
         Route::get('email/verify/{id?}', Verify::class)
             ->name('verification.notice');
