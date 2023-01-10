@@ -22,8 +22,6 @@ class Kernel extends HttpKernel
         \App\Http\Middleware\TrimStrings::class,
         \Illuminate\Foundation\Http\Middleware\ConvertEmptyStringsToNull::class,
         \Spatie\CookieConsent\CookieConsentMiddleware::class,
-        // \App\Http\Middleware\PreventAccessFromTenantDomains::class,
-        // \App\Http\Middleware\AddTenancyCookieMiddleware::class,
     ];
 
     /**
@@ -70,6 +68,7 @@ class Kernel extends HttpKernel
 
         'auth.filament' => \Filament\Http\Middleware\Authenticate::class,
         'guest.filament' => \App\Http\Middleware\FilamentRedirectIfAuthenticated::class,
+        'central' => \App\Http\Middleware\PreventAccessFromTenantDomains::class,
 
         // defaults
         'auth' => \App\Http\Middleware\Authenticate::class,
