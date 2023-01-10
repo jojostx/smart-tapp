@@ -4,6 +4,7 @@ declare(strict_types=1);
 
 namespace App\Providers;
 
+use App\Events\Tenant\TenantAdminUserCreated;
 use App\Events\Tenant\TenantVerified;
 use App\Http\Middleware\InitializeTenancyByDomain;
 use App\Jobs\Tenant;
@@ -43,6 +44,16 @@ class TenancyServiceProvider extends ServiceProvider
                 ])->send(function (TenantVerified $event) {
                     return $event->tenant;
                 })->shouldBeQueued(true), // `false` by default, but you probably want to make this `true` for production.
+            ],
+
+            // fired when a tenant admin user has been created
+            TenantAdminUserCreated::class => [
+                JobPipeline::make([
+                    // create assign super admin role to tenant user
+                    Tenant\AssignSuperAdminRoleToTenantUser::class,
+                ])->send(function (TenantAdminUserCreated $event) {
+                    return $event->tenant;
+                })->shouldBeQueued(false), // `false` by default, but you probably want to make this `true` for production.
             ],
 
             Events\SavingTenant::class => [],
