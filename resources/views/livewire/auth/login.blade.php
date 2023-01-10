@@ -26,7 +26,7 @@
             <form wire:submit.prevent="authenticate">
                 @if (blank($this->currentTenant))
                 <!-- Domain -->
-                <x-domain-input :wire_lazy="true"/>
+                <x-domain-input :wire_lazy="true" />
                 @endif
 
                 <!-- Email Address -->
@@ -73,7 +73,7 @@
                     </div>
                 </div>
 
-                <x-filament::button type="submit" form="submit" class="w-full mt-6">
+                <x-filament::button type="submit" form="submit" wire:target="authenticate" class="w-full mt-6">
                     {{ __('Sign in') }}
                 </x-filament::button>
             </form>

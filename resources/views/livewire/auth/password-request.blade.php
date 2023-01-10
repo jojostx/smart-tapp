@@ -60,7 +60,7 @@
             @enderror
           </div>
 
-          <x-filament::button type="submit" form="submit" class="w-full mt-6">
+          <x-filament::button type="submit" form="submit" wire:target="send" class="w-full mt-6">
             {{ __('Send Instructions') }}
           </x-filament::button>
         </form>

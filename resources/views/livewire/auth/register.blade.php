@@ -35,7 +35,7 @@
                 </div>
 
                 <!-- Domain -->
-                <x-domain-input :wire_lazy="true"/>
+                <x-domain-input :wire_lazy="true" />
 
                 <!-- Name -->
                 <div class="mt-4">
@@ -93,7 +93,7 @@
                     @enderror
                 </div>
 
-                <x-filament::button type="submit" form="submit" class="w-full mt-6">
+                <x-filament::button type="submit" wire:target="register" form="submit" class="w-full mt-6">
                     {{ __('Create Account') }}
                 </x-filament::button>
             </form>

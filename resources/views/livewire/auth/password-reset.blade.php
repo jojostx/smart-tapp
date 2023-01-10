@@ -35,7 +35,7 @@
       <form wire:submit.prevent="submit">
         {{ $this->form }}
 
-        <x-filament::button type="submit" form="submit" class="w-full mt-6">
+        <x-filament::button type="submit" form="submit" wire:target="submit" class="w-full mt-6">
           {{ __('Reset Password') }}
         </x-filament::button>
       </form>
