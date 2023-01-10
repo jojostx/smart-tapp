@@ -8,7 +8,7 @@ trait HasOTP
 {
     public function getIdentifier()
     {
-        return sha1($this->getKey() . $this->email . $this->password);
+        return sha1(static::class . $this->getKey() . $this->email . $this->password);
     }
 
     /**
