@@ -106,7 +106,21 @@ class Verify extends Component
         event(new TenantVerified($this->tenant));
     }
 
-    public function redirectIfSubdomainIsCreated()
+    public function getTenantHasDomainProperty()
+    {
+        return (bool) $this->tenant?->domains()->first()?->domain;
+    }
+
+    public function getTenantAlreadyPreparedProperty()
+    {
+        return $this->tenant &&
+            $this->tenant->hasVerifiedEmail() &&
+            $this->tenantDatabaseAlreadyExists() &&
+            $this->tenantAdminUserExists() &&
+            $this->tenantHasDomain;
+    }
+
+    public function redirectIfAccountHasBeenPrepared()
     {
         // retrieve tenant from database
         $this->tenant ??= Tenant::where(['email' => $this->email])->firstOrFail();
@@ -157,20 +171,6 @@ class Verify extends Component
         $manager = $this->tenant->database()->manager();
 
         return $manager->databaseExists($this->tenant->database()->getName());
-    }
-
-    public function getTenantHasDomainProperty()
-    {
-        return (bool) $this->tenant?->domains()->first()?->domain;
-    }
-
-    public function getTenantAlreadyPreparedProperty()
-    {
-        return $this->tenant &&
-            $this->tenant->hasVerifiedEmail() &&
-            $this->tenantDatabaseAlreadyExists() &&
-            $this->tenantAdminUserExists() &&
-            $this->tenantHasDomain;
     }
 
     public function render()
