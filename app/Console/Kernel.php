@@ -3,6 +3,7 @@
 namespace App\Console;
 
 use App\Console\Commands\ClearExpiredOtpsCommand;
+use App\Console\Commands\DeleteOldPendingTenantsCommand;
 use App\Console\Commands\DeleteOldUnverifiedTenantsCommand;
 use App\Console\Commands\RenewTenantsSubscriptionsCommand;
 use Illuminate\Console\Scheduling\Schedule;
@@ -24,7 +25,7 @@ class Kernel extends ConsoleKernel
             ->dailyAt('1:00')
             ->timezone('Africa/Lagos');
 
-        $schedule->command(DeleteOldUnverifiedTenantsCommand::class)
+        $schedule->command(DeleteOldPendingTenantsCommand::class)
             ->dailyAt('6:00')
             ->timezone('Africa/Lagos');
 

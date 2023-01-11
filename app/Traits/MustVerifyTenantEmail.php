@@ -66,7 +66,7 @@ trait MustVerifyTenantEmail
               ->greeting('Hello!')
               ->line('Thank you for choosing ' . config('app.name', 'Smart-tapp') . ', Use the following OTP to complete your Sign Up procedures. OTP is valid for 10 minutes')
               ->line(Lang::get('Your verification OTP is'))
-              ->line($otp)
+              ->line(str("<b>$otp</b>")->toHtmlString())
               ->line(Lang::get('If you did not create an account, no further action is required.'));
         };
     }
