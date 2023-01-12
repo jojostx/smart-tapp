@@ -2574,16 +2574,16 @@
         },
         {
             "name": "jojostx/larasubs",
-            "version": "v0.1.4",
+            "version": "v0.1.5",
             "source": {
                 "type": "git",
                 "url": "https://github.com/jojostx/larasubs.git",
-                "reference": "e56a96a5a153a4f86d818200237be9836b819a88"
+                "reference": "146386caacea4da6aec5289edd46a44ce5ffa1f7"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/jojostx/larasubs/zipball/e56a96a5a153a4f86d818200237be9836b819a88",
-                "reference": "e56a96a5a153a4f86d818200237be9836b819a88",
+                "url": "https://api.github.com/repos/jojostx/larasubs/zipball/146386caacea4da6aec5289edd46a44ce5ffa1f7",
+                "reference": "146386caacea4da6aec5289edd46a44ce5ffa1f7",
                 "shasum": ""
             },
             "require": {
@@ -2633,11 +2633,18 @@
                 }
             ],
             "description": "Flexible plans and subscription management system for Laravel, with the required tools to run your SAAS like services efficiently",
+            "keywords": [
+                "billing",
+                "laravel",
+                "plans",
+                "saas",
+                "subscriptions"
+            ],
             "support": {
                 "issues": "https://github.com/jojostx/larasubs/issues",
-                "source": "https://github.com/jojostx/larasubs/tree/v0.1.4"
+                "source": "https://github.com/jojostx/larasubs/tree/v0.1.5"
             },
-            "time": "2022-12-24T06:31:12+00:00"
+            "time": "2023-01-12T05:51:25+00:00"
         },
         {
             "name": "kingflamez/laravelrave",

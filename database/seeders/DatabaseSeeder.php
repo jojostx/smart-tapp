@@ -45,6 +45,7 @@ class DatabaseSeeder extends Seeder
 
         $standard_yearly = Plan::create([
             'name' => 'standard',
+            'slug' => 'standard-yearly',
             'description' => [
                 'tag' => 'Ideal for medium organizations that need to control parking efficiently.',
                 'body' => 'Ideal for medium organizations that need to control parking efficiently.',
@@ -65,6 +66,7 @@ class DatabaseSeeder extends Seeder
 
         $premium_yearly = Plan::create([
             'name' => 'premium',
+            'slug' => 'premium-yearly',
             'description' => [
                 'tag' => 'For larger organizations that need reliable and scalable solutions',
                 'body' => 'For larger organizations that need reliable and scalable solutions',
@@ -85,9 +87,10 @@ class DatabaseSeeder extends Seeder
 
         $enterprise_yearly = Plan::create([
             'name' => 'enterprise',
+            'slug' => 'enterprise-yearly',
             'description' => [
-                'tag' => 'Ideal for establishments with large parking traffic, customized or unique business models',
-                'body' => 'Ideal for establishments with large parking traffic, customized or unique business models',
+                'tag' => 'Ideal for establishments with specialized and large parking traffic',
+                'body' => 'Ideal for establishments with specialized and large parking traffic',
                 'icon' => 'heroicon-o-globe',
                 'highlight' => false,
             ],
@@ -106,6 +109,7 @@ class DatabaseSeeder extends Seeder
         /** monthly */
         $standard_monthly = Plan::create([
             'name' => 'standard',
+            'slug' => 'standard-monthly',
             'description' => [
                 'tag' => 'Ideal for medium organizations that need to control parking efficiently.',
                 'body' => 'Ideal for medium organizations that need to control parking efficiently.',
@@ -126,6 +130,7 @@ class DatabaseSeeder extends Seeder
 
         $premium_monthly = Plan::create([
             'name' => 'premium',
+            'slug' => 'premium-monthly',
             'description' => [
                 'tag' => 'For larger organizations that need reliable and scalable solutions',
                 'body' => 'For larger organizations that need reliable and scalable solutions',
@@ -146,9 +151,10 @@ class DatabaseSeeder extends Seeder
 
         $enterprise_monthly = Plan::create([
             'name' => 'enterprise',
+            'slug' => 'enterprise-monthly',
             'description' => [
-                'tag' => 'Ideal for establishments with large parking traffic, customized or unique business models',
-                'body' => 'Ideal for establishments with large parking traffic, customized or unique business models',
+                'tag' => 'Ideal for establishments with specialized and large parking traffic',
+                'body' => 'Ideal for establishments with specialized and large parking traffic',
                 'icon' => 'heroicon-o-globe',
                 'highlight' => false,
             ],
@@ -227,7 +233,7 @@ class DatabaseSeeder extends Seeder
         $premium_yearly->features()->attach($accesses_per_parking_lot, ['units' => 120]);
         $premium_yearly->features()->attach($dedicated_support);
 
-        $standard_yearly->features()->attach($teamMembers, ['units' => 10]);
+        $enterprise_yearly->features()->attach($teamMembers, ['units' => 10]);
         $enterprise_yearly->features()->attach($parkingLots, ['units' => 20]);
         $enterprise_yearly->features()->attach($accesses_per_parking_lot, ['units' => 200]);
         $enterprise_yearly->features()->attach($dedicated_support);
@@ -242,7 +248,7 @@ class DatabaseSeeder extends Seeder
         $premium_monthly->features()->attach($accesses_per_parking_lot, ['units' => 120]);
         $premium_monthly->features()->attach($dedicated_support);
 
-        $standard_monthly->features()->attach($teamMembers, ['units' => 10]);
+        $enterprise_monthly->features()->attach($teamMembers, ['units' => 10]);
         $enterprise_monthly->features()->attach($parkingLots, ['units' => 20]);
         $enterprise_monthly->features()->attach($accesses_per_parking_lot, ['units' => 200]);
         $enterprise_monthly->features()->attach($dedicated_support);
