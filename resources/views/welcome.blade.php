@@ -56,13 +56,13 @@
 <section class="py-16 text-white bg-gray-900 sm:py-24">
     <div class="container grid grid-cols-1 px-4 m-auto sm:px-6 md:px-12 lg:grid-cols-2 gap-y-8 lg:gap-x-16 lg:items-center">
         <div class="max-w-lg mx-auto my-4 text-center lg:text-left lg:mx-0">
-            <h2 class="text-4xl font-bold tracking-tight sm:text-5xl">Find your career path</h2>
+            <h2 class="text-3xl font-bold tracking-tight md:text-4xl">Manage Your Parking Lot From One Dashboard</h2>
 
             <p class="mt-4 text-lg text-gray-300">
-                Lorem ipsum dolor sit amet consectetur adipisicing elit. Aut vero
-                aliquid sint distinctio iure ipsum cupiditate? Quis, odit assumenda?
-                Deleniti quasi inventore, libero reiciendis minima aliquid tempora.
-                Obcaecati, autem.
+                Allocate parking spaces to your visitors.
+                Resolve blockage between vehicles.
+                Track vehicles and drivers history on your premises.
+                Communicate efficiently with your visitors.
             </p>
 
             <a href="{{ route('register')  }}" class=" mt-8 text-white bg-primary-600 hover:bg-primary-800 focus:ring-4 focus:outline-none focus:ring-primary-300 font-medium rounded-lg text-sm px-5 py-2.5 text-center inline-flex items-center">
@@ -136,10 +136,10 @@
                         </h2>
 
                         <p class="text-lg text-gray-700">
-                            No matter how many team members you have - our pricing is simple, transparent and adapts to the size of your company
+                            Our pricing is simple, transparent and adapts to the size of your company
                         </p>
 
-                        <a href="{{ route('register') }}" class="text-white bg-primary-600 hover:bg-primary-800 focus:ring-4 focus:outline-none focus:ring-primary-300 font-medium rounded-lg text-sm px-5 py-2.5 text-center inline-flex items-center">
+                        <a href="{{ route('plans.pricing') }}" class="text-white bg-primary-600 hover:bg-primary-800 focus:ring-4 focus:outline-none focus:ring-primary-300 font-medium rounded-lg text-sm px-5 py-2.5 text-center inline-flex items-center">
                             More Details
                             <svg class="w-4 h-4 ml-2" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor">
                                 <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17 8l4 4m0 0l-4 4m4-4H3" />
@@ -161,11 +161,9 @@
         <div class="grid mt-16 overflow-hidden border divide-x divide-y rounded-xl sm:grid-cols-2 lg:divide-y-0 lg:grid-cols-3 xl:grid-cols-4">
             <div class="relative group bg-white transition hover:z-[1] hover:shadow-2xl">
                 <div class="relative p-8 space-y-8">
-                    <!-- <img src="images/avatars/burger.png" class="w-10" width="512" height="512" alt="burger illustration"> -->
-
                     <div class="space-y-2">
-                        <h5 class="text-xl font-medium text-gray-800 transition group-hover:text-primary-600">First feature</h5>
-                        <p class="text-sm text-gray-600">Neque Dolor, fugiat non cum doloribus aperiam voluptates nostrum.</p>
+                        <h5 class="text-xl font-medium text-gray-800 transition group-hover:text-primary-600">Onboard Visitors</h5>
+                        <p class="text-sm text-gray-600">Easily allocate parking spaces to your visitors.</p>
                     </div>
                     <a href="#" class="flex items-center justify-between group-hover:text-primary-600">
                         <span class="text-sm">Read more</span>
@@ -175,11 +173,9 @@
             </div>
             <div class="relative group bg-white transition hover:z-[1] hover:shadow-2xl">
                 <div class="relative p-8 space-y-8">
-                    <!-- <img src="images/avatars/trowel.png" class="w-10" width="512" height="512" alt="burger illustration"> -->
-
                     <div class="space-y-2">
-                        <h5 class="text-xl font-medium text-gray-800 transition group-hover:text-primary-600">Second feature</h5>
-                        <p class="text-sm text-gray-600">Neque Dolor, fugiat non cum doloribus aperiam voluptates nostrum.</p>
+                        <h5 class="text-xl font-medium text-gray-800 transition group-hover:text-primary-600">Resolve Blockage</h5>
+                        <p class="text-sm text-gray-600">Notify your visitors in the case of blockage to repark their vehicle.</p>
                     </div>
                     <a href="#" class="flex items-center justify-between group-hover:text-primary-600">
                         <span class="text-sm">Read more</span>
@@ -189,11 +185,9 @@
             </div>
             <div class="relative group bg-white transition hover:z-[1] hover:shadow-2xl">
                 <div class="relative p-8 space-y-8">
-                    <!-- <img src="images/avatars/package-delivery.png" class="w-10" width="512" height="512" alt="burger illustration"> -->
-
                     <div class="space-y-2">
-                        <h5 class="text-xl font-medium text-gray-800 transition group-hover:text-primary-600">Third feature</h5>
-                        <p class="text-sm text-gray-600">Neque Dolor, fugiat non cum doloribus aperiam voluptates nostrum.</p>
+                        <h5 class="text-xl font-medium text-gray-800 transition group-hover:text-primary-600">Track Visitor History </h5>
+                        <p class="text-sm text-gray-600">Efficiently track visitor activity and frequency patterns.</p>
                     </div>
                     <a href="#" class="flex items-center justify-between group-hover:text-primary-600">
                         <span class="text-sm">Read more</span>
@@ -203,11 +197,9 @@
             </div>
             <div class="relative group bg-gray-100 transition hover:z-[1] hover:shadow-2xl lg:hidden xl:block">
                 <div class="relative p-8 space-y-8 transition duration-300 border-dashed rounded-lg group-hover:bg-white group-hover:border group-hover:scale-90">
-                    <!-- <img src="images/avatars/metal.png" class="w-10" width="512" height="512" alt="burger illustration"> -->
-
                     <div class="space-y-2">
                         <h5 class="text-xl font-medium text-gray-800 transition group-hover:text-primary-600">More features</h5>
-                        <p class="text-sm text-gray-600">Neque Dolor, fugiat non cum doloribus aperiam voluptates nostrum.</p>
+                        <p class="text-sm text-gray-600">Many features to effectively control your parking spaces.</p>
                     </div>
                     <a href="#" class="flex items-center justify-between group-hover:text-primary-600">
                         <span class="text-sm">Read more</span>
@@ -244,7 +236,7 @@
     </div>
 </section>
 
-<section class="relative py-16 sm:py-24 bg-gray-50">
+<section class="relative hidden py-16 sm:py-24 bg-gray-50">
     <div class="container px-4 mx-auto sm:px-6 md:px-12">
         <div class="max-w-[38rem] mx-auto text-center">
             <h2 class="text-4xl font-bold tracking-tight sm:text-5xl">
@@ -329,25 +321,7 @@
     </div>
 </section>
 
-<section class="py-16 overflow-hidden md:py-24 md:pt-0 bg-gray-50">
-    <div class="container px-4 m-auto space-y-8 sm:px-6 md:px-12">
-        <div class="flex flex-col items-center justify-between px-8 py-16 overflow-hidden bg-primary-600 md:px-12 md:flex-row rounded-xl">
-            <div class="mb-6 md:mb-0">
-                <h2 class="text-3xl font-bold text-center text-white md:text-left md:text-4xl">Ready to get started?</h2>
-                <p class="max-w-md mt-2 text-lg font-semibold text-center text-primary-200 md:text-left">We have a generous Standard tier available to get you started right away.</p>
-            </div>
-
-            <div>
-                <a href="{{ route('register')  }}" class="inline-flex items-center px-8 py-3 text-lg font-semibold text-center bg-white rounded-lg text-primary-600 hover:bg-gray-100 focus:ring-4 focus:outline-none focus:ring-primary-300">
-                    Try Smart-tapp for free
-                    <svg class="w-4 h-4 ml-2 -mr-1" fill="currentColor" viewBox="0 0 20 20" xmlns="http://www.w3.org/2000/svg">
-                        <path fill-rule="evenodd" d="M10.293 3.293a1 1 0 011.414 0l6 6a1 1 0 010 1.414l-6 6a1 1 0 01-1.414-1.414L14.586 11H3a1 1 0 110-2h11.586l-4.293-4.293a1 1 0 010-1.414z" clip-rule="evenodd"></path>
-                    </svg>
-                </a>
-            </div>
-        </div>
-    </div>
-</section>
+<x-cta-card />
 
 <x-footer />
 
