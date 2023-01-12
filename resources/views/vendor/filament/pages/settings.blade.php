@@ -17,21 +17,38 @@
     </div>
 
     <div id="tabs">
-        <div x-show="tab === 'plans'" x-cloak class="p-4 py-6 bg-gray-900 rounded-lg dark:bg-gray-800" id="plans" role="tabpanel" aria-labelledby="plans-tab">
-            <div>
-                <div class="max-w-lg text-sm font-medium text-primary-100">
-                    <ul class="space-y-1">
-                        <li>
-                            <span>• Please make sure to not exceed the feature allocations for the plan you are downgrading to, otherwise your excess parking lots, accesses and team members will be deleted!</span>
-                        </li>
-                        <li>
-                            <span>• You can switch plans for your current subscription only once in {{ \planChangeFrequencyLimit() }}.</span>
-                        </li>
-                    </ul>
-                </div>
-                <div class="mt-12 space-y-4 sm:mt-16 sm:space-y-0 sm:grid sm:grid-cols-2 sm:gap-6 lg:max-w-4xl lg:mx-auto xl:max-w-none xl:mx-0 xl:grid-cols-4">
-                    @foreach ($this->plans as $plan)
-                    <x-plan.card :$plan :params="$this->currentPlan?->is($plan) ? [] : $this->params" :should-highlight="$this->currentPlan?->is($plan)" :route="$this->currentPlan?->is($plan) ? 'filament.pages.settings' : 'filament.plans.checkout'" :route-label="$this->currentPlan?->is($plan) ? __('View Plan') : __('Start now')" />
+        <div x-show="tab === 'plans'" x-cloak id="plans" role="tabpanel" aria-labelledby="plans-tab">
+            <div class="max-w-4xl text-gray-700">
+                <ul class="space-y-1">
+                    <li>
+                        <span>• Please make sure to not exceed the feature allocations for the plan you are downgrading to, otherwise your excess parking lots, accesses and team members will be deleted!</span>
+                    </li>
+                    <li>
+                        <span>• You can switch plans for your current subscription only once in {{ \planChangeFrequencyLimit() }}.</span>
+                    </li>
+                </ul>
+            </div>
+            <div class="p-4 py-6 mt-4 bg-gray-900 rounded-lg dark:bg-gray-800">
+                <div x-data="{ interval: 12 }">
+                    <div class="py-4 pt-0 text-center">
+                        <div class="w-full max-w-sm px-4 mx-auto">
+                            <div class="flex w-full p-2 border-2 border-primary-500 rounded-xl bg-primary-500/30">
+                                <button @click="interval = 1" :class="interval == 1 ? 'bg-primary-500 shadow-ios' : 'hover:text-primary-100'" class="block w-full py-1 text-sm text-white transition rounded-lg" type="button">
+                                    Monthly
+                                </button>
+                                <button @click="interval = 12" :class="interval == 12 ? 'bg-primary-500 shadow-ios' : 'hover:text-primary-100'" class="block w-full py-1 text-sm text-white transition rounded-lg" type="button">
+                                    Annual
+                                </button>
+                            </div>
+                        </div>
+                    </div>
+
+                    @foreach ($this->plans as $planGroupKey => $planGroup)
+                    <div x-cloak x-show="interval == {{ $planGroupKey }}" class="mt-6 space-y-4 sm:space-y-0 sm:grid sm:grid-cols-2 sm:gap-6 lg:max-w-4xl lg:mx-auto xl:max-w-none xl:mx-0 xl:grid-cols-4">
+                        @foreach ($planGroup as $plan)
+                        <x-plan.card :$plan :params="$this->currentPlan?->is($plan) ? [] : $this->params" :should-highlight="$this->currentPlan?->is($plan)" :route="$this->currentPlan?->is($plan) ? 'filament.pages.settings' : 'filament.plans.checkout'" :route-label="$this->currentPlan?->is($plan) ? __('View Plan') : __('Start now')" />
+                        @endforeach
+                    </div>
                     @endforeach
                 </div>
             </div>

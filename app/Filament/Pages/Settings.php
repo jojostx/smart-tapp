@@ -11,8 +11,8 @@ use Filament\Forms\Components\TextInput;
 use Filament\Notifications\Notification;
 use Filament\Pages\Page;
 use Filament\Tables;
-use Illuminate\Database\Eloquent\Collection;
 use Illuminate\Database\Eloquent\Model;
+use Illuminate\Support\Collection as Collection;
 
 class Settings extends Page implements Tables\Contracts\HasTable
 {
@@ -108,7 +108,15 @@ class Settings extends Page implements Tables\Contracts\HasTable
 
     public function getPlansProperty(PlanRepository $plans): Collection
     {
-        return $plans->getActive();
+        $plans = $plans->getActive();
+
+        $free_plans = $plans->filter->isFree();
+
+        return $plans
+            ->groupBy('interval')
+            ->map(function ($group) use ($free_plans) {
+                return $group->concat($free_plans)->unique()->sortBy('sort_order');
+            });
     }
 
     public function getParamsProperty(): array

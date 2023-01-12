@@ -22,6 +22,7 @@ class DatabaseSeeder extends Seeder
 
     public function seedPlans()
     {
+        /** yearly */
         $free = Plan::create([
             'name' => 'free',
             'description' => [
@@ -42,7 +43,7 @@ class DatabaseSeeder extends Seeder
             'sort_order' => 0,
         ]);
 
-        $standard = Plan::create([
+        $standard_yearly = Plan::create([
             'name' => 'standard',
             'description' => [
                 'tag' => 'Ideal for medium organizations that need to control parking efficiently.',
@@ -62,7 +63,7 @@ class DatabaseSeeder extends Seeder
             'sort_order' => 1,
         ]);
 
-        $premium = Plan::create([
+        $premium_yearly = Plan::create([
             'name' => 'premium',
             'description' => [
                 'tag' => 'For larger organizations that need reliable and scalable solutions',
@@ -82,7 +83,7 @@ class DatabaseSeeder extends Seeder
             'sort_order' => 2,
         ]);
 
-        $enterprise = Plan::create([
+        $enterprise_yearly = Plan::create([
             'name' => 'enterprise',
             'description' => [
                 'tag' => 'Ideal for establishments with large parking traffic, customized or unique business models',
@@ -102,6 +103,68 @@ class DatabaseSeeder extends Seeder
             'sort_order' => 3,
         ]);
 
+        /** monthly */
+        $standard_monthly = Plan::create([
+            'name' => 'standard',
+            'description' => [
+                'tag' => 'Ideal for medium organizations that need to control parking efficiently.',
+                'body' => 'Ideal for medium organizations that need to control parking efficiently.',
+                'icon' => 'heroicon-o-scale',
+                'highlight' => false,
+            ],
+            'active' => true,
+            'price' => 350000, // price in the lowest currency value (kobo)
+            'currency' => 'NGN',
+            'interval' => 1,
+            'interval_type' => IntervalType::MONTH,
+            'trial_interval' => 1,
+            'trial_interval_type' => IntervalType::WEEK,
+            'grace_interval' => 1,
+            'grace_interval_type' => IntervalType::WEEK,
+            'sort_order' => 1,
+        ]);
+
+        $premium_monthly = Plan::create([
+            'name' => 'premium',
+            'description' => [
+                'tag' => 'For larger organizations that need reliable and scalable solutions',
+                'body' => 'For larger organizations that need reliable and scalable solutions',
+                'icon' => 'heroicon-o-fire',
+                'highlight' => true,
+            ],
+            'active' => true,
+            'price' => 600000, // price in the lowest currency value (kobo)
+            'currency' => 'NGN',
+            'interval' => 1,
+            'interval_type' => IntervalType::MONTH,
+            'trial_interval' => 1,
+            'trial_interval_type' => IntervalType::WEEK,
+            'grace_interval' => 1,
+            'grace_interval_type' => IntervalType::WEEK,
+            'sort_order' => 2,
+        ]);
+
+        $enterprise_monthly = Plan::create([
+            'name' => 'enterprise',
+            'description' => [
+                'tag' => 'Ideal for establishments with large parking traffic, customized or unique business models',
+                'body' => 'Ideal for establishments with large parking traffic, customized or unique business models',
+                'icon' => 'heroicon-o-globe',
+                'highlight' => false,
+            ],
+            'active' => true,
+            'price' => 1000000, // price in the lowest currency value (kobo)
+            'currency' => 'NGN',
+            'interval' => 1,
+            'interval_type' => IntervalType::MONTH,
+            'trial_interval' => 1,
+            'trial_interval_type' => IntervalType::WEEK,
+            'grace_interval' => 1,
+            'grace_interval_type' => IntervalType::WEEK,
+            'sort_order' => 3,
+        ]);
+
+        /* features */
         $teamMembers = Feature::create([
             'name' => FeatureResources::TEAM_MEMBERS->value,
             'description' => [
@@ -110,7 +173,7 @@ class DatabaseSeeder extends Seeder
             ],
             'consumable' => true,
             'active' => true,
-            'interval' => 12,
+            'interval' => 1,
             'interval_type' => IntervalType::MONTH,
         ]);
 
@@ -122,7 +185,7 @@ class DatabaseSeeder extends Seeder
             ],
             'consumable' => true,
             'active' => true,
-            'interval' => 12,
+            'interval' => 1,
             'interval_type' => IntervalType::MONTH,
         ]);
 
@@ -134,7 +197,7 @@ class DatabaseSeeder extends Seeder
             ],
             'consumable' => true,
             'active' => true,
-            'interval' => 12,
+            'interval' => 1,
             'interval_type' => IntervalType::MONTH,
         ]);
 
@@ -148,24 +211,40 @@ class DatabaseSeeder extends Seeder
             'active' => true,
         ]);
 
+        /** associations */
         $free->features()->attach($teamMembers, ['units' => 2]);
         $free->features()->attach($parkingLots, ['units' => 1]);
         $free->features()->attach($accesses_per_parking_lot, ['units' => 50]);
         $free->features()->attach($dedicated_support);
 
-        $standard->features()->attach($teamMembers, ['units' => 4]);
-        $standard->features()->attach($parkingLots, ['units' => 5]);
-        $standard->features()->attach($accesses_per_parking_lot, ['units' => 60]);
-        $standard->features()->attach($dedicated_support);
+        $standard_yearly->features()->attach($teamMembers, ['units' => 4]);
+        $standard_yearly->features()->attach($parkingLots, ['units' => 5]);
+        $standard_yearly->features()->attach($accesses_per_parking_lot, ['units' => 60]);
+        $standard_yearly->features()->attach($dedicated_support);
 
-        $premium->features()->attach($teamMembers, ['units' => 5]);
-        $premium->features()->attach($parkingLots, ['units' => 10]);
-        $premium->features()->attach($accesses_per_parking_lot, ['units' => 120]);
-        $premium->features()->attach($dedicated_support);
+        $premium_yearly->features()->attach($teamMembers, ['units' => 5]);
+        $premium_yearly->features()->attach($parkingLots, ['units' => 10]);
+        $premium_yearly->features()->attach($accesses_per_parking_lot, ['units' => 120]);
+        $premium_yearly->features()->attach($dedicated_support);
 
-        $enterprise->features()->attach($teamMembers, ['units' => 10]);
-        $enterprise->features()->attach($parkingLots, ['units' => 20]);
-        $enterprise->features()->attach($accesses_per_parking_lot, ['units' => 200]);
-        $enterprise->features()->attach($dedicated_support);
+        $standard_yearly->features()->attach($teamMembers, ['units' => 10]);
+        $enterprise_yearly->features()->attach($parkingLots, ['units' => 20]);
+        $enterprise_yearly->features()->attach($accesses_per_parking_lot, ['units' => 200]);
+        $enterprise_yearly->features()->attach($dedicated_support);
+
+        $standard_monthly->features()->attach($teamMembers, ['units' => 4]);
+        $standard_monthly->features()->attach($parkingLots, ['units' => 5]);
+        $standard_monthly->features()->attach($accesses_per_parking_lot, ['units' => 60]);
+        $standard_monthly->features()->attach($dedicated_support);
+
+        $premium_monthly->features()->attach($teamMembers, ['units' => 5]);
+        $premium_monthly->features()->attach($parkingLots, ['units' => 10]);
+        $premium_monthly->features()->attach($accesses_per_parking_lot, ['units' => 120]);
+        $premium_monthly->features()->attach($dedicated_support);
+
+        $standard_monthly->features()->attach($teamMembers, ['units' => 10]);
+        $enterprise_monthly->features()->attach($parkingLots, ['units' => 20]);
+        $enterprise_monthly->features()->attach($accesses_per_parking_lot, ['units' => 200]);
+        $enterprise_monthly->features()->attach($dedicated_support);
     }
 }

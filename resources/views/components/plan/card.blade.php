@@ -14,9 +14,19 @@ $classes = $shouldHighlight ?
     <div class="mt-4 text-white">
         <span class="text-2xl font-bold">{{ $getCurrencySymbol() }}</span>
         <span class="text-3xl font-bold">{{ number_format($getPricePerInterval()) }}</span>
-        <span class="text-sm text-gray-400">/{{ str_ireplace('month', 'mon', $getIntervalType()) }}</span>
+
         @unless ($plan->isFree())
-        <span class="block text-xs text-gray-300">Billed annually</span>
+            <span class="text-sm text-gray-400">/{{ str_ireplace('month', 'mon', $getIntervalType()) }}</span>
+
+            @if($plan->interval == 12)
+                <span class="block text-xs text-gray-300">Billed annually</span>
+            @endif
+            @if($plan->interval == 6)
+                <span class="block text-xs text-gray-300">Billed biannually</span>
+            @endif
+            @if($plan->interval == 1)
+                <span class="block text-xs text-gray-300">Billed monthly</span>
+            @endif
         @endunless
     </div>
 
