@@ -32,7 +32,7 @@ class BladeServiceProvider extends ServiceProvider
         });
 
         // Using closure based composers...
-        View::composer(['welcome', 'subscriptions.plans.index'], function (View_ $view) {
+        View::composer(['pages.welcome', 'subscriptions.plans.index'], function (View_ $view) {
             $plans = Plan::whereActive()->get();
 
             $view->with('plans', $plans);

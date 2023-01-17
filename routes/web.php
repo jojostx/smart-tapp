@@ -21,7 +21,8 @@ use Illuminate\Support\Facades\Route;
 |
 */
 
-Route::view('/', 'welcome')->name('home');
+Route::view('/', 'pages.welcome')->name('home');
+Route::view('/features', 'pages.features')->name('features');
 
 Route::group(['prefix' => 'plans', 'as' => 'plans.'], function () {
     Route::get('/pricing', [PlanController::class, 'index'])->name('pricing');

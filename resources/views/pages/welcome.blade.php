@@ -165,7 +165,7 @@
                         <h5 class="text-xl font-medium text-gray-800 transition group-hover:text-primary-600">Onboard Visitors</h5>
                         <p class="text-sm text-gray-600">Easily allocate parking spaces to your visitors.</p>
                     </div>
-                    <a href="#" class="flex items-center justify-between group-hover:text-primary-600">
+                    <a href="{{ route('features') }}" class="flex items-center justify-between group-hover:text-primary-600">
                         <span class="text-sm">Read more</span>
                         <span class="text-2xl transition duration-300 -translate-x-4 opacity-0 group-hover:opacity-100 group-hover:translate-x-0">&RightArrow;</span>
                     </a>
@@ -177,7 +177,7 @@
                         <h5 class="text-xl font-medium text-gray-800 transition group-hover:text-primary-600">Resolve Blockage</h5>
                         <p class="text-sm text-gray-600">Notify your visitors in the case of blockage to repark their vehicle.</p>
                     </div>
-                    <a href="#" class="flex items-center justify-between group-hover:text-primary-600">
+                    <a href="{{ route('features') }}" class="flex items-center justify-between group-hover:text-primary-600">
                         <span class="text-sm">Read more</span>
                         <span class="text-2xl transition duration-300 -translate-x-4 opacity-0 group-hover:opacity-100 group-hover:translate-x-0">&RightArrow;</span>
                     </a>
@@ -189,7 +189,7 @@
                         <h5 class="text-xl font-medium text-gray-800 transition group-hover:text-primary-600">Track Visitor History </h5>
                         <p class="text-sm text-gray-600">Efficiently track visitor activity and frequency patterns.</p>
                     </div>
-                    <a href="#" class="flex items-center justify-between group-hover:text-primary-600">
+                    <a href="{{ route('features') }}" class="flex items-center justify-between group-hover:text-primary-600">
                         <span class="text-sm">Read more</span>
                         <span class="text-2xl transition duration-300 -translate-x-4 opacity-0 group-hover:opacity-100 group-hover:translate-x-0">&RightArrow;</span>
                     </a>
@@ -201,7 +201,7 @@
                         <h5 class="text-xl font-medium text-gray-800 transition group-hover:text-primary-600">More features</h5>
                         <p class="text-sm text-gray-600">Many features to effectively control your parking spaces.</p>
                     </div>
-                    <a href="#" class="flex items-center justify-between group-hover:text-primary-600">
+                    <a href="{{ route('features') }}" class="flex items-center justify-between group-hover:text-primary-600">
                         <span class="text-sm">Read more</span>
                         <span class="text-2xl transition duration-300 -translate-x-4 opacity-0 group-hover:opacity-100 group-hover:translate-x-0">&RightArrow;</span>
                     </a>
