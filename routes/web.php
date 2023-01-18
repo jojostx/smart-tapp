@@ -23,10 +23,7 @@ use Illuminate\Support\Facades\Route;
 
 Route::view('/', 'pages.welcome')->name('home');
 Route::view('/features', 'pages.features')->name('features');
-
-Route::group(['prefix' => 'plans', 'as' => 'plans.'], function () {
-    Route::get('/pricing', [PlanController::class, 'index'])->name('pricing');
-});
+Route::view('/pricing', 'pages.plans.index')->name('pricing');
 
 Route::middleware(['web', 'guest'])
     ->withoutMiddleware('cookie_consent')

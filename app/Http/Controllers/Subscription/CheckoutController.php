@@ -61,7 +61,7 @@ class CheckoutController extends Controller
         $creditCards = $tenant->chargeableCards();
 
         return \view(
-            'subscriptions.checkout',
+            'pages.plans.checkout',
             compact('plans', 'selectedPlan', 'tenant', 'billingInfo', 'creditCards')
         );
     }
