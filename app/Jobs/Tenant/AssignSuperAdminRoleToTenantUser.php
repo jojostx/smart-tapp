@@ -10,6 +10,8 @@ use Illuminate\Contracts\Queue\ShouldQueue;
 use Illuminate\Foundation\Bus\Dispatchable;
 use Illuminate\Queue\InteractsWithQueue;
 use Illuminate\Queue\SerializesModels;
+use Illuminate\Support\Facades\Auth;
+use Spatie\Permission\Models\Role;
 
 class AssignSuperAdminRoleToTenantUser implements ShouldQueue
 {
@@ -33,11 +35,15 @@ class AssignSuperAdminRoleToTenantUser implements ShouldQueue
     public function handle()
     {
         $assigned = $this->tenant->run(function ($tenant) {
-            $role = UserRole::SUPER_ADMIN->value;
-            
+            $role = Role::query()
+                ->firstOrCreate([
+                    'name' => UserRole::SUPER_ADMIN->value,
+                    'guard_name' => 'web'
+                ]);
+
             // retrieve the user model in the tenant's db
             $user = User::query()->where('email', $tenant->email)->first();
-            
+
             if (blank($user)) {
                 return false;
             }
@@ -45,8 +51,8 @@ class AssignSuperAdminRoleToTenantUser implements ShouldQueue
             if ($user->hasRole($role) === false) {
                 $user->assignRole($role);
             }
-            
-            return $user->hasRole($role);
+
+            return $user->refresh()->hasRole($role);
         });
 
         return $assigned;
