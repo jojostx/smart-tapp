@@ -79,7 +79,6 @@ class Register extends Component
         // validate
         $validated = $this->validate();
 
-        /** @todo consider implementing something similar to propangandist pending email feature **/
         // create temporary unverified tenant 
         $pendingTenant = PendingTenant::query()
             ->firstOrCreate(

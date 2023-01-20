@@ -9,7 +9,7 @@ enum FeatureResources: string
     case TEAM_MEMBERS = 'team-members';
     case PARKING_LOTS = 'parking-lots';
     case ACCESSES_PER_PARKING_LOT = 'accesses-per-parking-lot';
-    case DEDICATED_SUPPORT = 'dedicated_support';
+    case DEDICATED_SUPPORT = 'dedicated-support';
 
     public static function getResourceByFeature(string $feature): string
     {

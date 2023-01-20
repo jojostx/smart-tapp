@@ -2,12 +2,9 @@
 
 namespace App\Traits;
 
-use App\Models\Tenant\User;
 use App\Notifications\Tenant\Driver\ConfirmReparkNotification;
 use App\Notifications\Tenant\Driver\ReparkRequestResolvedNotification;
 use App\Notifications\Tenant\Driver\ShouldReparkVehicleNotification;
-use Filament\Notifications\Actions\Action;
-use Filament\Notifications\Notification as NotificationsNotification;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Support\Str;
 

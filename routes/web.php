@@ -46,5 +46,5 @@ Route::middleware(['web', 'guest'])
             ->name('password.request');
     });
 
-Route::post('africastalking-webhook-url', HandleAfricasTalkingWebhookReport::class);
 Route::webhooks('termii-webhook-url', 'termii-webhook-url');
+Route::post('africastalking-webhook-url', HandleAfricasTalkingWebhookReport::class);
