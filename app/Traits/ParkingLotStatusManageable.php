@@ -2,19 +2,29 @@
 
 namespace App\Traits;
 
+use App\Enums\Models\FeatureResources;
 use App\Enums\Models\ParkingLotStatus;
 use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\Casts\Attribute;
 use Illuminate\Database\Eloquent\Relations\HasMany;
+use Illuminate\Support\Facades\DB;
 
 trait ParkingLotStatusManageable
 {
     abstract public function accesses(): HasMany;
 
-    /** @todo retrieve value from database based on the subscription plan the tenant is subscribed to */
+    abstract public function getKey();
+
+    /** 
+     * gets the maximum number of vehicles per parking lot
+     * based on the tenant's subscription
+     */
     public function getMaxCapacity(): int
     {
-        return 100;
+        /** @var \App\Models\Tenant */
+        $tenant = \tenant();
+
+        return $tenant->subscription->getMaxFeatureUnits(FeatureResources::PARKING_LOTS->value);
     }
 
     /**
@@ -28,7 +38,7 @@ trait ParkingLotStatusManageable
      *
      * @throws \ValueError
      */
-    public function scopeWhereStatus(Builder $query, string | ParkingLotStatus $status = '')
+    public function scopeWhereStatus(Builder $query, string | ParkingLotStatus $status = 'open')
     {
         $status = is_string($status) ? ParkingLotStatus::from($status) : $status;
 
@@ -136,36 +146,62 @@ trait ParkingLotStatusManageable
 
     /**
      * open the parking lot by setting the status to OPEN.
-     *
-     * @return bool
      */
     public function open(): bool
     {
-        return false;
+        return $this->forceFill([
+            'status' => ParkingLotStatus::OPEN->value,
+        ])->save();
     }
 
     /**
      * close the parking lot by setting the status to CLOSED.
-     * this prevents creation of parking lots for the parking lot
-     *
-     * @param  int  $expiry_period
-     * @param  int  $validity_period
-     * @return bool
+     * this prevents creation of accesses for the parking lot
      */
     public function close(): bool
     {
-        return false;
+        return $this->forceFill([
+            'status' => ParkingLotStatus::CLOSED->value,
+        ])->save();
     }
 
     /**
      * close the parking lot by setting the status to CLOSED.
-     * this prevents creation of parking lots for the parking lot
-     * and deactivates all parking lots for this parking lot.
-     *
-     * @return bool
+     * this prevents creation of accesses for the parking lot
+     * and deactivates all accesses for this parking lot.
      */
     public function lockdown(): bool
     {
-        return false;
+        try {
+            DB::beginTransaction();
+
+            // deactivate all accesses
+            $this->deactivateAccesses();
+            // close the parking lot
+            $this->close();
+
+            DB::commit();
+
+            // check if all related accesses are inactive
+            return $this->accesses()->whereNotInactive()->doesntExist();
+        } catch (\Exception $e) {
+            DB::rollback();
+
+            return false;
+        }
+    }
+
+    /**
+     * deactivate all related accesses
+     */
+    public function deactivateAccesses()
+    {
+        // deactivate all accesses
+        return DB::table('accesses')
+            ->where('parking_lot_id', $this->getKey())
+            ->update([
+                'expiry_period' => 0,
+                'issued_at' => DB::raw('DATE_SUB(`issued_at`, INTERVAL IFNULL(`validity_period`, 1) DAY)')
+            ]);
     }
 }

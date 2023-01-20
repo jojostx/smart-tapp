@@ -262,20 +262,22 @@ trait AccessStatusManageable
     /**
      * issue the access and send out the access activation notification.
      * issue sets 'expiry_period' to the expiry period set by tenant's Super Admin or admin.
-     *
+     * 
+     * @todo get the MAX_VALIDITY_PERIOD & MAX_EXPIRY_PERIOD from the tenant's setting
+     * 
      * @param  int  $expiry_period
      * @param  int  $validity_period
      * @return bool
      */
     public function issue(?int $expiry_period = 0, ?int $validity_period = 0): bool
     {
-        // MAX_VALIDITY_PERIOD
-        // MAX_EXPIRY_PERIOD
-        if (blank($expiry_period) || ! in_range($expiry_period, 9, 31)) {
+        // $MAX_EXPIRY_PERIOD = 30;
+        // $MAX_VALIDITY_PERIOD = 2;
+        if (blank($expiry_period) || ! in_range($expiry_period, 10, 30, true)) {
             $expiry_period = $this->expiry_period ?? 30;
         }
 
-        if (blank($validity_period) || ! in_range($validity_period, 0, 3)) {
+        if (blank($validity_period) || ! in_range($validity_period, 1, 2, true)) {
             $validity_period = $this->validity_period ?? 2;
         }
 
