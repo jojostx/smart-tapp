@@ -13,6 +13,7 @@ use App\Notifications\Tenant\User\SubscriptionSuccessfulNotification;
 use App\Repositories\PlanRepository;
 use Illuminate\Http\Request;
 use Illuminate\Support\Arr;
+use Illuminate\Support\Collection;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Notification as FacadesNotification;
 use Illuminate\Validation\ValidationException;
@@ -47,12 +48,25 @@ class CheckoutController extends Controller
         return $this->tenantPlanChangeAction ??= app(TenantPlanChangeAction::class);
     }
 
+    public function getPlansGroupedByInterval(): Collection
+    {
+        $plans = $this->planRepository()->getActive();
+
+        $free_plans = $plans->filter->isFree();
+
+        return $plans
+            ->groupBy('interval')
+            ->map(function ($group) use ($free_plans) {
+                return $group->concat($free_plans)->unique()->sortBy('sort_order');
+            });
+    }
+
     public function index(Request $request)
     {
         /** @var Tenant */
         $tenant = \tenant();
 
-        $plans = $this->planRepository()->getActive();
+        $plans = $this->getPlansGroupedByInterval();
 
         $selectedPlan = $tenant?->subscription?->plan ?? $this->planRepository()->getActiveBySlug($request->get('plan', ''));
 

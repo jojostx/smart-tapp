@@ -3,20 +3,25 @@
 @section('content')
 
 <section>
-    <form id="paymentForm" method="POST" action="{{ route('filament.plans.checkout.create') }}" x-data="{ open : {{ $errors->any() ? 'true' : 'false' }} }" @if (session()->has("checkout_error"))
-        x-init="$nextTick(() => { $dispatch('open-alert', { color: 'danger', message: '{{ session()->get('checkout_error') }}', 'timeout': 20000 }) })"
+    <form 
+        id="paymentForm" 
+        method="POST" 
+        action="{{ route('filament.plans.checkout.create') }}"
+        x-data="{ open : {{ $errors->any() ? 'true' : 'false' }} }"
+        @if (session()->has("checkout_error"))
+            x-init="$nextTick(() => { $dispatch('open-alert', { color: 'danger', message: '{{ session()->get('checkout_error') }}', 'timeout': 20000 }) })"
         @endif
         class="grid h-screen grid-cols-1 md:grid-cols-2 auto-rows-min md:auto-rows-auto"
         >
         @csrf
 
         <div class="grid order-last grid-cols-1 bg-white md:order-first lg:grid-cols-12">
-            <div class="px-6 py-8 md:col-span-9 lg:col-span-10 xl:col-span-9 lg:col-end-13 xl:col-end-13 md:px-10 lg:px-16 md:py-32">
+            <div class="px-6 py-8 md:col-span-9 lg:col-span-10 xl:col-span-9 lg:col-end-13 xl:col-end-13 md:px-10 lg:px-16 md:py-24">
 
                 @if (session()->has('checkout_error'))
-                    <div class="p-3 my-2 border rounded-lg bg-danger-100 border-danger-700">
-                        <p class="text-danger-700">An error occured: {{ session('checkout_error') }}</p>
-                    </div>
+                <div class="p-3 my-2 border rounded-lg bg-danger-100 border-danger-700">
+                    <p class="text-danger-700">An error occured: {{ session('checkout_error') }}</p>
+                </div>
                 @endif
 
                 <h1 class="text-lg font-bold md:text-xl text-primary-900 leading-extra-tight">Checkout</h1>
@@ -124,17 +129,27 @@
         </div>
 
         <div class="grid grid-cols-1 pt-6 bg-gray-900 lg:grid-cols-12 md:pt-0">
-            <div class="px-6 py-8 md:col-span-9 lg:col-span-10 xl:col-span-9 md:px-10 lg:px-16 pt-14 md:py-32">
-                <h1 class="mb-6 text-lg font-bold text-white md:text-xl md:w-8/12 leading-extra-tight md:mb-10"> Chosen plan </h1>
-
+            <div x-data="{ interval: 12 }" class="px-6 py-8 md:col-span-9 lg:col-span-10 xl:col-span-9 md:px-10 lg:px-16 pt-14 md:py-24">
+                <div class="flex flex-col gap-2 mb-6">
+                    <h1 class="text-lg font-bold text-white md:text-xl leading-extra-tight"> Choose a plan </h1>
+                    <div class="flex w-full p-2 border-2 border-primary-500 rounded-xl bg-primary-500/30">
+                        <button @click="interval = 1" :class="interval == 1 ? 'bg-primary-500' : 'hover:text-primary-100'" class="block w-full py-1 text-sm text-white transition rounded-lg" type="button">
+                            Monthly
+                        </button>
+                        <button @click="interval = 12" :class="interval == 12 ? 'bg-primary-500' : 'hover:text-primary-100'" class="block w-full py-1 text-sm text-white transition rounded-lg" type="button">
+                            Annual
+                        </button>
+                    </div>
+                </div>
                 @error('plan')
                 <div class="p-3 my-2 border rounded-lg bg-danger-100 border-danger-700">
                     <p class="text-danger-700">{{ $message }}</p>
                 </div>
                 @enderror
 
-                <ul class="w-full font-medium text-gray-900 bg-white border border-gray-200 divide-y rounded-lg">
-                    @foreach ($plans as $plan)
+                @foreach ($plans as $planGroupKey => $planGroup)
+                <ul x-cloak x-show="interval == {{ $planGroupKey }}" class="w-full font-medium text-gray-900 bg-white border border-gray-200 divide-y rounded-lg">
+                    @foreach ($planGroup as $plan)
                     <li class="flex items-center px-3">
                         <input id="list-radio-{{ $plan->name }}" name="plan" value="{{ $plan->slug }}" {{ old('plan') === $plan->slug || $selectedPlan?->slug == $plan->slug ? 'checked="checked"': '' }} type="radio" class="w-4 h-4 bg-gray-100 border-gray-300 text-primary-600 focus:ring-primary-500 focus:ring-2">
                         <label for="list-radio-{{ $plan->name }}" class="flex items-center justify-between w-full py-4 ml-2 text-gray-900">
@@ -143,12 +158,13 @@
                             </span>
                             <span class="text-base leading-none text-gray-600">
                                 {{ currency($plan->currency)->getSymbol() }}{{ number_format(money($plan->price, $plan->currency)->getValue()) }}
-                                <span class="ml-1 text-gray-500">/ <span>year</span>
-                                </span>
+                                <span class="ml-1 text-gray-500">/{{ $plan->interval == 1 ? 'month' : 'year' }}</span>
+                            </span>
                         </label>
                     </li>
                     @endforeach
                 </ul>
+                @endforeach
 
                 <div class="mt-6 text-sm text-gray-400">
                     <p>Nice choice. You can swap your plan any time during your subscription if you change your mind.</p>
