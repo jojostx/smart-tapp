@@ -1,34 +1,34 @@
 <x-filament::page>
     <div
-            x-data="{ 
-                open: true,
-                chat_styles: { maxHeight:'600px' },
-            }"
-            x-init="Alpine.effect(() => {
-                const mql_o = window.matchMedia(`(orientation: portrait)`);
-                const setChatMaxHeight = () => {
-                    height = window.innerHeight - $el.getBoundingClientRect().top - 16;
-                    chat_styles.maxHeight = `${height}px`;
-                };
-                setChatMaxHeight();
-                mql_o.addEventListener('change', setChatMaxHeight);
+        x-data="{ 
+            open: true,
+            chat_styles: { maxHeight:'600px' },
+        }"
+        x-init="Alpine.effect(() => {
+            const mql_o = window.matchMedia(`(orientation: portrait)`);
+            const setChatMaxHeight = () => {
+                height = window.innerHeight - $el.getBoundingClientRect().top - 16;
+                chat_styles.maxHeight = `${height}px`;
+            };
+            setChatMaxHeight();
+            mql_o.addEventListener('change', setChatMaxHeight);
 
-                const mql = window.matchMedia(`(max-width: 768px)`);
-                const setChatSidebarVisibility = (e) => {
-                    if (e === true || e === false ) {
-                        open = e;
-                    } else {
-                        open = !e.matches;
-                    }
-                };
-                setChatSidebarVisibility(!mql.matches)
-                mql.addEventListener('change', (e) => {
-                    setChatMaxHeight();
-                    setChatSidebarVisibility(e);
-                });
-            })" 
-            x-bind:style="chat_styles" 
-            class="relative grid grid-cols-6 overflow-hidden min-h-[480px] bg-white border border-gray-300 rounded-lg shadow-sm"
+            const mql = window.matchMedia(`(max-width: 768px)`);
+            const setChatSidebarVisibility = (e) => {
+                if (e === true || e === false ) {
+                    open = e;
+                } else {
+                    open = !e.matches;
+                }
+            };
+            setChatSidebarVisibility(!mql.matches)
+            mql.addEventListener('change', (e) => {
+                setChatMaxHeight();
+                setChatSidebarVisibility(e);
+            });
+        })" 
+        x-bind:style="chat_styles" 
+        class="relative grid grid-cols-6 overflow-hidden min-h-[480px] bg-white border border-gray-300 rounded-lg shadow-sm"
         >
         <div 
             x-cloak 
@@ -118,26 +118,24 @@
                 x-init="$el.scrollIntoView();"
                 wire:loading.remove 
                 wire:target="mountInboxAction"
-                class="relative flex flex-col flex-auto flex-shrink-0 h-[80%]">
+                class="relative flex flex-col flex-auto flex-shrink-0 h-[80%] bg-gray-100">
                 <!-- chat box -->
                 <div
                     x-data="{
+                        seenMessages: new Set(),
                         init: function () {
                             $nextTick(() => {
                                 this.scrollToBottom($refs.oldest_unseen);
-                            })
-                        },
-                        isVisible: function (el, container) {
-                            if (!container) { container = $el }
-                            const { bottom: eb, height: eh, top: et } = el.getBoundingClientRect();
-                            const { bottom: cb, height: ch, top: ct } = container.getBoundingClientRect();
+                                this.observeChanges();
 
-                            return et <= ct ? ct - et <= eh : eb - cb <= eh;
-                        },
-                        toggleAnchoring: function () {
-                            const pin = $refs.scroll_pin;
-                            console.log(pin);
-                            console.log(isVisible(pin, $el));
+                                $watch('seenMessages', async (seen_messages) => {
+                                    if (seen_messages.size >= 2) {
+                                        await this.markAsSeen([...seen_messages]);
+                                        seen_messages.clear();
+                                    }
+                                    console.log(seen_messages);
+                                });
+                            });
                         },
                         scrollToBottom: function (el) {
                             if (el) {
@@ -146,33 +144,31 @@
                                 $el.scrollTop = $el.scrollHeight;
                             }
                         },
-                        observeChanges: function () {
-                            const pin = $refs.scroll_pin;
+                        observeChanges: async function () {
+                            const io = new IntersectionObserver(async (entries) => {
+                                let messagesToBeMarkedAsSeen = [];
 
-                            let M_options = { childList: true };
-                            const M_observer = new MutationObserver((mutationsList, obv) => {
-                                mutationsList.forEach((mutation) => {
-                                    if (mutation.type === 'childList') {
-                                        this.scrollToBottom(pin);
-                                    }
-                                })
-                            });
-
-                            let I_options = {
-                                root: $el,
-                                rootMargin: '0px',
-                                threshold: 1.0
-                            }
-                            const I_observer = new IntersectionObserver((entries) => {
-                                entries.forEach((entry) => {
+                                entries.forEach(async (entry) => {
                                     if (entry.isIntersecting) {
-                                        M_observer.observe($el, M_options);
-                                    } else {
-                                        M_observer.disconnect();
+                                        if (entry.target == $refs.scroll_pin) {
+                                            await this.markAsSeen('all');
+                                            return;
+                                        }
+                                        if (entry.target.dataset.seen === 'false') {
+                                            messagesToBeMarkedAsSeen.push(entry.target.dataset.key);
+                                        }
                                     }
                                 });
-                            }, I_options);
-                            I_observer.observe(pin);
+
+                                await this.markAsSeen(messagesToBeMarkedAsSeen.map((n) => parseInt(n) || 0));
+                            }, { root: $el, rootMargin: '0px', threshold: 0.7 });
+
+                            let messages = document.querySelectorAll('.inbox-message');
+                            messages.forEach((el) => {
+                                io.observe(el);
+                            });
+
+                            io.observe($refs.scroll_pin);
                         },
                         markAsSeen: async function (key) {
                             await $wire.markMessagesAsSeen(key)
@@ -182,13 +178,15 @@
                         scrollToBottom();
                         await $wire.markMessagesAsSeen();
                     "
-                    class="grid grid-cols-12 gap-y-2 pb-4 h-full mb-[4.5rem] overflow-y-auto bg-gray-100">
+                    class="grid grid-cols-12 gap-y-2 pb-4 mb-[4.5rem] overflow-y-auto bg-gray-100">
 
                     @foreach ($this->messages as $message)
                     <div
-                        @if($this->oldestUnseenMessage?->is($message)) x-ref="oldest_unseen" @endif
+                        data-key="{{ $message->getKey() }}"
+                        data-seen="@js($message->seen())"
+                        @if($this->isOldestUnseenMessage($message)) x-ref="oldest_unseen" @endif
                         @class([
-                            "p-3 col-span-full",
+                            "inbox-message p-3 col-span-full",
                             "md:col-start-1 md:col-end-8" => $message->sender->is($selectedMessageable),
                             "md:col-start-6 md:col-end-13" => $message->receiver->is($selectedMessageable)
                         ])>
@@ -212,7 +210,7 @@
                                         "left-0 ml-2"=> $message->sender->is($selectedMessageable),
                                         "right-0 mr-2" => $message->receiver->is($selectedMessageable)
                                     ])>
-                                    @if($message->seen())
+                                    @if($this->messageIsSeen($message))
                                         <x-heroicon-o-eye class="w-3 h-3" />
                                         &#x2022;
                                     @endif
@@ -222,7 +220,7 @@
                         </div>
                     </div>
                     @endforeach
-                    <div id="scroll_pin" x-ref="scroll_pin" class="col-span-full h-2"></div>
+                    <div x-ref="scroll_pin" class="col-span-full h-2"></div>
                 </div>
                 <!-- chat box -->
 
