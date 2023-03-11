@@ -3,6 +3,9 @@
 namespace App\Listeners\Tenant;
 
 use App\Notifications\Tenant\Driver\AccessActivationNotification;
+use Illuminate\Database\Eloquent\Builder;
+use Illuminate\Database\Eloquent\Collection;
+use Illuminate\Database\Eloquent\Model;
 use Illuminate\Notifications\DatabaseNotification;
 use Illuminate\Notifications\Events\NotificationSent;
 use Illuminate\Support\Facades\Redis;
@@ -20,51 +23,74 @@ class LogAccessActivationNotification
     {
         $response = $event->response;
 
-        if ($event->channel == AfricasTalkingChannel::class) {
-            if (
-                $event->notification instanceof AccessActivationNotification &&
-                ! ($event->notification instanceof \Illuminate\Notifications\DatabaseNotification)
-            ) {
-                // note in this case, response is tested to make sure it is an array or object
-                if ($response instanceof \Illuminate\Http\Client\Response && $response->successful()) {
-                    $response = $response->collect()->toArray();
-                } elseif (is_object($response) && method_exists($response, 'toArray')) {
-                    $response = $response->toArray();
-                } elseif (is_array($response)) {
-                    $response = $response;
-                } else {
-                    $response = serialize($response);
-                }
+        if (
+            $this->notificationIsLoggable($event->notification) &&
+            $event->channel == AfricasTalkingChannel::class
+        ) {
+            $notification = DatabaseNotification::query()->find($event->notification->id);
+            $response = $this->extractResponse($response);
 
-                $notification = DatabaseNotification::find($event->notification->id);
+            if (blank($notification)) return;
 
-                $hasStatusKey = is_array($response) && array_key_exists('status', $response);
-                $hasDataKey = is_array($response) && array_key_exists('data', $response);
+            $this->updateDBNotificationStatus($notification, $response);
 
-                if ($notification) {
-                    $notification->forceFill(
-                        $hasStatusKey ?
-                          [
-                              'data->status' => $response['status'],
-                              'data->response' => $hasDataKey ? $response['data'] : $response,
-                          ] :
-                          [
-                              'data->status' => 'unknown',
-                              'data->response' => $response,
-                          ]
-                    )->save();
-
-                    if (is_array($response)) {
-                        $messageId = collect($response)->flattenWithKeys()->first(function ($value, $key) {
-                            return str($key)->contains('messageId');
-                        });
-
-                        if (filled($messageId) && tenant('id')) {
-                            Redis::command('SADD', [$messageId, tenant('id'), $notification->id]);
-                        }
-                    }
-                }
+            if (is_array($response)) {
+                $this->logNotificationToRedis($notification, $response);
             }
+        }
+    }
+
+    public function notificationIsLoggable(\Illuminate\Notifications\Notification $notification): bool
+    {
+        return $notification instanceof AccessActivationNotification &&
+            !($notification instanceof \Illuminate\Notifications\DatabaseNotification);
+    }
+
+    public function extractResponse($response): mixed
+    {
+        // note in this case, response is tested to make sure it is an array or object
+        if ($response instanceof \Illuminate\Http\Client\Response && $response->successful()) {
+            $response = $response->collect()->toArray();
+        } elseif (is_object($response) && method_exists($response, 'toArray')) {
+            $response = $response->toArray();
+        } elseif (is_array($response)) {
+            $response = $response;
+        } else {
+            $response = serialize($response);
+        }
+
+        return $response;
+    }
+
+    public function hasKey($data, string $key): bool
+    {
+        return is_array($data) && array_key_exists($key, $data);
+    }
+
+    public function updateDBNotificationStatus(DatabaseNotification $notification, array $data)
+    {
+        return $notification->forceFill(
+            $this->hasKey($data, 'status') ?
+                [
+                    'data->status' => $data['status'],
+                    'data->response' => $this->hasKey($data, 'data') ? $data['data'] : $data,
+                ] :
+                [
+                    'data->status' => 'unknown',
+                    'data->response' => $data,
+                ]
+        )->save();
+    }
+
+    public function logNotificationToRedis(DatabaseNotification $notification, array $data)
+    {
+        $messageId = collect($data)
+            ->flattenWithKeys()
+            ->first(fn ($_v, $key) => str($key)->contains('messageId') || str($key)->contains('id'));
+
+        if (filled($messageId) && ($tenant_id = tenant('id'))) {
+            Redis::sadd($messageId,  [$tenant_id, $notification->id]);
+            Redis::expire($messageId, 3600);
         }
     }
 }
