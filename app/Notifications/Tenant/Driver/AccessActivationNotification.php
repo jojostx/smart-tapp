@@ -101,7 +101,7 @@ class AccessActivationNotification extends Notification implements ShouldQueue
         $url = $this->access->activation_link;
         $plate_number = $this->access->vehicle->plate_number;
 
-        $message = "Hello, Click the link below to activate your access for vehicle [{$plate_number}]:";
+        $message = "Hello, Click the link below to activate the access for your vehicle [{$plate_number}]:";
         $message .= "\n{$url}\n";
         $message .= \boolval($this->access->expiry_period) ? "  This Access expires in {$this->access->expiry_period} minutes" : '';
 
