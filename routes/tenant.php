@@ -33,8 +33,13 @@ Route::middleware([
     {
         return Redirect::intended(config('app.url'));
     });
-
+    
     Route::group(['prefix' => 'access', 'as' => 'access.'], function () {
+        Route::get('/', function ()
+        {
+            return Redirect::intended(config('app.url'));
+        })->name('home');
+
         Route::get('/{access}/scan', QrcodeScanner::class)
             ->name('scan');
 
