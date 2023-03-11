@@ -9,7 +9,7 @@ dir="{{ __('filament::layout.direction') ?? 'ltr' }}"
 class="antialiased bg-gray-100 filament js-focus-visible"
 >
 <head>
-        @if (request()->routeIs('filament.pages.*'))
+        @if (request()->routeIs('filament.pages.*') && !request()->routeIs('filament.pages.inbox'))
             <meta name="turbo-visit-control" content="reload">
         @endif
 

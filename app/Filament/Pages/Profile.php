@@ -273,9 +273,3 @@ class Profile extends Page
             ->send();
     }
 }
-
-// navigation items //
-// billing
-//  plans
-//  subscriptions
-//  payment methods

@@ -20,7 +20,7 @@ enum UserRole: string
         return [
             self::SUPER_ADMIN->value => 'Access for the parking lot can be created',
             self::ADMIN->value => 'Access for the Parking Lot can not be created.',
-            self::ADMIN->value => 'Handles queries and issues from your drivers.',
+            self::SUPPORT->value => 'Handles queries and issues from your drivers.',
         ];
     }
 }

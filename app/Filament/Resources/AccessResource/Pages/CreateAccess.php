@@ -117,7 +117,7 @@ class CreateAccess extends CreateRecord
         return tenancy()->central(function () use ($tenant, $used) {
             /** @var Subscription */
             $subscription = $tenant->subscription;
-            $featureSlug = FeatureResources::PARKING_LOTS->value;
+            $featureSlug = FeatureResources::ACCESSES_PER_PARKING_LOT->value;
 
             if (blank($subscription) || $subscription->missingFeature($featureSlug)) {
                 return false;

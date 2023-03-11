@@ -2,6 +2,9 @@
 
 namespace App\Models\Tenant;
 
+use App\Contracts\Models\Messageable as MessageableContract;
+use App\Traits\Trackable;
+use App\Traits\Messageable;
 use App\Traits\MustVerifyPhoneNumber;
 use Dyrynda\Database\Support\BindsOnUuid;
 use Dyrynda\Database\Support\GeneratesUuid;
@@ -12,13 +15,15 @@ use Illuminate\Database\Eloquent\Relations\HasMany;
 use Illuminate\Foundation\Auth\User as Authenticatable;
 use Illuminate\Notifications\Notifiable;
 
-class Driver extends Authenticatable
+class Driver extends Authenticatable implements MessageableContract
 {
     use HasFactory;
     use GeneratesUuid;
     use BindsOnUuid;
     use Notifiable;
     use MustVerifyPhoneNumber;
+    use Messageable;
+    use Trackable;
 
     /**
      * The attributes that are mass assignable.
@@ -27,8 +32,8 @@ class Driver extends Authenticatable
      */
     protected $fillable = [
         'name',
-        'phone_number',
         'email',
+        'phone_number',
     ];
 
     /**
@@ -65,6 +70,15 @@ class Driver extends Authenticatable
                 $driver->phone_number_e164 = phone($driver->phone_number, 'NG')->formatE164();
             }
         });
+    }
+    
+    public static function getSearchableAttributes(): array
+    {
+        return [
+            'name',
+            'email',
+            'phone_number'
+        ];
     }
 
     public function routeNotificationForTermii($notification)

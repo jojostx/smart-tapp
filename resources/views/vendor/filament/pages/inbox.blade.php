@@ -133,7 +133,6 @@
                                         await this.markAsSeen([...seen_messages]);
                                         seen_messages.clear();
                                     }
-                                    console.log(seen_messages);
                                 });
                             });
                         },

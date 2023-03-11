@@ -2,11 +2,14 @@
 
 namespace App\Models\Tenant;
 
+use App\Contracts\Models\Messageable as MessageableContract;
 use App\Enums\Models\FeatureResources;
 use App\Enums\Models\UserAccountStatus;
 use App\Enums\Roles\UserRole;
 use App\Notifications\Tenant\User\ResetPassword;
 use App\Notifications\Tenant\User\SetPassword;
+use App\Traits\Trackable;
+use App\Traits\Messageable;
 use App\Traits\MustVerifyNewEmail;
 use Dyrynda\Database\Support\BindsOnUuid;
 use Dyrynda\Database\Support\GeneratesUuid;
@@ -27,15 +30,17 @@ use Spatie\Permission\Traits\HasRoles;
 /**
  * @mixin IdeHelperUser
  */
-class User extends Authenticatable implements MustVerifyEmail, FilamentUser
+class User extends Authenticatable implements MustVerifyEmail, FilamentUser, MessageableContract
 {
-    use MustVerifyNewEmail;
     use HasApiTokens;
     use HasFactory;
     use GeneratesUuid;
     use BindsOnUuid;
     use Notifiable;
     use HasRoles;
+    use MustVerifyNewEmail;
+    use Messageable;
+    use Trackable;
 
     /**
      * The attributes that are mass assignable.
@@ -148,6 +153,15 @@ class User extends Authenticatable implements MustVerifyEmail, FilamentUser
         });
     }
 
+    public static function getSearchableAttributes(): array
+    {
+        return [
+            'name',
+            'email',
+            'phone_number'
+        ];
+    }
+
     public static function getSuperAdmin(): static
     {
         return static::query()->role(UserRole::SUPER_ADMIN)->first();
@@ -253,7 +267,7 @@ class User extends Authenticatable implements MustVerifyEmail, FilamentUser
     public function hasActivatedAccount()
     {
         return $this->created_at !== $this->updated_at &&
-            $this->email_verified_at != null && 
+            $this->email_verified_at != null &&
             !$this->isInactive();
     }
 

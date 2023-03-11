@@ -6,6 +6,33 @@ use Illuminate\Support\HtmlString;
 use Jojostx\Larasubs\Models\Plan;
 use Jojostx\Larasubs\Models\Subscription;
 
+if (!function_exists('getAvatarUrl')) {
+    /**
+     *  generates an avatar for a name from the Ui-avatar website
+     *
+     *  @param  string  $name name to generate avatar for
+     *  @param  string  $attributes configurations for the avatar
+     *  @return string
+     */
+    function getUiAvatarUrl(string $name = '', array $attributes = []): string
+    {
+        $name = Str::of($name)
+            ->trim()
+            ->explode(' ')
+            ->map(fn (string $segment): string => filled($segment) ? mb_substr($segment, 0, 1) : '')
+            ->join(' ');
+
+        $attributes = http_build_query(
+            array_merge([
+                'name' => str($name)->limit(3, '')->value(),
+                'background' => 'random'
+            ], $attributes)
+        );
+
+        return 'https://ui-avatars.com/api/?' . $attributes;
+    }
+}
+
 if (!function_exists('replaceQrCodeAttributes')) {
     /**
      *  replaces qrcode width and height attributes with class(es)
@@ -222,7 +249,7 @@ if (!function_exists('tenantCanChangePlanFor')) {
         return blank($subscription) ||
             $subscription->isEnded() ||
             $subscription->plan->isFree() ||
-            ! $subscription->planWasChangedInTimePast(config('app.plan_change_interval'), config('app.plan_change_interval_type'));
+            !$subscription->planWasChangedInTimePast(config('app.plan_change_interval'), config('app.plan_change_interval_type'));
     }
 }
 
@@ -256,7 +283,7 @@ if (!function_exists('getTokenizationCurrency')) {
     }
 }
 
-if (! function_exists('central_route')) {
+if (!function_exists('central_route')) {
     function central_route(string $centralDomain, $route, $parameters = [], $absolute = true)
     {
         // replace first occurance of hostname fragment with $centralDomain
