@@ -2,16 +2,12 @@
 
 namespace App\Listeners\Tenant;
 
-use App\Notifications\Tenant\Driver\AccessActivationNotification;
-use Illuminate\Database\Eloquent\Builder;
-use Illuminate\Database\Eloquent\Collection;
-use Illuminate\Database\Eloquent\Model;
 use Illuminate\Notifications\DatabaseNotification;
 use Illuminate\Notifications\Events\NotificationSent;
 use Illuminate\Support\Facades\Redis;
 use NotificationChannels\AfricasTalking\AfricasTalkingChannel;
 
-class LogAccessActivationNotification
+class LogAfricasTalkingNotification
 {
     /**
      * Handle the event.
@@ -23,10 +19,7 @@ class LogAccessActivationNotification
     {
         $response = $event->response;
 
-        if (
-            $this->notificationIsLoggable($event->notification) &&
-            $event->channel == AfricasTalkingChannel::class
-        ) {
+        if ($this->notificationIsLoggable($event->notification, $event->channel)) {
             $notification = DatabaseNotification::query()->find($event->notification->id);
             $response = $this->extractResponse($response);
 
@@ -40,10 +33,10 @@ class LogAccessActivationNotification
         }
     }
 
-    public function notificationIsLoggable(\Illuminate\Notifications\Notification $notification): bool
+    public function notificationIsLoggable(\Illuminate\Notifications\Notification $notification, string $channel): bool
     {
-        return $notification instanceof AccessActivationNotification &&
-            !($notification instanceof \Illuminate\Notifications\DatabaseNotification);
+        return !($notification instanceof \Illuminate\Notifications\DatabaseNotification) &&
+            $channel == AfricasTalkingChannel::class;
     }
 
     public function extractResponse($response): mixed

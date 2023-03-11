@@ -3,6 +3,7 @@
 namespace App\Http\Controllers;
 
 use Illuminate\Http\Request;
+use Illuminate\Support\Collection;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Redis;
 
@@ -16,18 +17,21 @@ class HandleAfricasTalkingWebhookReport extends Controller
      */
     public function __invoke(Request $request)
     {
-        $request = collect($request->toArray())->flattenWithKeys();
+        $this->updateNotificationStatus($request->toArray());
 
-        $messageId = $request->first(function ($value, $key) {
-            return str($key)->contains('id') || str($key)->contains('Id');
-        }) ?? '';
+        return response('ok', 200);
+    }
 
-        $messageStatus = $request->first(function ($value, $key) {
-            return str($key)->contains('status') || str($key)->contains('Status');
-        }) ?? '';
+    public function updateNotificationStatus(array $data)
+    {
+        $data = collect($data)->flattenWithKeys();
 
-        // retrieve notification data from redis. example: ["tenant->id", $notification->id] ["9b788b57-bc4f-4c61-a6ba-1fa9c0c909cb", "4ed8aae8-8e1d-4c68-9bd4-00c283f03b81"]
-        // see: insertion point in LogAccessActivationNotification::line(65)
+        $messageId = $this->getValueByKey($data, 'id');
+        $messageStatus = $this->getValueByKey($data, 'status');
+
+        // retrieve notification data from redis. 
+        // example: [$tenant->id, $notification->id] ["9b788b57-bc4f-4c61-a6ba-1fa9c0c909cb", "4ed8aae8-8e1d-4c68-9bd4-00c283f03b81"]
+        // see: insertion point in LogAccessActivationNotification::line(50)
         $result = (array) Redis::command('SMEMBERS', [$messageId]);
 
         if (filled($result) && count($result) > 1) {
@@ -43,7 +47,11 @@ class HandleAfricasTalkingWebhookReport extends Controller
                 });
             }
         }
+    }
 
-        return response('ok', 200);
+    protected function getValueByKey(Collection $data, string $key)
+    {
+        return $data
+            ->first(fn ($_v, $_k) => str($_k)->contains($key, true)) ?? '';
     }
 }
