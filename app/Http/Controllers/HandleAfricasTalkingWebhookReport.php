@@ -17,7 +17,9 @@ class HandleAfricasTalkingWebhookReport extends Controller
      */
     public function __invoke(Request $request)
     {
-        $this->updateNotificationStatus($request->toArray());
+        dispatch(function () use ($request) {
+            $this->updateNotificationStatus($request->toArray());
+        })->onConnection('central');
 
         return response('ok', 200);
     }
