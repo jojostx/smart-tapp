@@ -124,7 +124,10 @@ class Inbox extends Page
 
     public function getActiveMenuProperty(): string
     {
-        return $this->selectedMessageable?->getTable() ?? 'drivers';
+        if ($this->selectedMessageable && $this->isAdmin($this->selectedMessageable)) {
+            return 'admins';
+        }
+        return 'drivers';
     }
 
     public function getDriversProperty(): EloquentCollection

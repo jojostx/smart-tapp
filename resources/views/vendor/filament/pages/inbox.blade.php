@@ -106,7 +106,7 @@
                         <p class="flex items-center gap-1 font-semibold text-gray-500 capitalize">
                             <span class="text-gray-900">{{ $selectedMessageable->name }}</span>
                             &#x2022;
-                            <x-dynamic-component :component="$this->isAdmin($selectedMessageable::class) ? 'heroicon-o-user' : 'heroicon-o-support'" class="w-4 h-4 shrink-0" />
+                            <span class="text-xs font-normal">{{ str($this->activeMenu)->singular()->value() }}</span>
                         </p>
                         <p class="text-xs text-gray-600">{{ $this->onlineStatus }}</p>
                     </div>
