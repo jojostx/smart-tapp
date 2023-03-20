@@ -29,6 +29,7 @@ class FilamentServiceProvider extends ServiceProvider
             Filament::registerScripts([asset('js/actionable-text-column.js')]);
             Filament::registerScripts([asset('js/filament-turbo.js')]);
             Filament::registerScripts([asset('js/filament-stimulus.js')]);
+            Filament::registerScripts([asset('js/reload-listener.js')]);
         });
 
         Filament::registerRenderHook(
