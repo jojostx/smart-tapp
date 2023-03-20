@@ -222,6 +222,14 @@ class User extends Authenticatable implements MustVerifyEmail, FilamentUser, Mes
     }
 
     /**
+     * Check if the user is a support admin.
+     */
+    public function isSupportAdmin(): bool
+    {
+        return $this->hasRole(UserRole::SUPPORT->value);
+    }
+
+    /**
      * Check if the user is a super admin.
      */
     public function isSuperAdmin(): bool
