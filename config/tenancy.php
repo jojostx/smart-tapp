@@ -15,7 +15,6 @@ return [
      */
     'central_domains' => [
         'main' => env('TENANCY_CENTRAL_DOMAIN'),
-        'www' => env('TENANCY_CENTRAL_WWW_DOMAIN'),
         'admin' => env('TENANCY_CENTRAL_ADMIN_DOMAIN'),
     ],
 

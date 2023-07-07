@@ -6,8 +6,6 @@ use App\Filament\Livewire\Auth\Register;
 use App\Filament\Livewire\Auth\Verify;
 use App\Filament\Livewire\Auth\VerifyPendingTenant;
 use App\Http\Controllers\HandleAfricasTalkingWebhookReport;
-use App\Http\Controllers\Subscription\PlanController;
-use App\Http\Middleware\PreventAccessFromTenantDomains;
 use Illuminate\Support\Facades\Route;
 
 /*
@@ -24,6 +22,7 @@ use Illuminate\Support\Facades\Route;
 Route::view('/', 'pages.welcome')->name('home');
 Route::view('/features', 'pages.features')->name('features');
 Route::view('/pricing', 'pages.plans.index')->name('pricing');
+
 
 Route::middleware(['web', 'guest'])
     ->withoutMiddleware('cookie_consent')
