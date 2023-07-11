@@ -54,7 +54,7 @@ class VehicleResource extends Resource
                                     ->string()
                                     ->maxLength(255)
                                     ->required()
-                                    ->unique('vehicles', 'plate_number'),
+                                    ->unique('vehicles', 'plate_number', ignoreRecord:true),
                                 Forms\Components\TextInput::make('brand')
                                     ->placeholder('ex: Toyota')
                                     ->string()
