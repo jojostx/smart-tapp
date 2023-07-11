@@ -78,7 +78,7 @@ class PieChartCard extends Card
 
     protected ?array $cachedData = null;
 
-    public static function make(string $label, $value = null): static
+    public static function make($label, $value): static
     {
         return app(static::class, ['label' => $label, 'value' => $value]);
     }

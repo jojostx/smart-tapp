@@ -16,11 +16,6 @@ class EditUser extends EditRecord
 
     protected static string $resource = UserResource::class;
 
-    protected function getListeners()
-    {
-        return ['$refresh'];
-    }
-
     protected function getActions(): array
     {
         $actions = [
@@ -64,10 +59,12 @@ class EditUser extends EditRecord
 
     public function afterSave(): void
     {
-        if (! $this->record instanceof User) {
+        if (!$this->record instanceof User) {
             return;
         }
 
         app(PermissionRegistrar::class)->forgetCachedPermissions();
+
+        $this->dispatchBrowserEvent('reload-page');
     }
 }

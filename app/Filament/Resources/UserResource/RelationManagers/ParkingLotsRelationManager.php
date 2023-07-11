@@ -7,6 +7,7 @@ use App\Filament\Notifications\Notification;
 use App\Filament\Traits\WithCurrentPasswordField;
 use App\Models\Tenant\Administration;
 use App\Models\Tenant\ParkingLot;
+use App\Models\Tenant\User;
 use Filament\Forms;
 use Filament\Resources\Form;
 use Filament\Resources\RelationManagers\RelationManager;
@@ -15,6 +16,7 @@ use Filament\Tables;
 use Filament\Tables\Actions\ActionGroup;
 use Filament\Tables\Actions\Position;
 use Illuminate\Contracts\Support\Htmlable;
+use Illuminate\Database\Eloquent\Model;
 use Illuminate\Support\Carbon;
 
 class ParkingLotsRelationManager extends RelationManager
@@ -209,5 +211,10 @@ class ParkingLotsRelationManager extends RelationManager
                 Tables\Actions\DetachBulkAction::make(),
             ])
             ->actionsPosition(Position::BeforeCells);
+    }
+
+    public static function canViewForRecord(Model $ownerRecord): bool
+    {
+        return parent::canViewForRecord($ownerRecord) && !$ownerRecord->isSupportAdmin();
     }
 }

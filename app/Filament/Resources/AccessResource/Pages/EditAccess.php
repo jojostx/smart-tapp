@@ -74,7 +74,7 @@ class EditAccess extends EditRecord
                 })
                 ->color('primary')
                 ->tooltip('Activate Access')
-                ->requiresConfirmation(fn () => ! $this->getRecord()->isActive())
+                ->requiresConfirmation(fn () => !$this->getRecord()->isActive())
                 ->modalHeading(function (): string {
                     return 'Activate Access';
                 })
@@ -162,10 +162,11 @@ class EditAccess extends EditRecord
 
     public function issueAccess(?array $data)
     {
+        /** @var \App\Models\Tenant\Access */
         $record = $this->getRecord();
         $shouldNotify = isset($data['shouldNotify']) && $data['shouldNotify'];
 
-        if ($record->issue()) {
+        if ($record->issue() || $record->isIssued()) {
             $shouldNotify && $record->sendAccessActivationNotification(checkStatusCountdown: 30);
 
             Notification::make()
@@ -179,6 +180,7 @@ class EditAccess extends EditRecord
                 ->danger()
                 ->send();
         }
+
         $this->emitSelf('$refresh');
     }
 
@@ -199,7 +201,7 @@ class EditAccess extends EditRecord
 
         $shouldNotify = isset($data['shouldNotify']) && $data['shouldNotify'];
 
-        if ($record->activate()) {
+        if ($record->activate() || $record->isActive()) {
             $shouldNotify && $record->sendAccessActivationNotification(checkStatusCountdown: 30);
 
             Notification::make()

@@ -47,7 +47,7 @@ class ReparkRequestResolvedNotification extends Notification implements ShouldQu
      */
     public function via($notifiable)
     {
-        return ['database', AfricasTalkingChannel::class];
+        return ['database', 'termii', AfricasTalkingChannel::class];
     }
 
     /**

@@ -14,8 +14,7 @@ echo "## Restarting queue workers via supervisor"
 sudo supervisorctl restart all
 
 echo "## Restart FPM"
-( flock -w 10 9 || exit 1
-    echo 'Restarting FPM...'; sudo -S service php8.1-fpm reload ) 9>/tmp/fpmlock
+sudo -S service php8.1-fpm restart
 
 echo "## Run database migrations && Run tenant migrations"
 php artisan migrate --no-interaction --force

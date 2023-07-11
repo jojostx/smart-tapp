@@ -38,7 +38,7 @@ class CopyAction extends Action
         return $this;
     }
 
-    public function view(string $view): static
+    public function view(string $view, array $viewData = []): static
     {
         return $this;
     }

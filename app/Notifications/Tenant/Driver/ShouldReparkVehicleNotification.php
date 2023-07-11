@@ -47,7 +47,7 @@ class ShouldReparkVehicleNotification extends Notification implements ShouldQueu
      */
     public function via($notifiable)
     {
-        return ['database', AfricasTalkingChannel::class];
+        return ['database', 'termii', AfricasTalkingChannel::class];
     }
 
     /**

@@ -146,7 +146,11 @@ class UserResource extends Resource
 
     public static function getEloquentQuery(): Builder
     {
-        return parent::getEloquentQuery()->role(Role::query()->whereNot('name', UserRole::SUPER_ADMIN)->get(['id']))->with('roles');
+        return parent::getEloquentQuery()
+            ->role(Role::query()
+                ->whereNot('name', UserRole::SUPER_ADMIN)
+                ->get(['id']))
+            ->with('roles');
     }
 
     public static function getRelations(): array
@@ -201,10 +205,15 @@ class UserResource extends Resource
                         fn () => Role::query()
                             ->where('guard_name', 'web')
                             ->whereNot('name', UserRole::SUPER_ADMIN)
-                            ->whereNot('name', UserRole::SUPPORT)
                             ->pluck('name', 'id')
                             ->map(fn (string $name) => str(__($name))->ucfirst())
                             ->all(),
+                    )->in(
+                        fn () => Role::query()
+                            ->where('guard_name', 'web')
+                            ->whereNot('name', UserRole::SUPER_ADMIN)
+                            ->pluck('id')
+                            ->all()
                     )
                     ->required()
                     ->validationAttribute(__('Role')),
