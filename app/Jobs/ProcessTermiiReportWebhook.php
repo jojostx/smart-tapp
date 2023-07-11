@@ -17,6 +17,8 @@ class ProcessTermiiReportWebhook extends ProcessWebhookJob
   public function handle()
   {
     \logger($this->webhookCall);
+    \logger($this->webhookCall->payload);
+    \logger($this->webhookCall->headers);
   }
 
   public function updateNotificationStatus(array $data)

@@ -18,6 +18,7 @@ sudo -S service php8.1-fpm restart
 
 echo "## Run database migrations && Run tenant migrations"
 php artisan migrate --no-interaction --force
+php artisan tenants:migrate
 
 echo "## Run optimization commands for laravel"
 php artisan route:cache
