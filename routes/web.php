@@ -45,4 +45,4 @@ Route::middleware(['web', 'guest'])
     });
 
 Route::webhooks('termii-webhook-url', 'termii-webhook-url');
-Route::post('africastalking-webhook-url', 'africastalking-webhook-url');
+Route::webhooks('africastalking-webhook-url', 'africastalking-webhook-url');
