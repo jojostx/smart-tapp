@@ -5,7 +5,6 @@ use App\Filament\Livewire\Auth\PasswordRequest;
 use App\Filament\Livewire\Auth\Register;
 use App\Filament\Livewire\Auth\Verify;
 use App\Filament\Livewire\Auth\VerifyPendingTenant;
-use App\Http\Controllers\HandleAfricasTalkingWebhookReport;
 use Illuminate\Support\Facades\Route;
 
 /*
@@ -46,4 +45,4 @@ Route::middleware(['web', 'guest'])
     });
 
 Route::webhooks('termii-webhook-url', 'termii-webhook-url');
-Route::post('africastalking-webhook-url', HandleAfricasTalkingWebhookReport::class);
+Route::post('africastalking-webhook-url', 'africastalking-webhook-url');
