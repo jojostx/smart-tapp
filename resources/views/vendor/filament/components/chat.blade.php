@@ -41,8 +41,6 @@
 
             this.messages = (await $wire.markAllMessagesAsSeen()).map((key) => key.toString())
 
-            console.log(this.messages)
-
             this.isLoading = false
         },
 
@@ -79,7 +77,7 @@
         slide-over
         width="md"
     >
-        <nav class="absolute border-b bg-white inset-x-0 top-0 z-10 px-4 py-4 space-y-2 divide-y">
+        <nav class="absolute inset-x-0 top-0 z-10 px-4 py-4 space-y-2 bg-white border-b divide-y">
             <div class="flex items-center justify-between">
                 <!-- user info -->
                 <div class="flex items-center">
@@ -238,7 +236,7 @@
                     </div>
                 </div>
             @endforeach
-            <div x-ref="scroll_pin" class="col-span-full h-2"></div>
+            <div x-ref="scroll_pin" class="h-2 col-span-full"></div>
         </div>
 
         <div class="absolute inset-x-0 bottom-0 px-4 py-4 bg-white border-t">

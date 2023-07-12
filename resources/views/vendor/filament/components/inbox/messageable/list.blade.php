@@ -10,12 +10,12 @@
 <div 
     x-data="{ activeMenu: '{{ $activeMenu }}' }"
     class="flex flex-col flex-grow">
-    <div class="border-b px-4 py-2">
-        <p class="font-medium text-xs text-gray-500">{{ $title }}</p>
+    <div class="px-4 py-2 border-b">
+        <p class="text-xs font-medium text-gray-500">{{ $title }}</p>
     </div>
 
     @foreach ($messageables as $group => $groupedMessageables)
-        <x-filament::inbox.messageable.group 
+        <x-filament::inbox.messageable.group
             :label="$group"
             :messageables="$groupedMessageables" 
             :$selectedMessageable

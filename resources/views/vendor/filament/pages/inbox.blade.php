@@ -47,7 +47,6 @@
             <div x-cloak x-show="open" x-transition:enter="transition ease-out duration-300" x-transition:enter-start="-translate-x-full" x-transition:enter-end="-translate-x-0" x-transition:leave="transition ease-in duration-300" x-transition:leave-start="-translate-x-0" x-transition:leave-end="-translate-x-full" @click.outside="window.matchMedia(`(max-width: 768px)`).matches && (open = false)" class="absolute inset-y-0 left-0 flex flex-col w-11/12 h-full bg-white md:static md:w-full md:border-r md:border-gray-200">
                 <div class="flex-shrink-0 text-gray-300 search-box">
                     <div class="flex justify-between p-2 py-4 pl-3 border-b border-gray-200">
-
                         <div class="relative w-full mr-2 filament-chat-search-input">
                             <x-filament::inbox.search.input />
 
@@ -87,7 +86,6 @@
                 </svg>
             </div>
 
-            @if (filled($selectedMessageable))
             <nav 
                 wire:loading.remove 
                 wire:target="mountInboxAction" 
@@ -99,6 +97,8 @@
                         </x-slot>
                     </x-filament::icon-button>
                 </div>
+
+                @if (filled($selectedMessageable))
                 <!-- user info -->
                 <div class="flex items-center">
                     <div style="background-image: url('{{ getUiAvatarUrl($selectedMessageable->name) }}')" class="w-8 h-8 bg-gray-200 bg-center bg-cover rounded-full dark:bg-gray-900"></div>
@@ -112,8 +112,10 @@
                     </div>
                 </div>
                 <!-- end user info -->
+                @endif
             </nav>
 
+            @if (filled($selectedMessageable))
             <div
                 x-init="$el.scrollIntoView();"
                 wire:loading.remove 
@@ -219,12 +221,12 @@
                         </div>
                     </div>
                     @endforeach
-                    <div x-ref="scroll_pin" class="col-span-full h-2"></div>
+                    <div x-ref="scroll_pin" class="h-2 col-span-full"></div>
                 </div>
                 <!-- chat box -->
 
                 <form wire:submit.prevent="sendMessage" class="absolute bottom-0 flex flex-row items-center w-full py-4 bg-white">
-                    <div class="flex-grow relative w-full">
+                    <div class="relative flex-grow w-full">
                         {{ $this->form }}
                     </div>
                     <div class="ml-4">

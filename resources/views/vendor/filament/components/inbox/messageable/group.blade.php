@@ -8,12 +8,12 @@
 ])
 
 @php
-    $iconComponent= $label == 'admins' ? 'heroicon-o-user' : 'heroicon-o-support';
+    $iconComponent = $label == 'admins' ? 'heroicon-o-user' : 'heroicon-o-support';
 @endphp
 
 <div class="flex flex-col">
     <button
-        @click="activeMenu = activeMenu == '{{ $label }}' ? false : '{{ $label }}'" 
+        @click="activeMenu = activeMenu === '{{ $label }}' ? false : '{{ $label }}'" 
         :class="{ 'button-active': activeMenu === '{{ $label }}' }" 
         class="flex items-center justify-between px-4 py-4 text-xs border-b">
         <span class="flex items-center gap-2 font-bold">
@@ -31,7 +31,7 @@
             <x-heroicon-o-chevron-down x-bind:class="{ 'rotate-180' : activeMenu === '{{ $label }}' }" class="transition-all duration-300 origin-center" />
         </span>
     </button>
-    <ul 
+    <ul
         x-show="activeMenu === '{{ $label }}'" 
         x-cloak 
         x-collapse 

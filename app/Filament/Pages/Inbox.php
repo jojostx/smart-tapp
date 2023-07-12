@@ -124,9 +124,14 @@ class Inbox extends Page
 
     public function getActiveMenuProperty(): string
     {
+        if (blank($this->selectedMessageable) || blank($this->messageables)) {
+          return 'none';
+        }
+
         if ($this->selectedMessageable && $this->isAdmin($this->selectedMessageable)) {
             return 'admins';
         }
+
         return 'drivers';
     }
 

@@ -51,8 +51,6 @@
 
             this.readNotifications = (await $wire.markAllNotificationsAsRead()).map((key) => key.toString())
 
-            console.log(this.readNotifications)
-
             this.isLoading = false
         },
 
@@ -71,7 +69,7 @@
         },
     }"
   wire:poll.30s
-  class="relative ml-4 flex items-center"
+  class="relative flex items-center ml-4"
   >
   <button @click="$dispatch('open-modal', { id: 'database-notifications-panel' });" title="Open Notifications" type="button" class="relative flex items-center justify-center w-10 h-10 text-sm font-medium text-center text-gray-500 rounded-md hover:text-gray-900 dark:hover:text-white dark:text-gray-400 filament-icon-button hover:bg-gray-500/5 focus:outline-none focus:text-primary-500 focus:bg-primary-500/10" aria-expanded="false" aria-controls="panel-1uT4AAWg">
     <span class="sr-only">
@@ -95,7 +93,7 @@
   >
     <div class="flex items-center justify-between w-full">
       <div>
-        <p class="font-semibold text-lg text-gray-700 dark:text-white">
+        <p class="text-lg font-semibold text-gray-700 dark:text-white">
           Notifications
         </p>
         
@@ -113,7 +111,7 @@
       </x-filament-support::icon-button>
     </div>
 
-    <div class="py-2 overflow-y-auto text-sm text-gray-700 h-full dark:text-gray-200">
+    <div class="h-full py-2 overflow-y-auto text-sm text-gray-700 dark:text-gray-200">
       @forelse ($notifications as $notification)
         <x-filament::notification-items.repark-request-notification :notification="$notification"/>
         @if ($loop->last)
