@@ -19,18 +19,21 @@ class ProcessTermiiReportWebhook extends ProcessWebhookJob
     \logger($this->webhookCall);
     \logger($this->webhookCall->payload);
     \logger($this->webhookCall->headers);
+    $this->updateNotificationStatus($this->webhookCall->payload);
   }
 
-  public function updateNotificationStatus(array $data)
+  public function updateNotificationStatus(?array $payload)
   {
-    $data = collect($data)->flattenWithKeys();
+    if (blank($payload)) return;
 
-    $messageId = $this->getValueByKey($data, 'id');
-    $messageStatus = $this->getValueByKey($data, 'status');
+    $payload = collect($payload)->flattenWithKeys();
+
+    $messageId = $this->getMessageID($payload);
+    $messageStatus = $this->getMessageStatus($payload);
 
     // retrieve notification data from redis. 
     // example: [$tenant->id, $notification->id] ["9b788b57-bc4f-4c61-a6ba-1fa9c0c909cb", "4ed8aae8-8e1d-4c68-9bd4-00c283f03b81"]
-    // see: insertion point in LogAccessActivationNotification::line(50)
+    // see: insertion point in LogTermiiNotification::line(50)
     $result = (array) Redis::command('SMEMBERS', [$messageId]);
 
     if (filled($result) && count($result) > 1) {
@@ -48,9 +51,25 @@ class ProcessTermiiReportWebhook extends ProcessWebhookJob
     }
   }
 
-  protected function getValueByKey(Collection $data, string $key)
+  protected function getMessageID($payload)
   {
-    return $data
-      ->first(fn ($_v, $_k) => str($_k)->contains($key, true)) ?? '';
+    return collect($payload)
+      ->flattenWithKeys()
+      ->first(
+        fn ($_v, $key) => str($key)->contains('message_id_str') ||
+          str($key)->contains('message_id') ||
+          str($key)->contains('origid') ||
+          str($key)->contains('notify_id')
+      );
+  }
+
+  protected function getMessageStatus($payload)
+  {
+    return collect($payload)
+      ->flattenWithKeys()
+      ->first(
+        fn ($_v, $key) => str($key)->contains('messagestate') ||
+          str($key)->contains('status')
+      );
   }
 }
