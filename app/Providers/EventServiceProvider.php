@@ -2,7 +2,7 @@
 
 namespace App\Providers;
 
-use App\Listeners\Tenant\LogAfricasTalkingNotification;
+use App\Listeners\Tenant\LogSmsNotification;
 use App\Listeners\Tenant\TenantUserLoggedOut;
 use Illuminate\Auth\Events\Logout;
 use Illuminate\Auth\Events\Registered;
@@ -25,7 +25,7 @@ class EventServiceProvider extends ServiceProvider
             TenantUserLoggedOut::class,
         ],
         NotificationSent::class => [
-            LogAfricasTalkingNotification::class,
+            LogSmsNotification::class,
         ],
     ];
 

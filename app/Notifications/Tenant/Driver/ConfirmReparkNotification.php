@@ -13,6 +13,7 @@ use ManeOlawale\Laravel\Termii\Messages\Message as TermiiMessage;
 use NotificationChannels\AfricasTalking\AfricasTalkingChannel;
 use NotificationChannels\AfricasTalking\AfricasTalkingMessage;
 use Illuminate\Database\Eloquent\Collection;
+use ManeOlawale\Laravel\Termii\Channels\TermiiSmsChannel;
 
 class ConfirmReparkNotification extends Notification implements ShouldQueue
 {
@@ -44,7 +45,7 @@ class ConfirmReparkNotification extends Notification implements ShouldQueue
      */
     public function via($notifiable)
     {
-        return ['database', 'termii', AfricasTalkingChannel::class];
+        return ['database', TermiiSmsChannel::class, AfricasTalkingChannel::class];
     }
 
     /**
@@ -56,7 +57,7 @@ class ConfirmReparkNotification extends Notification implements ShouldQueue
      */
     public function fallbackChannels($notifiable)
     {
-        return ['termii'];
+        return [TermiiSmsChannel::class];
     }
 
     /**

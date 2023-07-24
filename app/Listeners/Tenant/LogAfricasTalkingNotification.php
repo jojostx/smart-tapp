@@ -21,10 +21,9 @@ class LogAfricasTalkingNotification
 
         if ($this->notificationIsLoggable($event->notification, $event->channel)) {
             $notification = DatabaseNotification::query()->find($event->notification->id);
-            $response = $this->extractResponse($response);
-
             if (blank($notification)) return;
-
+            
+            $response = $this->extractResponse($response);
             $this->updateDBNotificationStatus($notification, $response);
 
             if (is_array($response)) {
@@ -33,13 +32,17 @@ class LogAfricasTalkingNotification
         }
     }
 
+    /**
+     * verifies that a notification is a loggable notification.
+     * that means the notification is of the AfricasTalking class or the Termii class
+     */
     public function notificationIsLoggable(\Illuminate\Notifications\Notification $notification, string $channel): bool
     {
         return !($notification instanceof \Illuminate\Notifications\DatabaseNotification) &&
             $channel == AfricasTalkingChannel::class;
     }
 
-    public function extractResponse($response): mixed
+    public function extractResponse($response): string|array
     {
         // note in this case, response is tested to make sure it is an array or object
         if ($response instanceof \Illuminate\Http\Client\Response && $response->successful()) {
@@ -55,26 +58,31 @@ class LogAfricasTalkingNotification
         return $response;
     }
 
+    /**
+     * checks if the data passed is an array and
+     * if a key exists in the data
+     */
     public function hasKey($data, string $key): bool
     {
         return is_array($data) && array_key_exists($key, $data);
     }
 
+    /**
+     * update the Database notification that corresponds to the
+     * loggable notification
+     */
     public function updateDBNotificationStatus(DatabaseNotification $notification, array $data)
     {
-        return $notification->forceFill(
-            $this->hasKey($data, 'status') ?
-                [
-                    'data->status' => $data['status'],
+        return $notification
+                ->forceFill([
+                    'data->status' => $this->hasKey($data, 'status') ? $data['status'] : 'unknown',
                     'data->response' => $this->hasKey($data, 'data') ? $data['data'] : $data,
-                ] :
-                [
-                    'data->status' => 'unknown',
-                    'data->response' => $data,
-                ]
-        )->save();
+                ])->save();
     }
 
+    /**
+     * logs the message id and notification id to redis for future retrieval
+     */
     public function logNotificationToRedis(DatabaseNotification $notification, array $data)
     {
         $messageId = collect($data)

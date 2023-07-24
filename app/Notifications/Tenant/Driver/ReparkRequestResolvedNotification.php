@@ -9,6 +9,7 @@ use Illuminate\Bus\Queueable;
 use Illuminate\Contracts\Queue\ShouldQueue;
 use Illuminate\Notifications\DatabaseNotification;
 use Illuminate\Notifications\Notification;
+use ManeOlawale\Laravel\Termii\Channels\TermiiSmsChannel;
 use ManeOlawale\Laravel\Termii\Messages\Message as TermiiMessage;
 use NotificationChannels\AfricasTalking\AfricasTalkingChannel;
 use NotificationChannels\AfricasTalking\AfricasTalkingMessage;
@@ -47,7 +48,7 @@ class ReparkRequestResolvedNotification extends Notification implements ShouldQu
      */
     public function via($notifiable)
     {
-        return ['database', 'termii', AfricasTalkingChannel::class];
+        return ['database', TermiiSmsChannel::class, AfricasTalkingChannel::class];
     }
 
     /**
@@ -59,7 +60,7 @@ class ReparkRequestResolvedNotification extends Notification implements ShouldQu
      */
     public function fallbackChannels($notifiable)
     {
-        return ['termii'];
+        return [TermiiSmsChannel::class];
     }
 
     /**
