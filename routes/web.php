@@ -5,6 +5,7 @@ use App\Filament\Livewire\Auth\PasswordRequest;
 use App\Filament\Livewire\Auth\Register;
 use App\Filament\Livewire\Auth\Verify;
 use App\Filament\Livewire\Auth\VerifyPendingTenant;
+use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Route;
 
 
@@ -46,4 +47,11 @@ Route::middleware(['web', 'guest'])
 Route::prefix('webhooks')->group(function () {
   Route::webhooks('termii', 'termii');
   Route::webhooks('africastalking', 'africastalking');
+  Route::post('mtn', function (Request $request)
+  {
+    logger($request);
+    logger($request->all());
+
+    return response("{'message': 'ok'}");
+  });
 });
